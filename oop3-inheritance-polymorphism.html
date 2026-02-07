@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOP-3: Inheritance & Polymorphism</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-code: #0f0f23;
+            --bg-table-header: #2d2d44;
+            --text-primary: #eee;
+            --text-secondary: #888;
+            --border-color: #444;
+            --hidden-cell-bg: #3d3d5c;
+            --hidden-cell-hover: #4d4d6c;
+            --quiz-bg: #2d132c;
+            --quiz-option-bg: #1a1a2e;
+            --quiz-option-hover: #3d3d5c;
+            --discuss-bg: #1e3a5f;
+            --gotcha-bg: #3d1a1a;
+            --key-point-bg: #1a3d1a;
+            --comparison-bg: #0f0f23;
+            --nav-bg: #333;
+            --nav-hover: #555;
+        }
+
+        body.light-theme {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-code: #2d2d2d;
+            --bg-table-header: #e8e8e8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --border-color: #d0d0d0;
+            --hidden-cell-bg: #d8d8d8;
+            --hidden-cell-hover: #c8c8c8;
+            --quiz-bg: #fce4ec;
+            --quiz-option-bg: #fff;
+            --quiz-option-hover: #f5f5f5;
+            --discuss-bg: #e3f2fd;
+            --gotcha-bg: #ffebee;
+            --key-point-bg: #e8f5e9;
+            --comparison-bg: #f5f5f5;
+            --nav-bg: #e0e0e0;
+            --nav-hover: #d0d0d0;
+            --code-text: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-primary); color: var(--text-primary); padding: 20px; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #00d4ff; text-align: center; margin-bottom: 10px; font-size: 2.2em; }
+        h2 { color: #ff6b6b; margin: 20px 0 10px; border-bottom: 2px solid #ff6b6b; padding-bottom: 5px; }
+        h3 { color: #ffd93d; margin: 15px 0 8px; }
+        .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
+        .section { background: var(--bg-secondary); border-radius: 10px; padding: 20px; margin: 15px 0; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section.visible { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        pre { background: var(--bg-code); padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95em; border-left: 4px solid #00d4ff; }
+        code { font-family: 'Fira Code', 'Consolas', monospace; }
+        /* Inline code (not in pre blocks) */
+        :not(pre) > code { background: #2d2d44; color: #f8f8f2; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        .keyword { color: #ff79c6; }
+        .type { color: #8be9fd; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .annotation { color: #50fa7b; }
+        /* Light theme keeps dark code blocks for readability */
+        body.light-theme pre { background: #1e1e1e; color: #d4d4d4; }
+        body.light-theme .keyword { color: #c586c0; }
+        body.light-theme .type { color: #4ec9b0; }
+        body.light-theme .string { color: #ce9178; }
+        body.light-theme .comment { color: #6a9955; }
+        body.light-theme .annotation { color: #dcdcaa; }
+        body.light-theme code { color: #d4d4d4; }
+        /* Light theme text improvements */
+        body.light-theme h1 { color: #0077b6; }
+        body.light-theme h2 { color: #c9184a; border-color: #c9184a; }
+        body.light-theme h3 { color: #b45309; }
+        body.light-theme th { color: #0077b6; }
+        body.light-theme .quiz-q { color: #c9184a; }
+        body.light-theme .gotcha-title { color: #c9184a; }
+        body.light-theme .gotcha { border-color: #c9184a; }
+        body.light-theme .quiz { border-color: #c9184a; }
+        body.light-theme .key-point { border-color: #2e7d32; }
+        body.light-theme .discuss { border-color: #b45309; background: #fff3e0; }
+        body.light-theme .hidden-cell.revealed.yes { color: #2e7d32; font-weight: bold; }
+        body.light-theme .hidden-cell.revealed.no { color: #c9184a; font-weight: bold; }
+        body.light-theme .correct { background: #c8e6c9; color: #1b5e20; }
+        body.light-theme .incorrect { background: #ffcdd2; color: #b71c1c; }
+        body.light-theme .gotcha-answer { background: rgba(0,0,0,0.05); }
+        body.light-theme .highlight { background: #fff59d; }
+        /* Inline code in light theme - dark bg for contrast */
+        body.light-theme :not(pre) > code { background: #1e1e1e; color: #f8f8f2; }
+        .quiz { background: var(--quiz-bg); border: 2px solid #ff6b6b; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .quiz-q { font-weight: bold; color: #ff6b6b; margin-bottom: 10px; }
+        .quiz-options { margin: 10px 0; }
+        .quiz-options label { display: block; padding: 8px 15px; margin: 5px 0; background: var(--quiz-option-bg); border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .quiz-options label:hover { background: var(--quiz-option-hover); }
+        .quiz-answer { display: none; padding: 10px; margin-top: 10px; border-radius: 5px; }
+        .correct { background: #1b4332; color: #95d5b2; }
+        .incorrect { background: #5c1a1a; color: #f8d7da; }
+        .reveal-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; font-size: 1.1em; border-radius: 25px; cursor: pointer; margin: 20px auto; display: block; transition: transform 0.3s; }
+        .reveal-btn:hover { transform: scale(1.05); }
+        .discuss { background: var(--discuss-bg); border-left: 4px solid #ffd93d; padding: 12px; margin: 10px 0; border-radius: 0 8px 8px 0; font-style: italic; }
+        .gotcha { background: var(--gotcha-bg); border: 2px dashed #ff6b6b; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .gotcha-title { color: #ff6b6b; font-weight: bold; margin-bottom: 8px; }
+        .gotcha-answer { display: none; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; }
+        .gotcha-answer.revealed { display: block; animation: fadeIn 0.3s; }
+        .gotcha-reveal-btn { background: #ff6b6b; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em; }
+        .gotcha-reveal-btn:hover { background: #ff5252; }
+        .gotcha-reveal-btn.revealed { display: none; }
+        .key-point { background: var(--key-point-bg); padding: 10px 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #50fa7b; }
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+        .comparison > div { background: var(--comparison-bg); padding: 15px; border-radius: 8px; }
+        .vs { color: #ff6b6b; font-weight: bold; }
+        .progress { position: fixed; top: 0; left: 0; height: 4px; background: #00d4ff; transition: width 0.3s; z-index: 1000; }
+        .nav { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; }
+        .nav button { background: var(--nav-bg); color: var(--text-primary); border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        .nav button:hover { background: var(--nav-hover); }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
+        th { background: var(--bg-table-header); color: #00d4ff; }
+        .highlight { background: #ffd93d; color: #000; padding: 2px 6px; border-radius: 3px; }
+        /* Theme toggle */
+        .theme-toggle { position: fixed; top: 15px; right: 20px; background: var(--nav-bg); border: none; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 1.2em; z-index: 1001; }
+        .theme-toggle:hover { background: var(--nav-hover); }
+        /* Hidden cell styles for interactive table */
+        .hidden-cell {
+            background: var(--hidden-cell-bg);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        .hidden-cell::before { content: "?"; color: var(--text-secondary); font-weight: bold; }
+        .hidden-cell.revealed { background: transparent; cursor: default; }
+        .hidden-cell.revealed::before { content: none; }
+        .hidden-cell.revealed.yes { color: #50fa7b; font-weight: bold; }
+        .hidden-cell.revealed.no { color: #ff6b6b; font-weight: bold; }
+        .clickable-row { cursor: pointer; transition: background 0.2s; }
+        .clickable-row:hover { background: var(--hidden-cell-hover); }
+        .clickable-row.revealed { cursor: default; }
+        .clickable-row.revealed:hover { background: transparent; }
+        .table-reset-btn { background: var(--nav-bg); color: var(--text-primary); border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; margin-top: 8px; }
+        .table-reset-btn:hover { background: var(--nav-hover); }
+        /* Hideable content */
+        .hideable { margin: 15px 0; }
+        .hideable-content { display: none; margin-top: 10px; padding: 12px; background: var(--key-point-bg); border-radius: 8px; border-left: 4px solid #50fa7b; }
+        .hideable-content.revealed { display: block; animation: fadeIn 0.3s; }
+        .hideable-content ul { margin: 0; padding-left: 20px; }
+        .hideable-content li { margin: 5px 0; }
+        .hideable-btn { background: #50fa7b; color: #000; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: 500; }
+        .hideable-btn:hover { background: #3dd668; }
+        .hideable-btn.revealed { display: none; }
+        body.light-theme .hideable-btn { background: #2e7d32; color: white; }
+        body.light-theme .hideable-btn:hover { background: #1b5e20; }
+        body.light-theme .hideable-content { border-color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <div class="progress" id="progress"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">🌓</button>
+    <div class="container">
+        <h1>OOP-3: Inheritance & Polymorphism</h1>
+        <p class="subtitle">Backend LLD | Building on Access Modifiers & Constructors</p>
+
+        <!-- Section 1: Quick Recap -->
+        <div class="section visible" id="s1">
+            <h2>Quick Recap: OOP-2</h2>
+            <div class="discuss">What do you remember about access modifiers? (Click on a modifier row to reveal)</div>
+            <table id="access-table">
+                <tr><th>Modifier</th><th>Class</th><th>Package</th><th>Subclass</th><th>World</th></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>private</td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="No"></td><td class="hidden-cell" data-value="No"></td><td class="hidden-cell" data-value="No"></td></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>default</td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="No"></td><td class="hidden-cell" data-value="No"></td></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>protected</td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="No"></td></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>public</td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="Yes"></td><td class="hidden-cell" data-value="Yes"></td></tr>
+            </table>
+            <button class="table-reset-btn" onclick="resetAccessTable()">Reset Table</button>
+            <div class="key-point">Today's connection: <span class="highlight">protected</span> is designed FOR inheritance!</div>
+        </div>
+
+        <!-- Section 2: Why Inheritance? -->
+        <div class="section" id="s2">
+            <h2>Why Do We Need Inheritance?</h2>
+            <div class="discuss">You're building an e-commerce system with different user types...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">Customer</span> {
+    <span class="type">String</span> name, email;
+    <span class="keyword">void</span> login() { ... }
+    <span class="keyword">void</span> logout() { ... }
+}
+
+<span class="keyword">class</span> <span class="type">Seller</span> {
+    <span class="type">String</span> name, email;
+    <span class="keyword">void</span> login() { ... }
+    <span class="keyword">void</span> logout() { ... }
+}
+
+<span class="keyword">class</span> <span class="type">Admin</span> {
+    <span class="type">String</span> name, email;
+    <span class="keyword">void</span> login() { ... }
+    <span class="keyword">void</span> logout() { ... }
+}</code></pre>
+            <div class="discuss">What problems do you see with this code?</div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Problems</button>
+                <div class="hideable-content">
+                    <strong>Problems:</strong>
+                    <ul>
+                        <li><strong>Code Duplication</strong> - Same fields and methods written 3 times</li>
+                        <li><strong>Maintenance Nightmare</strong> - Change in one place? Update all 3 classes!</li>
+                        <li><strong>Bug Propagation</strong> - Fix a bug in Customer? Might forget Seller and Admin</li>
+                        <li><strong>Violates DRY</strong> - "Don't Repeat Yourself" principle broken</li>
+                        <li><strong>Scalability Issue</strong> - Adding new user types multiplies the problem</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Inheritance Basics -->
+        <div class="section" id="s3">
+            <h2>Inheritance: The Solution</h2>
+            <div class="discuss">Java provides a way to create a "parent" class and have other classes inherit from it...</div>
+
+            <div class="quiz">
+                <div class="quiz-q">Which keyword is used to inherit from another class in Java?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q0" value="a" onclick="checkQuiz(this, false)"> implements</label>
+                    <label><input type="radio" name="q0" value="b" onclick="checkQuiz(this, true)"> extends</label>
+                    <label><input type="radio" name="q0" value="c" onclick="checkQuiz(this, false)"> inherits</label>
+                    <label><input type="radio" name="q0" value="d" onclick="checkQuiz(this, false)"> derives</label>
+                </div>
+                <div class="quiz-answer" id="q0-ans"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why "extends" and not "inherits"?</button>
+                <div class="hideable-content">
+                    <strong>Why did Java choose "extends"?</strong>
+                    <ul>
+                        <li><strong>Semantic meaning:</strong> "extends" conveys that the child class <em>extends</em> (adds to) the functionality of the parent, not just copies it</li>
+                        <li><strong>Conceptual clarity:</strong> Inheritance isn't just about "getting" parent's code - it's about <em>building upon</em> it</li>
+                        <li><strong>Distinction from interfaces:</strong> Java reserves <code>implements</code> for interfaces - using different keywords makes the relationship type clear</li>
+                        <li><strong>C++ influence:</strong> Java was influenced by C++ which uses <code>: public Parent</code> - "extends" is more readable than symbols</li>
+                        <li><strong>Other languages:</strong> Python uses <code>class Child(Parent)</code>, C# uses <code>:</code>, Ruby uses <code><</code> - there's no universal standard</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><em>Fun fact: Some argue "inherits" would be more intuitive, but "extends" emphasizes that you're not just inheriting - you're extending and potentially modifying behavior!</em></p>
+                </div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Show Solution Code</button>
+                <div class="hideable-content" style="background: var(--bg-code); border-color: #00d4ff; padding: 0;">
+            <pre style="margin: 0; border: none;"><code><span class="comment">// Parent/Super/Base class</span>
+<span class="keyword">class</span> <span class="type">User</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> name, email;
+
+    <span class="keyword">public void</span> login() {
+        System.out.println(name + <span class="string">" logged in"</span>);
+    }
+    <span class="keyword">public void</span> logout() {
+        System.out.println(name + <span class="string">" logged out"</span>);
+    }
+}
+
+<span class="comment">// Child/Sub/Derived class</span>
+<span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> shippingAddress;
+
+    <span class="keyword">public void</span> placeOrder() { ... }
+}
+
+<span class="keyword">class</span> <span class="type">Seller</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> storeName;
+
+    <span class="keyword">public void</span> listProduct() { ... }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>IS-A Relationship:</strong> Customer IS-A User, Seller IS-A User
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Can Customer access the 'name' field from User?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="a" onclick="checkQuiz(this, true)"> Yes, because it's protected</label>
+                    <label><input type="radio" name="q1" value="b" onclick="checkQuiz(this, false)"> No, it's in a different class</label>
+                </div>
+                <div class="quiz-answer" id="q1-ans"></div>
+            </div>
+        </div>
+
+        <!-- Section 4: super keyword -->
+        <div class="section" id="s4">
+            <h2>The 'super' Keyword</h2>
+
+            <h3>The Problem: Initializing Parent's Fields</h3>
+            <div class="discuss">Customer extends User. How do we initialize the inherited 'name' field?</div>
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> name;
+
+    <span class="keyword">public</span> User(<span class="type">String</span> name) {
+        <span class="keyword">this</span>.name = name;
+        System.out.println(<span class="string">"User created: "</span> + name);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> address;
+
+    <span class="keyword">public</span> Customer(<span class="type">String</span> name, <span class="type">String</span> address) {
+        <span class="comment">// How do we initialize 'name' which is inherited from User?</span>
+        <span class="keyword">this</span>.address = address;
+    }
+}</code></pre>
+
+            <h3>The "Naive" Approach</h3>
+            <div class="discuss">Can't we just initialize name directly in Customer?</div>
+            <pre><code><span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> address;
+
+    <span class="keyword">public</span> Customer(<span class="type">String</span> name, <span class="type">String</span> address) {
+        <span class="keyword">this</span>.name = name;      <span class="comment">// Initialize parent's field directly</span>
+        <span class="keyword">this</span>.address = address;
+    }
+}</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">What's wrong with this approach?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qSuper1" value="a" onclick="checkQuiz(this, false)"> Nothing, this works perfectly fine</label>
+                    <label><input type="radio" name="qSuper1" value="b" onclick="checkQuiz(this, true)"> Compilation error - parent constructor must be called</label>
+                    <label><input type="radio" name="qSuper1" value="c" onclick="checkQuiz(this, false)"> Runtime error</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Problems</button>
+                <div class="hideable-content">
+                    <strong>Problems with initializing parent fields directly:</strong>
+                    <ul>
+                        <li><strong>Duplication:</strong> Parent already has logic to initialize its fields - why rewrite it?</li>
+                        <li><strong>Missed logic:</strong> Parent constructor might do more than just assign (validation, logging, etc.)</li>
+                        <li><strong>Compilation error:</strong> If parent has NO default constructor, Java can't create the parent part!</li>
+                        <li><strong>Breaks encapsulation:</strong> Child shouldn't know HOW parent initializes itself</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>The Solution: super()</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> address;
+
+    <span class="keyword">public</span> Customer(<span class="type">String</span> name, <span class="type">String</span> address) {
+        <span class="keyword">super</span>(name);           <span class="comment">// Let parent initialize itself!</span>
+        <span class="keyword">this</span>.address = address;
+    }
+}</code></pre>
+
+            <h3>Java's Opinionated Rule: super() is ALWAYS First</h3>
+            <div class="discuss">What if you don't write super() at all?</div>
+            <pre><code><span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">public</span> Customer(<span class="type">String</span> address) {
+        <span class="comment">// No super() written here...</span>
+        <span class="keyword">this</span>.address = address;
+    }
+}</code></pre>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">What Does Java Do?</button>
+                <div class="hideable-content">
+                    <strong>Java automatically inserts <code>super()</code> as the FIRST line!</strong>
+                    <pre style="margin: 10px 0;"><code><span class="keyword">public</span> Customer(<span class="type">String</span> address) {
+    <span class="keyword">super</span>();  <span class="comment">// ← Java inserts this invisibly!</span>
+    <span class="keyword">this</span>.address = address;
+}</code></pre>
+                    <p>If parent has no no-arg constructor → <strong>Compilation Error!</strong></p>
+                </div>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Why does Java FORCE parent constructor to run first?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qSuper2" value="a" onclick="checkQuiz(this, false)"> Just a random design decision</label>
+                    <label><input type="radio" name="qSuper2" value="b" onclick="checkQuiz(this, true)"> Child depends on parent - parent must exist first</label>
+                    <label><input type="radio" name="qSuper2" value="c" onclick="checkQuiz(this, false)"> To make code run faster</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why Java is Opinionated Here</button>
+                <div class="hideable-content">
+                    <strong>Why super() MUST be first - Java's reasoning:</strong>
+                    <ul>
+                        <li><strong>Dependency:</strong> Child IS-A Parent. The "Parent part" must exist before the "Child part" can be added</li>
+                        <li><strong>Field access:</strong> Child might use inherited fields in its constructor - they must be initialized first!</li>
+                        <li><strong>Method calls:</strong> If child calls an inherited method in constructor, parent must be ready</li>
+                        <li><strong>Consistency:</strong> Guarantees a predictable initialization order across all Java programs</li>
+                        <li><strong>Safety:</strong> Prevents bugs where child uses uninitialized parent state</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><em>Think of it like building a house: you can't build the second floor before the first floor exists!</em></p>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">INTERVIEW GOTCHA</div>
+                <strong>Q: What happens if parent has no default constructor and child doesn't call super()?</strong>
+                <pre style="margin: 10px 0;"><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> name;
+
+    <span class="keyword">public</span> User(<span class="type">String</span> name) {  <span class="comment">// Only parameterized constructor</span>
+        <span class="keyword">this</span>.name = name;
+    }
+    <span class="comment">// No default constructor!</span>
+}
+
+<span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> address;
+
+    <span class="keyword">public</span> Customer(<span class="type">String</span> address) {
+        <span class="comment">// No super() call written here</span>
+        <span class="keyword">this</span>.address = address;
+    }
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Compilation Error!</strong>
+                    <p style="margin: 8px 0;">Java auto-inserts <code>super()</code>, but User has no no-arg constructor!</p>
+                    <pre style="margin: 10px 0;"><code><span class="comment">// Error: constructor User() is undefined</span>
+<span class="comment">// Java tried to insert: super(); but User needs a String argument!</span></code></pre>
+                    <strong style="color: #50fa7b;">The Fix:</strong>
+                    <pre style="margin: 10px 0;"><code><span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> address;
+
+    <span class="keyword">public</span> Customer(<span class="type">String</span> name, <span class="type">String</span> address) {
+        <span class="keyword">super</span>(name);  <span class="comment">// Explicitly call parent's constructor with required arg</span>
+        <span class="keyword">this</span>.address = address;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Constructor Chaining -->
+        <div class="section" id="s5">
+            <h2>Constructor Chaining in Inheritance</h2>
+            <div class="discuss">In what order do constructors execute?</div>
+            <pre><code><span class="keyword">class</span> <span class="type">A</span> {
+    A() { System.out.println(<span class="string">"A constructor"</span>); }
+}
+
+<span class="keyword">class</span> <span class="type">B</span> <span class="keyword">extends</span> <span class="type">A</span> {
+    B() { System.out.println(<span class="string">"B constructor"</span>); }
+}
+
+<span class="keyword">class</span> <span class="type">C</span> <span class="keyword">extends</span> <span class="type">B</span> {
+    C() { System.out.println(<span class="string">"C constructor"</span>); }
+}
+
+<span class="comment">// new C() prints: ?</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">QUIZ: What's the output of new C()?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="a" onclick="checkQuiz(this, false)"> C, B, A</label>
+                    <label><input type="radio" name="q2" value="b" onclick="checkQuiz(this, true)"> A, B, C</label>
+                    <label><input type="radio" name="q2" value="c" onclick="checkQuiz(this, false)"> Only C</label>
+                </div>
+                <div class="quiz-answer" id="q2-ans"></div>
+            </div>
+            <div class="key-point">
+                <strong>Rule:</strong> Parent constructor ALWAYS executes before child (top-down)
+            </div>
+        </div>
+
+        <!-- Section 6: What Gets Inherited & Types -->
+        <div class="section" id="s6">
+            <h2>What Gets Inherited?</h2>
+            <div class="discuss">When a class extends another, what exactly does the child get from the parent?</div>
+
+            <div class="quiz">
+                <div class="quiz-q">Which of these are inherited by the child class?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qInherit1" value="a" onclick="checkQuiz(this, false)"> Only public fields</label>
+                    <label><input type="radio" name="qInherit1" value="b" onclick="checkQuiz(this, false)"> Fields, methods, and constructors</label>
+                    <label><input type="radio" name="qInherit1" value="c" onclick="checkQuiz(this, true)"> Fields and methods (NOT constructors)</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal What Gets Inherited</button>
+                <div class="hideable-content">
+                    <table>
+                        <tr><th>Member</th><th>Inherited?</th><th>Notes</th></tr>
+                        <tr><td>public fields</td><td style="color: #50fa7b;">Yes</td><td>Accessible everywhere</td></tr>
+                        <tr><td>protected fields</td><td style="color: #50fa7b;">Yes</td><td>Accessible in child class</td></tr>
+                        <tr><td>default fields</td><td style="color: #ffd93d;">Yes*</td><td>Only if same package</td></tr>
+                        <tr><td>private fields</td><td style="color: #ff6b6b;">No</td><td>Not visible to child</td></tr>
+                        <tr><td>public methods</td><td style="color: #50fa7b;">Yes</td><td>Can be overridden</td></tr>
+                        <tr><td>protected methods</td><td style="color: #50fa7b;">Yes</td><td>Can be overridden</td></tr>
+                        <tr><td>private methods</td><td style="color: #ff6b6b;">No</td><td>Not visible to child</td></tr>
+                        <tr><td>Constructors</td><td style="color: #ff6b6b;">NO!</td><td>Must use super() to invoke</td></tr>
+                    </table>
+                    <div class="key-point" style="margin-top: 10px;">
+                        <strong>Key insight:</strong> Child inherits behavior (methods) that it can use or modify, but must create its own constructors.
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 30px;">Types of Inheritance</h2>
+            <table>
+                <tr><th>Type</th><th>Description</th><th>Java Support</th></tr>
+                <tr><td>Single</td><td>A → B</td><td>Yes</td></tr>
+                <tr><td>Multilevel</td><td>A → B → C</td><td>Yes</td></tr>
+                <tr><td>Hierarchical</td><td>A → B, A → C</td><td>Yes</td></tr>
+                <tr><td>Multiple</td><td>A, B → C</td><td><span class="highlight">???</span></td></tr>
+            </table>
+
+            <h3>The Diamond Problem Scenario</h3>
+            <div class="discuss">Imagine this situation...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">Phone</span> {
+    <span class="keyword">void</span> call() { System.out.println(<span class="string">"Phone calling..."</span>); }
+}
+
+<span class="keyword">class</span> <span class="type">Camera</span> {
+    <span class="keyword">void</span> call() { System.out.println(<span class="string">"Camera video call..."</span>); }
+}
+
+<span class="comment">// What if we could do this?</span>
+<span class="keyword">class</span> <span class="type">SmartPhone</span> <span class="keyword">extends</span> <span class="type">Phone</span>, <span class="type">Camera</span> {
+    <span class="comment">// SmartPhone inherits call() from BOTH parents!</span>
+}
+
+<span class="type">SmartPhone</span> sp = <span class="keyword">new</span> <span class="type">SmartPhone</span>();
+sp.call();  <span class="comment">// Which call() gets executed???</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">If Java allowed this, what would sp.call() do?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qDiamond" value="a" onclick="checkQuiz(this, false)"> Call Phone's version</label>
+                    <label><input type="radio" name="qDiamond" value="b" onclick="checkQuiz(this, false)"> Call Camera's version</label>
+                    <label><input type="radio" name="qDiamond" value="c" onclick="checkQuiz(this, false)"> Call both versions</label>
+                    <label><input type="radio" name="qDiamond" value="d" onclick="checkQuiz(this, true)"> Ambiguous! Compiler can't decide</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Why Java Bans Multiple Inheritance</button>
+                <div class="hideable-content">
+                    <strong>The Diamond Problem:</strong>
+                    <ul>
+                        <li>If both parents have the same method, which one does the child inherit?</li>
+                        <li>The compiler cannot make this decision automatically</li>
+                        <li>This ambiguity is called the <strong>"Diamond Problem"</strong></li>
+                        <li>Java's solution: <strong>Only allow single class inheritance</strong></li>
+                        <li>For multiple inheritance of behavior: Use <strong>interfaces</strong> (covered later)</li>
+                    </ul>
+                    <pre style="margin: 10px 0;"><code><span class="comment">// NOT ALLOWED in Java!</span>
+<span class="keyword">class</span> <span class="type">C</span> <span class="keyword">extends</span> <span class="type">A</span>, <span class="type">B</span> { }  <span class="comment">// Compilation Error!</span></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Polymorphism Intro -->
+        <div class="section" id="s7">
+            <h2>Polymorphism: "Many Forms"</h2>
+            <div class="discuss">Same action, different behaviors based on context...</div>
+            <div class="comparison">
+                <div>
+                    <h3>Compile-Time (Static)</h3>
+                    <p><strong>Method Overloading</strong></p>
+                    <p>Same name, different parameters</p>
+                    <p>Decided at compile time</p>
+                </div>
+                <div>
+                    <h3>Runtime (Dynamic)</h3>
+                    <p><strong>Method Overriding</strong></p>
+                    <p>Same signature, different class</p>
+                    <p>Decided at runtime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: Method Overloading -->
+        <div class="section" id="s8">
+            <h2>Method Overloading (Compile-Time)</h2>
+
+            <h3>The Problem: A Real Scenario</h3>
+            <div class="discuss">You're building a NotificationService...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">NotificationService</span> {
+
+    <span class="comment">// Send notification to a single user</span>
+    <span class="keyword">void</span> send(<span class="type">String</span> message, <span class="type">String</span> userId) {
+        System.out.println(<span class="string">"Sending to "</span> + userId + <span class="string">": "</span> + message);
+    }
+
+    <span class="comment">// Send notification to multiple users - but SAME method signature won't work!</span>
+    <span class="keyword">void</span> send(<span class="type">String</span> message, <span class="type">String</span> userId) {
+        <span class="comment">// Want to send to multiple users here...</span>
+    }
+}</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">What happens when you compile this code?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qOverload1" value="a" onclick="checkQuiz(this, false)"> It works, second method overwrites first</label>
+                    <label><input type="radio" name="qOverload1" value="b" onclick="checkQuiz(this, true)"> Compilation error - duplicate method</label>
+                    <label><input type="radio" name="qOverload1" value="c" onclick="checkQuiz(this, false)"> Runtime error</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why This Happens</button>
+                <div class="hideable-content">
+                    <ul>
+                        <li>Java identifies methods by their <strong>signature</strong> = name + parameter types</li>
+                        <li>Both methods have signature: <code>send(String, String)</code></li>
+                        <li>When you call <code>send("Hello", "user1")</code>, which one should run?</li>
+                        <li><strong>Ambiguous!</strong> Compiler can't decide → Error</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>The Solution: Method Overloading</h3>
+            <div class="discuss">Make the parameters DIFFERENT so compiler can distinguish...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">NotificationService</span> {
+
+    <span class="comment">// Send to single user</span>
+    <span class="keyword">void</span> send(<span class="type">String</span> message, <span class="type">String</span> userId) {
+        System.out.println(<span class="string">"Sending to "</span> + userId + <span class="string">": "</span> + message);
+    }
+
+    <span class="comment">// Send to multiple users - different parameter type!</span>
+    <span class="keyword">void</span> send(<span class="type">String</span> message, <span class="type">String</span>[] userIds) {
+        <span class="keyword">for</span> (<span class="type">String</span> id : userIds) {
+            System.out.println(<span class="string">"Sending to "</span> + id + <span class="string">": "</span> + message);
+        }
+    }
+
+    <span class="comment">// Broadcast to all - different number of parameters!</span>
+    <span class="keyword">void</span> send(<span class="type">String</span> message) {
+        System.out.println(<span class="string">"Broadcasting: "</span> + message);
+    }
+}</code></pre>
+            <div class="key-point">
+                <strong>Method Overloading:</strong> Same method name, but different parameters. Compiler picks the right method based on arguments you pass.
+            </div>
+
+            <h3>Scenario 1: Different Number of Parameters</h3>
+            <pre><code>send(<span class="string">"Hello"</span>)                     <span class="comment">// calls send(String) - broadcast</span>
+send(<span class="string">"Hello"</span>, <span class="string">"user1"</span>)            <span class="comment">// calls send(String, String)</span>
+send(<span class="string">"Hello"</span>, <span class="keyword">new</span> <span class="type">String</span>[]{<span class="string">"u1"</span>,<span class="string">"u2"</span>}) <span class="comment">// calls send(String, String[])</span></code></pre>
+
+            <h3>Scenario 2: Different Types of Parameters</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Calculator</span> {
+    <span class="keyword">int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) { <span class="keyword">return</span> a + b; }
+    <span class="keyword">double</span> add(<span class="keyword">double</span> a, <span class="keyword">double</span> b) { <span class="keyword">return</span> a + b; }
+}
+
+add(5, 3)       <span class="comment">// calls add(int, int) → 8</span>
+add(5.0, 3.0)   <span class="comment">// calls add(double, double) → 8.0</span></code></pre>
+
+            <h3>Scenario 3: Different Order of Parameters</h3>
+            <div class="discuss">You have a method that takes String and int...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">Formatter</span> {
+    <span class="keyword">void</span> display(<span class="type">String</span> label, <span class="keyword">int</span> value) {
+        System.out.println(label + <span class="string">": "</span> + value);
+    }
+}</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">Client calls: <code>display(100, "Count")</code> — Will this work?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qOverloadOrder" value="a" onclick="checkQuiz(this, false)"> Yes, Java auto-swaps the arguments</label>
+                    <label><input type="radio" name="qOverloadOrder" value="b" onclick="checkQuiz(this, true)"> No, compilation error - wrong argument types</label>
+                    <label><input type="radio" name="qOverloadOrder" value="c" onclick="checkQuiz(this, false)"> Yes, order doesn't matter</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal How to Fix This</button>
+                <div class="hideable-content">
+                    <strong>Solution: Overload with different order!</strong>
+                    <pre style="margin: 10px 0;"><code><span class="keyword">class</span> <span class="type">Formatter</span> {
+    <span class="keyword">void</span> display(<span class="type">String</span> label, <span class="keyword">int</span> value) {
+        System.out.println(label + <span class="string">": "</span> + value);
+    }
+
+    <span class="keyword">void</span> display(<span class="keyword">int</span> value, <span class="type">String</span> label) {
+        System.out.println(label + <span class="string">": "</span> + value);
+    }
+}
+
+display(<span class="string">"Count"</span>, 100);  <span class="comment">// calls first method</span>
+display(100, <span class="string">"Count"</span>);  <span class="comment">// calls second method</span></code></pre>
+                    <p>Order of parameters IS significant for overloading!</p>
+                </div>
+            </div>
+
+            <h3>Scenario 4: Why Return Type Alone Doesn't Work</h3>
+            <pre><code><span class="keyword">int</span> getValue() { <span class="keyword">return</span> 5; }
+<span class="keyword">double</span> getValue() { <span class="keyword">return</span> 5.0; }</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">Why can't Java allow this?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qOverload2" value="a" onclick="checkQuiz(this, false)"> Java doesn't support multiple return types</label>
+                    <label><input type="radio" name="qOverload2" value="b" onclick="checkQuiz(this, true)"> Compiler can't decide which method to call</label>
+                    <label><input type="radio" name="qOverload2" value="c" onclick="checkQuiz(this, false)"> Return types must always match</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Explanation</button>
+                <div class="hideable-content">
+                    <strong>Why return type alone isn't enough:</strong>
+                    <ul>
+                        <li><strong>Problem 1:</strong> Call without assignment:<br>
+                            <code>getValue();</code> — Which method should run? No way to know!</li>
+                        <li><strong>Problem 2:</strong> Implicit type conversion makes it worse:<br>
+                            <pre style="margin: 5px 0;"><code><span class="keyword">double</span> result = getValue(); <span class="comment">// Which one?</span>
+<span class="comment">// Could be: double getValue() returning 5.0</span>
+<span class="comment">// Could be: int getValue() returning 5, then promoted to 5.0</span></code></pre>
+                        </li>
+                        <li><strong>Problem 3:</strong> var keyword:<br>
+                            <code>var x = getValue();</code> — Compiler can't infer which type you want</li>
+                    </ul>
+                    <div class="key-point" style="margin-top: 10px;">
+                        <strong>Key insight:</strong> Method calls are identified by what you PASS IN (parameters), not what you GET BACK (return type).
+                    </div>
+                </div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Complete Rules</button>
+                <div class="hideable-content">
+                    <strong>Overloading Rules Summary:</strong>
+                    <ul>
+                        <li>Methods must have the <strong>same name</strong></li>
+                        <li>Must differ in <strong>parameter list</strong>: number, type, OR order</li>
+                        <li>Return type alone is <strong>NOT enough</strong></li>
+                        <li>Access modifiers can be different (doesn't affect overloading)</li>
+                        <li>Resolved at <strong>compile time</strong> based on arguments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 9: Method Overriding -->
+        <div class="section" id="s9">
+            <h2>Method Overriding (Runtime)</h2>
+
+            <h3>The Problem</h3>
+            <div class="discuss">Child class inherits parent's method, but needs different behavior...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="keyword">public void</span> getPermissions() {
+        System.out.println(<span class="string">"Basic read access"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Admin</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="comment">// Admin inherits getPermissions() but needs FULL access, not basic!</span>
+    <span class="comment">// How do we change the inherited behavior?</span>
+}</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">How can Admin have a different implementation of getPermissions()?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qOverride1" value="a" onclick="checkQuiz(this, false)"> Create a new method with different name</label>
+                    <label><input type="radio" name="qOverride1" value="b" onclick="checkQuiz(this, true)"> Define the same method in Admin class</label>
+                    <label><input type="radio" name="qOverride1" value="c" onclick="checkQuiz(this, false)"> Delete the parent method</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <h3>The Solution: Method Overriding</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="keyword">public void</span> getPermissions() {
+        System.out.println(<span class="string">"Basic read access"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Admin</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="keyword">public void</span> getPermissions() {
+        System.out.println(<span class="string">"Full admin access"</span>);
+    }
+}</code></pre>
+
+            <h3>Scenario 1: What Gets Called?</h3>
+            <pre><code><span class="type">User</span> u1 = <span class="keyword">new</span> <span class="type">User</span>();
+<span class="type">User</span> u2 = <span class="keyword">new</span> <span class="type">Admin</span>();
+
+u1.getPermissions();
+u2.getPermissions();</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">What does u2.getPermissions() print?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qOverride2" value="a" onclick="checkQuiz(this, false)"> "Basic read access" (reference type is User)</label>
+                    <label><input type="radio" name="qOverride2" value="b" onclick="checkQuiz(this, true)"> "Full admin access" (actual object is Admin)</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">What Happens at Compile-Time vs Runtime?</button>
+                <div class="hideable-content">
+                    <strong>Compile-Time (When you write the code):</strong>
+                    <ul>
+                        <li>Compiler sees: <code>User u2 = new Admin();</code></li>
+                        <li>Compiler checks: "Does User have a <code>getPermissions()</code> method?" → <strong>Yes</strong></li>
+                        <li>If User didn't have this method, you'd get a <strong>compilation error</strong></li>
+                        <li>Compiler only cares about the <strong>reference type (User)</strong></li>
+                    </ul>
+                    <strong style="margin-top: 10px; display: block;">Runtime (When the code actually runs):</strong>
+                    <ul>
+                        <li>JVM sees: "What's the <strong>actual object</strong> stored in u2?" → <strong>Admin</strong></li>
+                        <li>JVM checks: "Does Admin have its own <code>getPermissions()</code>?" → <strong>Yes</strong></li>
+                        <li>JVM calls <strong>Admin's version</strong> of the method!</li>
+                    </ul>
+                    <div class="key-point" style="margin-top: 10px;">
+                        <strong>The Key Insight:</strong><br>
+                        <code>Reference type</code> → Decides what you <em>can</em> call (compile-time check)<br>
+                        <code>Object type</code> → Decides what <em>actually runs</em> (runtime decision)
+                    </div>
+                </div>
+            </div>
+
+            <h3>Scenario 2: Can We Change Access Modifier?</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">protected void</span> display() { }
+}
+
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">public void</span> display() { }     <span class="comment">// Wider access - OK?</span>
+    <span class="keyword">private void</span> display() { }    <span class="comment">// Narrower access - OK?</span>
+}</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">Which access modifier change is allowed?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qOverride3" value="a" onclick="checkQuiz(this, true)"> protected → public (wider is OK)</label>
+                    <label><input type="radio" name="qOverride3" value="b" onclick="checkQuiz(this, false)"> protected → private (narrower is OK)</label>
+                    <label><input type="radio" name="qOverride3" value="c" onclick="checkQuiz(this, false)"> Both are allowed</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Why</button>
+                <div class="hideable-content">
+                    <strong>Why can't we reduce visibility?</strong>
+                    <ul>
+                        <li>If Parent promises <code>protected</code> access, all code using Parent expects that</li>
+                        <li>If Child makes it <code>private</code>, code calling <code>parent.display()</code> would break</li>
+                        <li>Child must honor Parent's "contract" - can give MORE access, never LESS</li>
+                        <li>This is the <strong>Liskov Substitution Principle</strong> in action!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Scenario 3: What About Return Type?</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Document</span> {
+    <span class="type">Document</span> duplicate() {
+        <span class="keyword">return new</span> <span class="type">Document</span>();
+    }
+}
+
+<span class="keyword">class</span> <span class="type">PDFDocument</span> <span class="keyword">extends</span> <span class="type">Document</span> {
+    <span class="type">PDFDocument</span> duplicate() {  <span class="comment">// Returns PDFDocument, not Document!</span>
+        <span class="keyword">return new</span> <span class="type">PDFDocument</span>();
+    }
+}</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">Is PDFDocument's duplicate() a valid override? (Return type is PDFDocument, not Document)</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qOverride4" value="a" onclick="checkQuiz(this, true)"> Yes - covariant return type (subtype is allowed)</label>
+                    <label><input type="radio" name="qOverride4" value="b" onclick="checkQuiz(this, false)"> No - return type must match exactly</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why Is This Useful?</button>
+                <div class="hideable-content">
+                    <strong>Practical benefit of covariant return types:</strong>
+                    <pre style="margin: 10px 0;"><code><span class="comment">// Without covariant return:</span>
+<span class="type">Document</span> copy = pdf.duplicate();  <span class="comment">// Returns Document</span>
+<span class="type">PDFDocument</span> pdfCopy = (<span class="type">PDFDocument</span>) copy;  <span class="comment">// Need to cast!</span>
+
+<span class="comment">// With covariant return:</span>
+<span class="type">PDFDocument</span> pdfCopy = pdf.duplicate();  <span class="comment">// No cast needed!</span></code></pre>
+                    <ul>
+                        <li>Client code working with <code>PDFDocument</code> gets a <code>PDFDocument</code> back</li>
+                        <li>Client code working with <code>Document</code> still works (PDFDocument IS-A Document)</li>
+                        <li>Avoids unnecessary casting in code that knows the specific type</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>The @Override Annotation</h3>
+            <div class="discuss">Why use @Override when it's optional?</div>
+            <pre><code><span class="keyword">class</span> <span class="type">Admin</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> getPermisions() {  <span class="comment">// Typo! Missing 's'</span>
+        System.out.println(<span class="string">"Full admin access"</span>);
+    }
+}</code></pre>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Why @Override Matters</button>
+                <div class="hideable-content">
+                    <ul>
+                        <li>Without @Override: Code compiles, but it's a NEW method, not an override!</li>
+                        <li>With @Override: Compiler error! "Method does not override from superclass"</li>
+                        <li><strong>Always use @Override</strong> - catches typos and signature mismatches</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Calling Parent's Version with super</h3>
+            <div class="discuss">What if child wants to override BUT also use parent's logic?</div>
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="keyword">public void</span> login() {
+        System.out.println(<span class="string">"Authenticating..."</span>);
+        System.out.println(<span class="string">"Login successful!"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Customer</span> <span class="keyword">extends</span> <span class="type">User</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> login() {
+        <span class="keyword">super</span>.login();  <span class="comment">// Call parent's login FIRST</span>
+        System.out.println(<span class="string">"Loading cart..."</span>);
+        System.out.println(<span class="string">"Loading recommendations..."</span>);
+    }
+}</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">What does new Customer().login() print?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qSuper3" value="a" onclick="checkQuiz(this, false)"> Only "Loading cart..." and "Loading recommendations..."</label>
+                    <label><input type="radio" name="qSuper3" value="b" onclick="checkQuiz(this, true)"> All 4 lines (parent's output first, then child's)</label>
+                    <label><input type="radio" name="qSuper3" value="c" onclick="checkQuiz(this, false)"> Only parent's 2 lines</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="key-point">
+                <strong>super.methodName()</strong> calls the parent's version of an overridden method. Useful when you want to <em>extend</em> behavior, not replace it entirely.
+            </div>
+        </div>
+
+        <!-- Section 10: Overriding Rules & Edge Cases -->
+        <div class="section" id="s10">
+            <h2>Overriding: What You CAN'T Override</h2>
+
+            <h3>Scenario 1: Can You Override a Static Method?</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Parent"</span>); }
+}
+
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Child"</span>); }
+}
+
+<span class="type">Parent</span> p = <span class="keyword">new</span> <span class="type">Child</span>();
+p.greet();</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">What gets printed?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qStatic" value="a" onclick="checkQuiz(this, true)"> "Parent" - static methods use reference type</label>
+                    <label><input type="radio" name="qStatic" value="b" onclick="checkQuiz(this, false)"> "Child" - same as instance methods</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Explanation</button>
+                <div class="hideable-content">
+                    <ul>
+                        <li>Static methods belong to the <strong>class</strong>, not the object</li>
+                        <li>This is called <strong>method hiding</strong>, NOT overriding</li>
+                        <li>The reference type (Parent) determines which static method runs</li>
+                        <li>No runtime polymorphism for static methods!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Scenario 2: Can You Override a Final Method?</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">final void</span> important() { System.out.println(<span class="string">"Cannot change!"</span>); }
+}
+
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">void</span> important() { System.out.println(<span class="string">"Changed!"</span>); }
+}</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">What happens?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qFinal" value="a" onclick="checkQuiz(this, false)"> Works fine, child overrides parent</label>
+                    <label><input type="radio" name="qFinal" value="b" onclick="checkQuiz(this, true)"> Compilation error - cannot override final</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <h3>Scenario 3: Can You Override a Private Method?</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">private void</span> secret() { System.out.println(<span class="string">"Parent secret"</span>); }
+
+    <span class="keyword">public void</span> reveal() { secret(); }
+}
+
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">private void</span> secret() { System.out.println(<span class="string">"Child secret"</span>); }
+}
+
+<span class="type">Child</span> c = <span class="keyword">new</span> <span class="type">Child</span>();
+c.reveal();</code></pre>
+            <div class="quiz">
+                <div class="quiz-q">What gets printed?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qPrivate" value="a" onclick="checkQuiz(this, true)"> "Parent secret" - private can't be overridden</label>
+                    <label><input type="radio" name="qPrivate" value="b" onclick="checkQuiz(this, false)"> "Child secret" - child overrides parent</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Explanation</button>
+                <div class="hideable-content">
+                    <ul>
+                        <li>Private methods are <strong>not visible</strong> to child class</li>
+                        <li>Child's secret() is a <strong>completely new method</strong>, not an override</li>
+                        <li>Parent's reveal() calls Parent's secret() - doesn't know about Child's</li>
+                        <li>This is a common interview trap!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Complete Overriding Rules</h3>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Show Rules Summary Table</button>
+                <div class="hideable-content" style="background: var(--bg-secondary); padding: 15px;">
+                    <table>
+                        <tr><th>Rule</th><th>Explanation</th></tr>
+                        <tr><td>Same signature</td><td>Name + parameters must match exactly</td></tr>
+                        <tr><td>Access modifier</td><td>Same or WIDER only (protected → public OK)</td></tr>
+                        <tr><td>Return type</td><td>Same or covariant (subtype)</td></tr>
+                        <tr><td>Exceptions</td><td>Same, fewer, or narrower only</td></tr>
+                        <tr><td>Cannot override</td><td><strong>static</strong>, <strong>final</strong>, <strong>private</strong></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 11: Dynamic Method Dispatch -->
+        <div class="section" id="s11">
+            <h2>Dynamic Method Dispatch</h2>
+
+            <h3>The Problem: Repetitive Code</h3>
+            <div class="discuss">You're building a CheckoutService that processes different payment types...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">CheckoutService</span> {
+
+    <span class="keyword">public void</span> makePayment(<span class="type">CreditCardPayment</span> payment) {
+        payment.process();
+    }
+
+    <span class="keyword">public void</span> makePayment(<span class="type">UPIPayment</span> payment) {
+        payment.process();
+    }
+
+    <span class="keyword">public void</span> makePayment(<span class="type">GiftCardPayment</span> payment) {
+        payment.process();
+    }
+
+    <span class="keyword">public void</span> makePayment(<span class="type">NetBankingPayment</span> payment) {
+        payment.process();
+    }
+
+    <span class="comment">// New payment type added? Write another method...</span>
+}</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What's wrong with this design?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qDispatch1" value="a" onclick="checkQuiz(this, false)"> Nothing, this is good OOP</label>
+                    <label><input type="radio" name="qDispatch1" value="b" onclick="checkQuiz(this, true)"> Repetitive code - same logic in every method</label>
+                    <label><input type="radio" name="qDispatch1" value="c" onclick="checkQuiz(this, false)"> Too few methods</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Problems</button>
+                <div class="hideable-content">
+                    <strong>Problems:</strong>
+                    <ul>
+                        <li><strong>Code duplication:</strong> Every method does the same thing - calls <code>process()</code></li>
+                        <li><strong>Violates Open-Closed Principle:</strong> Adding new payment type = adding new method</li>
+                        <li><strong>Maintenance burden:</strong> 10 payment types = 10 nearly identical methods</li>
+                        <li><strong>Easy to forget:</strong> Add WalletPayment class but forget to add makePayment for it</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>The Solution: Use Parent Type</h3>
+            <div class="discuss">What if we use the parent type instead of specific subtypes?</div>
+            <pre><code><span class="keyword">class</span> <span class="type">CheckoutService</span> {
+
+    <span class="keyword">public void</span> makePayment(<span class="type">Payment</span> payment) {
+        payment.process();  <span class="comment">// Works for ANY payment type!</span>
+    }
+}</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">If we pass a CreditCardPayment to this method, which process() runs?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qDispatch2" value="a" onclick="checkQuiz(this, false)"> Payment's process() (parent version)</label>
+                    <label><input type="radio" name="qDispatch2" value="b" onclick="checkQuiz(this, true)"> CreditCardPayment's process() (child version)</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">See It In Action</button>
+                <div class="hideable-content">
+                    <pre style="margin: 10px 0;"><code><span class="type">CheckoutService</span> checkout = <span class="keyword">new</span> <span class="type">CheckoutService</span>();
+
+<span class="comment">// Same method, different behaviors!</span>
+checkout.makePayment(<span class="keyword">new</span> <span class="type">CreditCardPayment</span>(100, <span class="string">"1234..."</span>));  <span class="comment">// → CreditCard's process()</span>
+checkout.makePayment(<span class="keyword">new</span> <span class="type">UPIPayment</span>(100, <span class="string">"user@upi"</span>));        <span class="comment">// → UPI's process()</span>
+checkout.makePayment(<span class="keyword">new</span> <span class="type">GiftCardPayment</span>(100, <span class="string">"GIFT123"</span>));    <span class="comment">// → GiftCard's process()</span></code></pre>
+                    <p><strong>This is Dynamic Method Dispatch!</strong> The JVM decides at <em>runtime</em> which <code>process()</code> to call based on the actual object type.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>The Golden Rule of Polymorphism:</strong><br>
+                <code>Reference type (Payment)</code> → Determines WHAT methods can be called<br>
+                <code>Object type (CreditCardPayment)</code> → Determines WHICH implementation runs
+            </div>
+
+            <h3>Why This Matters</h3>
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Benefits</button>
+                <div class="hideable-content">
+                    <ul>
+                        <li><strong>One method handles all:</strong> No need to overload for each subtype</li>
+                        <li><strong>Open for extension:</strong> Add new payment types without changing CheckoutService</li>
+                        <li><strong>Loose coupling:</strong> CheckoutService doesn't know about specific payment implementations</li>
+                        <li><strong>Testability:</strong> Can easily mock Payment for unit tests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 12: Overloading vs Overriding -->
+        <div class="section" id="s12">
+            <h2>Overloading vs Overriding</h2>
+            <div class="discuss">Click on each row to reveal the comparison...</div>
+            <table id="compare-table">
+                <tr><th>Aspect</th><th>Overloading</th><th>Overriding</th></tr>
+                <tr class="clickable-row" onclick="revealCompareRow(this)"><td>Where?</td><td class="hidden-cell" data-value="Same class"></td><td class="hidden-cell" data-value="Parent-child classes"></td></tr>
+                <tr class="clickable-row" onclick="revealCompareRow(this)"><td>Parameters</td><td class="hidden-cell" data-value="Must differ"></td><td class="hidden-cell" data-value="Must be same"></td></tr>
+                <tr class="clickable-row" onclick="revealCompareRow(this)"><td>Return type</td><td class="hidden-cell" data-value="Can differ"></td><td class="hidden-cell" data-value="Same or covariant"></td></tr>
+                <tr class="clickable-row" onclick="revealCompareRow(this)"><td>When resolved?</td><td class="hidden-cell" data-value="Compile time"></td><td class="hidden-cell" data-value="Runtime"></td></tr>
+                <tr class="clickable-row" onclick="revealCompareRow(this)"><td>Also called</td><td class="hidden-cell" data-value="Static polymorphism"></td><td class="hidden-cell" data-value="Dynamic polymorphism"></td></tr>
+            </table>
+            <button class="table-reset-btn" onclick="resetCompareTable()">Reset Table</button>
+
+            <div class="hideable" style="margin-top: 15px;">
+                <button class="hideable-btn" onclick="revealHideable(this)">What is "Covariant"?</button>
+                <div class="hideable-content" style="background: var(--discuss-bg); border-color: #ffd93d;">
+                    <strong>Covariant Return Type:</strong>
+                    <p style="margin: 8px 0;">When overriding, the return type can be a <em>subtype</em> of the parent's return type.</p>
+                    <pre style="margin: 10px 0;"><code><span class="keyword">class</span> <span class="type">Document</span> { <span class="type">Document</span> copy() { ... } }
+<span class="keyword">class</span> <span class="type">PDF</span> <span class="keyword">extends</span> <span class="type">Document</span> { <span class="type">PDF</span> copy() { ... } }  <span class="comment">// ✓ Covariant - PDF is subtype of Document</span></code></pre>
+                    <strong>Related Concepts (Preview for Generics):</strong>
+                    <ul style="margin-top: 8px;">
+                        <li><strong>Covariant:</strong> Can use subtype → <code>? extends T</code> (producer/read-only)</li>
+                        <li><strong>Contravariant:</strong> Can use supertype → <code>? super T</code> (consumer/write-only)</li>
+                        <li><strong>Invariant:</strong> Must be exact type → <code>T</code> (default for generics)</li>
+                    </ul>
+                    <p style="margin-top: 10px; font-style: italic; color: var(--text-secondary);">We'll dive deep into variance when we cover <strong>Generics & Wildcards</strong>!</p>
+                </div>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">QUIZ: Which achieves "one interface, multiple implementations"?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5" value="a" onclick="checkQuiz(this, false)"> Overloading</label>
+                    <label><input type="radio" name="q5" value="b" onclick="checkQuiz(this, true)"> Overriding</label>
+                </div>
+                <div class="quiz-answer" id="q5-ans"></div>
+            </div>
+        </div>
+
+        <!-- Section 13: Practical Example -->
+        <div class="section" id="s13">
+            <h2>Real-World Example: Payment System</h2>
+            <pre><code><span class="keyword">class</span> <span class="type">Payment</span> {
+    <span class="keyword">protected double</span> amount;
+
+    <span class="keyword">public</span> Payment(<span class="keyword">double</span> amount) {
+        <span class="keyword">this</span>.amount = amount;
+    }
+
+    <span class="keyword">public void</span> process() {
+        System.out.println(<span class="string">"Processing payment of $"</span> + amount);
+    }
+
+    <span class="keyword">public double</span> calculateFee() {
+        <span class="keyword">return</span> 0;
+    }
+}
+
+<span class="keyword">class</span> <span class="type">CreditCardPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> {
+    <span class="keyword">private</span> <span class="type">String</span> cardNumber;
+
+    <span class="keyword">public</span> CreditCardPayment(<span class="keyword">double</span> amount, <span class="type">String</span> cardNumber) {
+        <span class="keyword">super</span>(amount);
+        <span class="keyword">this</span>.cardNumber = cardNumber;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> process() {
+        <span class="keyword">super</span>.process();
+        System.out.println(<span class="string">"Charging card: ****"</span> + cardNumber.substring(12));
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public double</span> calculateFee() {
+        <span class="keyword">return</span> amount * 0.029;
+    }
+}
+
+<span class="keyword">class</span> <span class="type">UPIPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> {
+    <span class="keyword">private</span> <span class="type">String</span> upiId;
+
+    <span class="keyword">public</span> UPIPayment(<span class="keyword">double</span> amount, <span class="type">String</span> upiId) {
+        <span class="keyword">super</span>(amount);
+        <span class="keyword">this</span>.upiId = upiId;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> process() {
+        <span class="keyword">super</span>.process();
+        System.out.println(<span class="string">"UPI transfer to: "</span> + upiId);
+    }
+
+}</code></pre>
+            <div class="discuss">How would you use this in an e-commerce checkout? What does UPIPayment inherit from Payment?</div>
+        </div>
+
+        <!-- Section 14: Interview Questions -->
+        <div class="section" id="s14">
+            <h2>Common Interview Questions</h2>
+
+            <div class="gotcha">
+                <div class="gotcha-title">Q1: Can constructor be inherited?</div>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>No!</strong> Constructors are NOT inherited. Child must define its own and use super() to invoke parent's.
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">Q2: What is covariant return type?</div>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <pre><code><span class="keyword">class</span> <span class="type">Document</span> {
+    <span class="type">Document</span> duplicate() { <span class="keyword">return new</span> <span class="type">Document</span>(); }
+}
+<span class="keyword">class</span> <span class="type">PDFDocument</span> <span class="keyword">extends</span> <span class="type">Document</span> {
+    <span class="annotation">@Override</span>
+    <span class="type">PDFDocument</span> duplicate() { <span class="keyword">return new</span> <span class="type">PDFDocument</span>(); }  <span class="comment">// Valid! PDFDocument is subtype of Document</span>
+}</code></pre>
+                    <p>The overriding method can return a <em>subtype</em> of the parent's return type. This avoids unnecessary casting when you know the specific type.</p>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">Q3: What's the output?</div>
+                <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">void</span> show() { System.out.println(<span class="string">"Parent"</span>); }
+}
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">void</span> show() { System.out.println(<span class="string">"Child"</span>); }
+}
+
+<span class="type">Parent</span> p = <span class="keyword">new</span> <span class="type">Child</span>();
+p.show();  <span class="comment">// Output: ?</span></code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Answer:</strong> "Child" - Runtime polymorphism! Object type determines behavior, not reference type.
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">Q4: Can we override static methods?</div>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>No!</strong> Static methods belong to class, not instance. Child can "hide" (not override) parent's static method. This is called <em>method hiding</em>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 15: Summary -->
+        <div class="section" id="s15">
+            <h2>Key Takeaways</h2>
+            <div class="key-point">
+                <strong>Inheritance:</strong> Code reuse + IS-A relationship + extends keyword
+            </div>
+            <div class="key-point">
+                <strong>super:</strong> Access parent constructor & methods
+            </div>
+            <div class="key-point">
+                <strong>Constructor chain:</strong> Parent always executes first (top-down)
+            </div>
+            <div class="key-point">
+                <strong>Overloading:</strong> Same name, different params (compile-time)
+            </div>
+            <div class="key-point">
+                <strong>Overriding:</strong> Same signature, child redefines (runtime)
+            </div>
+            <div class="key-point">
+                <strong>Dynamic dispatch:</strong> Reference type = what you CAN call, Object type = what RUNS
+            </div>
+
+            <h3>Next Class: Abstract Classes & Interfaces</h3>
+        </div>
+
+        <button class="reveal-btn" id="nextBtn" onclick="revealNext()">Next Section →</button>
+    </div>
+
+    <div class="nav">
+        <button onclick="revealPrev()">← Prev</button>
+        <button onclick="revealAll()">Show All</button>
+        <button onclick="resetSections()">Reset</button>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 15;
+
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function revealNext() {
+            if (currentSection < totalSections) {
+                currentSection++;
+                document.getElementById('s' + currentSection).classList.add('visible');
+                document.getElementById('s' + currentSection).scrollIntoView({ behavior: 'smooth' });
+                updateProgress();
+            }
+            if (currentSection === totalSections) {
+                document.getElementById('nextBtn').textContent = 'Complete!';
+                document.getElementById('nextBtn').disabled = true;
+            }
+        }
+
+        function revealPrev() {
+            if (currentSection > 1) {
+                document.getElementById('s' + currentSection).classList.remove('visible');
+                currentSection--;
+                document.getElementById('s' + currentSection).scrollIntoView({ behavior: 'smooth' });
+                updateProgress();
+                document.getElementById('nextBtn').textContent = 'Next Section →';
+                document.getElementById('nextBtn').disabled = false;
+            }
+        }
+
+        function revealAll() {
+            for (let i = 1; i <= totalSections; i++) {
+                document.getElementById('s' + i).classList.add('visible');
+            }
+            currentSection = totalSections;
+            updateProgress();
+            document.getElementById('nextBtn').textContent = 'Complete!';
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function resetSections() {
+            for (let i = 2; i <= totalSections; i++) {
+                document.getElementById('s' + i).classList.remove('visible');
+            }
+            currentSection = 1;
+            updateProgress();
+            document.getElementById('nextBtn').textContent = 'Next Section →';
+            document.getElementById('nextBtn').disabled = false;
+            document.getElementById('s1').scrollIntoView({ behavior: 'smooth' });
+            // Reset quizzes
+            document.querySelectorAll('.quiz-answer').forEach(el => {
+                el.style.display = 'none';
+                el.className = 'quiz-answer';
+            });
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+            // Reset access modifiers table
+            resetAccessTable();
+            // Reset comparison table
+            resetCompareTable();
+            // Reset gotcha answers
+            resetGotchas();
+            // Reset hideable content
+            resetHideables();
+        }
+
+        function checkQuiz(element, isCorrect) {
+            const quizDiv = element.closest('.quiz');
+            const answerDiv = quizDiv.querySelector('.quiz-answer');
+            answerDiv.style.display = 'block';
+            if (isCorrect) {
+                answerDiv.className = 'quiz-answer correct';
+                answerDiv.textContent = '✓ Correct!';
+            } else {
+                answerDiv.className = 'quiz-answer incorrect';
+                answerDiv.textContent = '✗ Try again!';
+            }
+        }
+
+        // Access modifiers table - reveal cell by cell
+        // Access modifiers table - reveal entire row
+        function revealRow(row) {
+            if (row.classList.contains('revealed')) return;
+            row.classList.add('revealed');
+            row.querySelectorAll('.hidden-cell').forEach(cell => {
+                const value = cell.getAttribute('data-value');
+                cell.textContent = value;
+                cell.classList.add('revealed');
+                cell.classList.add(value === 'Yes' ? 'yes' : 'no');
+            });
+        }
+
+        function resetAccessTable() {
+            document.querySelectorAll('#access-table .clickable-row').forEach(row => {
+                row.classList.remove('revealed');
+            });
+            document.querySelectorAll('#access-table .hidden-cell').forEach(cell => {
+                cell.classList.remove('revealed', 'yes', 'no');
+                cell.textContent = '';
+            });
+        }
+
+        // Comparison table (Overloading vs Overriding) - reveal entire row
+        function revealCompareRow(row) {
+            if (row.classList.contains('revealed')) return;
+            row.classList.add('revealed');
+            row.querySelectorAll('.hidden-cell').forEach(cell => {
+                const value = cell.getAttribute('data-value');
+                cell.textContent = value;
+                cell.classList.add('revealed');
+            });
+        }
+
+        function resetCompareTable() {
+            document.querySelectorAll('#compare-table .clickable-row').forEach(row => {
+                row.classList.remove('revealed');
+            });
+            document.querySelectorAll('#compare-table .hidden-cell').forEach(cell => {
+                cell.classList.remove('revealed');
+                cell.textContent = '';
+            });
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+        }
+
+        // Gotcha reveal
+        function revealGotcha(btn) {
+            const gotcha = btn.closest('.gotcha');
+            const answer = gotcha.querySelector('.gotcha-answer');
+            answer.classList.add('revealed');
+            btn.classList.add('revealed');
+        }
+
+        function resetGotchas() {
+            document.querySelectorAll('.gotcha-answer').forEach(ans => ans.classList.remove('revealed'));
+            document.querySelectorAll('.gotcha-reveal-btn').forEach(btn => btn.classList.remove('revealed'));
+        }
+
+        // Hideable content
+        function revealHideable(btn) {
+            const hideable = btn.closest('.hideable');
+            const content = hideable.querySelector('.hideable-content');
+            content.classList.add('revealed');
+            btn.classList.add('revealed');
+        }
+
+        function resetHideables() {
+            document.querySelectorAll('.hideable-content').forEach(c => c.classList.remove('revealed'));
+            document.querySelectorAll('.hideable-btn').forEach(btn => btn.classList.remove('revealed'));
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                revealNext();
+            } else if (e.key === 'ArrowLeft') {
+                revealPrev();
+            }
+        });
+
+        updateProgress();
+    </script>
+</body>
+</html>
