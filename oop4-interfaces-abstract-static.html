@@ -565,8 +565,10 @@ MAX_SIZE = 200;  <span class="comment">// ERROR! Cannot reassign</span>
     <span class="keyword">void</span> eat() { System.out.println(<span class="string">"Horse grazes"</span>); }
 }
 
-<span class="comment">// Pegasus is both Bird and Horse...</span>
-<span class="keyword">class</span> <span class="type">Pegasus</span> <span class="keyword">extends</span> <span class="type">Bird</span>, <span class="type">Horse</span> { }  <span class="comment">// ???</span></code></pre>
+<span class="keyword">class</span> <span class="type">Pegasus</span> <span class="keyword">extends</span> <span class="type">Bird</span>, <span class="type">Horse</span> { }
+
+<span class="type">Pegasus</span> p = <span class="keyword">new</span> <span class="type">Pegasus</span>();
+p.eat();  <span class="comment">// Which eat() is called???</span></code></pre>
 
             <div class="quiz">
                 <div class="quiz-q">Will the above code compile in Java?</div>
@@ -580,9 +582,9 @@ MAX_SIZE = 200;  <span class="comment">// ERROR! Cannot reassign</span>
 
             <div class="hideable">
                 <button class="hideable-btn" onclick="revealHideable(this)">Why is this a problem? Show Diamond Diagram</button>
-                <div class="hideable-content" style="background: var(--bg-code); border-color: #ff6b6b;">
+                <div class="hideable-content" style="background: #1e1e1e; border-color: #ff6b6b; color: #e0e0e0;">
                     <strong style="color: #ff6b6b;">The Diamond Problem:</strong>
-                    <pre style="margin: 10px 0; text-align: center; background: transparent; border: none;"><code style="color: var(--text-primary);">
+                    <pre style="margin: 10px 0; text-align: center; background: transparent; border: none;"><code style="color: #8be9fd;">
         Animal
         /    \
        /      \
@@ -591,27 +593,27 @@ MAX_SIZE = 200;  <span class="comment">// ERROR! Cannot reassign</span>
         \    /
        Pegasus
 </code></pre>
-                    <p style="margin: 10px 0;">If <code>Pegasus</code> extends both <code>Bird</code> and <code>Horse</code>:</p>
-                    <ul>
+                    <p style="margin: 10px 0; color: #e0e0e0;">If <code>Pegasus</code> extends both <code>Bird</code> and <code>Horse</code>:</p>
+                    <ul style="color: #e0e0e0;">
                         <li>Both Bird and Horse override <code>eat()</code> from Animal</li>
-                        <li>When we call <code>pegasus.eat()</code> — which version runs?</li>
+                        <li>When we call <code>p.eat()</code> — which version runs?</li>
                         <li><strong style="color: #ff6b6b;">Ambiguous!</strong> Compiler cannot decide → Java bans this entirely</li>
                     </ul>
 
-                    <div style="margin-top: 15px; padding: 10px; background: rgba(255,215,0,0.1); border-radius: 5px; border-left: 3px solid #ffd93d;">
+                    <div style="margin-top: 15px; padding: 10px; background: #2d2d2d; border-radius: 5px; border-left: 3px solid #ffd93d;">
                         <strong style="color: #ffd93d;">Trivia: How Other Languages Handle This</strong>
-                        <table style="margin-top: 8px; font-size: 0.9em;">
-                            <tr><th>Language</th><th>Approach</th></tr>
+                        <table style="margin-top: 8px; font-size: 0.9em; color: #e0e0e0;">
+                            <tr><th style="color: #ffd93d;">Language</th><th style="color: #ffd93d;">Approach</th></tr>
                             <tr>
-                                <td><strong>C++</strong></td>
-                                <td>Allows it! Uses <code>virtual</code> inheritance and scope resolution (<code>Bird::eat()</code>) to resolve ambiguity. Developer's responsibility to handle correctly.</td>
+                                <td><strong style="color: #8be9fd;">C++</strong></td>
+                                <td>Allows it! Uses <code>virtual</code> inheritance and scope resolution (<code>Bird::eat()</code>) to resolve ambiguity. Developer's responsibility.</td>
                             </tr>
                             <tr>
-                                <td><strong>Python</strong></td>
-                                <td>Allows it! Uses <strong>MRO</strong> (Method Resolution Order) — a left-to-right, depth-first algorithm called C3 linearization.</td>
+                                <td><strong style="color: #8be9fd;">Python</strong></td>
+                                <td>Allows it! Uses <strong>MRO</strong> (Method Resolution Order) — C3 linearization algorithm.</td>
                             </tr>
                             <tr>
-                                <td><strong>Java</strong></td>
+                                <td><strong style="color: #8be9fd;">Java</strong></td>
                                 <td>Bans it! Uses <strong>Interfaces</strong> instead (coming up next!).</td>
                             </tr>
                         </table>
