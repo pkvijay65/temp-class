@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOP-4: Interfaces, Abstract Classes & Static Keyword</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-code: #0f0f23;
+            --bg-table-header: #2d2d44;
+            --text-primary: #eee;
+            --text-secondary: #888;
+            --border-color: #444;
+            --hidden-cell-bg: #3d3d5c;
+            --hidden-cell-hover: #4d4d6c;
+            --quiz-bg: #2d132c;
+            --quiz-option-bg: #1a1a2e;
+            --quiz-option-hover: #3d3d5c;
+            --discuss-bg: #1e3a5f;
+            --gotcha-bg: #3d1a1a;
+            --key-point-bg: #1a3d1a;
+            --comparison-bg: #0f0f23;
+            --nav-bg: #333;
+            --nav-hover: #555;
+        }
+
+        body.light-theme {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-code: #2d2d2d;
+            --bg-table-header: #e8e8e8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --border-color: #d0d0d0;
+            --hidden-cell-bg: #d8d8d8;
+            --hidden-cell-hover: #c8c8c8;
+            --quiz-bg: #fce4ec;
+            --quiz-option-bg: #fff;
+            --quiz-option-hover: #f5f5f5;
+            --discuss-bg: #e3f2fd;
+            --gotcha-bg: #ffebee;
+            --key-point-bg: #e8f5e9;
+            --comparison-bg: #f5f5f5;
+            --nav-bg: #e0e0e0;
+            --nav-hover: #d0d0d0;
+            --code-text: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-primary); color: var(--text-primary); padding: 20px; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #00d4ff; text-align: center; margin-bottom: 10px; font-size: 2.2em; }
+        h2 { color: #ff6b6b; margin: 20px 0 10px; border-bottom: 2px solid #ff6b6b; padding-bottom: 5px; }
+        h3 { color: #ffd93d; margin: 15px 0 8px; }
+        .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
+        .section { background: var(--bg-secondary); border-radius: 10px; padding: 20px; margin: 15px 0; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section.visible { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        pre { background: var(--bg-code); padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95em; border-left: 4px solid #00d4ff; }
+        code { font-family: 'Fira Code', 'Consolas', monospace; }
+        :not(pre) > code { background: #2d2d44; color: #f8f8f2; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        .keyword { color: #ff79c6; }
+        .type { color: #8be9fd; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .annotation { color: #50fa7b; }
+        body.light-theme pre { background: #1e1e1e; color: #d4d4d4; }
+        body.light-theme .keyword { color: #c586c0; }
+        body.light-theme .type { color: #4ec9b0; }
+        body.light-theme .string { color: #ce9178; }
+        body.light-theme .comment { color: #6a9955; }
+        body.light-theme .annotation { color: #dcdcaa; }
+        body.light-theme code { color: #d4d4d4; }
+        body.light-theme h1 { color: #0077b6; }
+        body.light-theme h2 { color: #c9184a; border-color: #c9184a; }
+        body.light-theme h3 { color: #b45309; }
+        body.light-theme th { color: #0077b6; }
+        body.light-theme .quiz-q { color: #c9184a; }
+        body.light-theme .gotcha-title { color: #c9184a; }
+        body.light-theme .gotcha { border-color: #c9184a; }
+        body.light-theme .quiz { border-color: #c9184a; }
+        body.light-theme .key-point { border-color: #2e7d32; }
+        body.light-theme .discuss { border-color: #b45309; background: #fff3e0; }
+        body.light-theme .hidden-cell.revealed.yes { color: #2e7d32; font-weight: bold; }
+        body.light-theme .hidden-cell.revealed.no { color: #c9184a; font-weight: bold; }
+        body.light-theme .correct { background: #c8e6c9; color: #1b5e20; }
+        body.light-theme .incorrect { background: #ffcdd2; color: #b71c1c; }
+        body.light-theme .gotcha-answer { background: rgba(0,0,0,0.05); }
+        body.light-theme .highlight { background: #fff59d; }
+        body.light-theme :not(pre) > code { background: #1e1e1e; color: #f8f8f2; }
+        .quiz { background: var(--quiz-bg); border: 2px solid #ff6b6b; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .quiz-q { font-weight: bold; color: #ff6b6b; margin-bottom: 10px; }
+        .quiz-options { margin: 10px 0; }
+        .quiz-options label { display: block; padding: 8px 15px; margin: 5px 0; background: var(--quiz-option-bg); border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .quiz-options label:hover { background: var(--quiz-option-hover); }
+        .quiz-answer { display: none; padding: 10px; margin-top: 10px; border-radius: 5px; }
+        .correct { background: #1b4332; color: #95d5b2; }
+        .incorrect { background: #5c1a1a; color: #f8d7da; }
+        .reveal-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; font-size: 1.1em; border-radius: 25px; cursor: pointer; margin: 20px auto; display: block; transition: transform 0.3s; }
+        .reveal-btn:hover { transform: scale(1.05); }
+        .discuss { background: var(--discuss-bg); border-left: 4px solid #ffd93d; padding: 12px; margin: 10px 0; border-radius: 0 8px 8px 0; font-style: italic; }
+        .gotcha { background: var(--gotcha-bg); border: 2px dashed #ff6b6b; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .gotcha-title { color: #ff6b6b; font-weight: bold; margin-bottom: 8px; }
+        .gotcha-answer { display: none; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; }
+        .gotcha-answer.revealed { display: block; animation: fadeIn 0.3s; }
+        .gotcha-reveal-btn { background: #ff6b6b; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em; }
+        .gotcha-reveal-btn:hover { background: #ff5252; }
+        .gotcha-reveal-btn.revealed { display: none; }
+        .key-point { background: var(--key-point-bg); padding: 10px 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #50fa7b; }
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+        .comparison > div { background: var(--comparison-bg); padding: 15px; border-radius: 8px; }
+        .vs { color: #ff6b6b; font-weight: bold; }
+        .progress { position: fixed; top: 0; left: 0; height: 4px; background: #00d4ff; transition: width 0.3s; z-index: 1000; }
+        .nav { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; }
+        .nav button { background: var(--nav-bg); color: var(--text-primary); border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        .nav button:hover { background: var(--nav-hover); }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
+        th { background: var(--bg-table-header); color: #00d4ff; }
+        .highlight { background: #ffd93d; color: #000; padding: 2px 6px; border-radius: 3px; }
+        .theme-toggle { position: fixed; top: 15px; right: 20px; background: var(--nav-bg); border: none; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 1.2em; z-index: 1001; }
+        .theme-toggle:hover { background: var(--nav-hover); }
+        .hidden-cell {
+            background: var(--hidden-cell-bg);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        .hidden-cell::before { content: "?"; color: var(--text-secondary); font-weight: bold; }
+        .hidden-cell.revealed { background: transparent; cursor: default; }
+        .hidden-cell.revealed::before { content: none; }
+        .hidden-cell.revealed.yes { color: #50fa7b; font-weight: bold; }
+        .hidden-cell.revealed.no { color: #ff6b6b; font-weight: bold; }
+        .clickable-row { cursor: pointer; transition: background 0.2s; }
+        .clickable-row:hover { background: var(--hidden-cell-hover); }
+        .clickable-row.revealed { cursor: default; }
+        .clickable-row.revealed:hover { background: transparent; }
+        .table-reset-btn { background: var(--nav-bg); color: var(--text-primary); border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; margin-top: 8px; }
+        .table-reset-btn:hover { background: var(--nav-hover); }
+        .hideable { margin: 15px 0; }
+        .hideable-content { display: none; margin-top: 10px; padding: 12px; background: var(--key-point-bg); border-radius: 8px; border-left: 4px solid #50fa7b; }
+        .hideable-content.revealed { display: block; animation: fadeIn 0.3s; }
+        .hideable-content ul { margin: 0; padding-left: 20px; }
+        .hideable-content li { margin: 5px 0; }
+        .hideable-btn { background: #50fa7b; color: #000; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: 500; }
+        .hideable-btn:hover { background: #3dd668; }
+        .hideable-btn.revealed { display: none; }
+        body.light-theme .hideable-btn { background: #2e7d32; color: white; }
+        body.light-theme .hideable-btn:hover { background: #1b5e20; }
+        body.light-theme .hideable-content { border-color: #2e7d32; }
+        .topic-divider { background: linear-gradient(90deg, #ff6b6b, #ffd93d, #50fa7b); height: 4px; margin: 40px 0; border-radius: 2px; }
+    </style>
+</head>
+<body>
+    <div class="progress" id="progress"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">🌓</button>
+    <div class="container">
+        <h1>OOP-4: Interfaces, Abstract Classes & Static</h1>
+        <p class="subtitle">Backend LLD | Building on Inheritance & Polymorphism</p>
+
+        <!-- Section 1: Quick Recap -->
+        <div class="section visible" id="s1">
+            <h2>Quick Recap: OOP-3</h2>
+            <div class="discuss">What do you remember about Inheritance and Polymorphism?</div>
+            <table>
+                <tr><th>Concept</th><th>Key Point</th></tr>
+                <tr><td>Inheritance</td><td><code>extends</code> keyword, IS-A relationship, code reuse</td></tr>
+                <tr><td>super()</td><td>Calls parent constructor, MUST be first line</td></tr>
+                <tr><td>Overloading</td><td>Same name, different parameters (compile-time)</td></tr>
+                <tr><td>Overriding</td><td>Same signature in child class (runtime)</td></tr>
+            </table>
+            <div class="key-point">
+                <strong>Today's Question:</strong> What if we want to define a <span class="highlight">contract</span> without implementation? Or share code but prevent direct instantiation?
+            </div>
+        </div>
+
+        <!-- ==================== ABSTRACT CLASSES ==================== -->
+
+        <!-- Section 2: The Problem - Why Abstract Classes? -->
+        <div class="section" id="s2">
+            <h2>Part 1: Abstract Classes</h2>
+            <h3>The Problem: Incomplete Parent Classes</h3>
+            <div class="discuss">You're building a payment system with different payment types...</div>
+            <pre><code><span class="keyword">class</span> <span class="type">Payment</span> {
+    <span class="keyword">protected double</span> amount;
+
+    <span class="keyword">public void</span> process() {
+        <span class="comment">// What goes here? Every payment type is different!</span>
+        <span class="comment">// CreditCard: charge the card</span>
+        <span class="comment">// UPI: initiate UPI transfer</span>
+        <span class="comment">// NetBanking: redirect to bank</span>
+    }
+}
+
+<span class="keyword">class</span> <span class="type">CreditCardPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> { ... }
+<span class="keyword">class</span> <span class="type">UPIPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> { ... }</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What's the problem with this Payment class?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="a" onclick="checkQuiz(this, false)"> Nothing, it works fine</label>
+                    <label><input type="radio" name="q1" value="b" onclick="checkQuiz(this, true)"> The process() method has no meaningful default implementation</label>
+                    <label><input type="radio" name="q1" value="c" onclick="checkQuiz(this, false)"> Payment should be an interface</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Problems</button>
+                <div class="hideable-content">
+                    <strong>Problems with concrete Payment class:</strong>
+                    <ul>
+                        <li><strong>No sensible default:</strong> process() can't do anything meaningful - it depends on the payment type</li>
+                        <li><strong>Someone can instantiate Payment:</strong> <code>new Payment(100)</code> - but what does that even mean?</li>
+                        <li><strong>Child might forget to override:</strong> If CreditCardPayment forgets to override process(), silent bug!</li>
+                        <li><strong>False abstraction:</strong> Payment isn't a real thing - it's a concept that only makes sense as a specific type</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Abstract Class Solution -->
+        <div class="section" id="s3">
+            <h2>The Solution: Abstract Classes</h2>
+            <div class="discuss">Java provides a way to say "this class is incomplete - don't instantiate it"</div>
+
+            <pre><code><span class="keyword">abstract class</span> <span class="type">Payment</span> {
+    <span class="keyword">protected double</span> amount;
+
+    <span class="keyword">public</span> Payment(<span class="keyword">double</span> amount) {
+        <span class="keyword">this</span>.amount = amount;
+    }
+
+    <span class="comment">// Abstract method - NO body, just signature</span>
+    <span class="keyword">public abstract void</span> process();
+
+    <span class="comment">// Concrete method - HAS implementation</span>
+    <span class="keyword">public void</span> printReceipt() {
+        System.out.println(<span class="string">"Payment of $"</span> + amount + <span class="string">" completed"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">CreditCardPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> {
+    <span class="keyword">private</span> <span class="type">String</span> cardNumber;
+
+    <span class="keyword">public</span> CreditCardPayment(<span class="keyword">double</span> amount, <span class="type">String</span> cardNumber) {
+        <span class="keyword">super</span>(amount);
+        <span class="keyword">this</span>.cardNumber = cardNumber;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> process() {
+        System.out.println(<span class="string">"Charging card "</span> + cardNumber + <span class="string">" for $"</span> + amount);
+    }
+}</code></pre>
+
+            <div class="key-point">
+                <strong>Abstract Class = </strong> A class that <em>cannot be instantiated</em> and may contain <em>abstract methods</em> (methods without body)
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">What happens if you try: <code>Payment p = new Payment(100);</code>?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="a" onclick="checkQuiz(this, false)"> Creates a Payment object</label>
+                    <label><input type="radio" name="q2" value="b" onclick="checkQuiz(this, true)"> Compilation error - cannot instantiate abstract class</label>
+                    <label><input type="radio" name="q2" value="c" onclick="checkQuiz(this, false)"> Runtime error</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+        </div>
+
+        <!-- Section 4: Abstract Class Rules -->
+        <div class="section" id="s4">
+            <h2>Abstract Class Rules</h2>
+
+            <h3>Rule 1: Abstract methods have no body</h3>
+            <pre><code><span class="keyword">abstract void</span> process();  <span class="comment">// Correct - ends with semicolon</span>
+<span class="keyword">abstract void</span> process() { }  <span class="comment">// ERROR! Abstract methods can't have body</span></code></pre>
+
+            <h3>Rule 2: If a class has abstract method, class MUST be abstract</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Payment</span> {  <span class="comment">// ERROR! Non-abstract class with abstract method</span>
+    <span class="keyword">abstract void</span> process();
+}</code></pre>
+
+            <h3>Rule 3: Abstract class CAN have concrete methods</h3>
+            <pre><code><span class="keyword">abstract class</span> <span class="type">Payment</span> {
+    <span class="keyword">abstract void</span> process();      <span class="comment">// Abstract - child MUST implement</span>
+
+    <span class="keyword">void</span> printReceipt() {         <span class="comment">// Concrete - child inherits as-is</span>
+        System.out.println(<span class="string">"Receipt printed"</span>);
+    }
+}</code></pre>
+
+            <h3>Rule 4: Abstract class CAN have constructors</h3>
+            <div class="quiz">
+                <div class="quiz-q">Why would an abstract class need a constructor if it can't be instantiated?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3" value="a" onclick="checkQuiz(this, false)"> It doesn't - abstract classes can't have constructors</label>
+                    <label><input type="radio" name="q3" value="b" onclick="checkQuiz(this, true)"> To initialize fields when child class calls super()</label>
+                    <label><input type="radio" name="q3" value="c" onclick="checkQuiz(this, false)"> For factory methods</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Explanation</button>
+                <div class="hideable-content">
+                    <pre><code><span class="keyword">abstract class</span> <span class="type">Payment</span> {
+    <span class="keyword">protected double</span> amount;
+
+    <span class="keyword">public</span> Payment(<span class="keyword">double</span> amount) {  <span class="comment">// Constructor!</span>
+        <span class="keyword">this</span>.amount = amount;
+    }
+}
+
+<span class="keyword">class</span> <span class="type">UPIPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> {
+    <span class="keyword">public</span> UPIPayment(<span class="keyword">double</span> amount) {
+        <span class="keyword">super</span>(amount);  <span class="comment">// Calls Payment's constructor!</span>
+    }
+}</code></pre>
+                    <ul>
+                        <li>Abstract class constructor is called via <code>super()</code> from child</li>
+                        <li>It initializes the "parent part" of the child object</li>
+                        <li>Cannot be called directly with <code>new Payment()</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Rule 5: Child MUST implement all abstract methods (or be abstract itself)</h3>
+            <pre><code><span class="keyword">abstract class</span> <span class="type">Payment</span> {
+    <span class="keyword">abstract void</span> process();
+    <span class="keyword">abstract void</span> refund();
+}
+
+<span class="comment">// Option 1: Implement all abstract methods</span>
+<span class="keyword">class</span> <span class="type">CreditCardPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> {
+    <span class="keyword">void</span> process() { <span class="comment">/* implementation */</span> }
+    <span class="keyword">void</span> refund() { <span class="comment">/* implementation */</span> }
+}
+
+<span class="comment">// Option 2: Be abstract and let subclass implement</span>
+<span class="keyword">abstract class</span> <span class="type">CardPayment</span> <span class="keyword">extends</span> <span class="type">Payment</span> {
+    <span class="keyword">void</span> process() { <span class="comment">/* implementation */</span> }
+    <span class="comment">// refund() still abstract - subclass must implement</span>
+}</code></pre>
+        </div>
+
+        <!-- Section 5: Abstract Class Use Cases -->
+        <div class="section" id="s5">
+            <h2>When to Use Abstract Classes?</h2>
+
+            <div class="discuss">Abstract classes are perfect when you have shared code AND mandatory customization...</div>
+
+            <h3>Real-World Example: Document Export System</h3>
+            <pre><code><span class="keyword">abstract class</span> <span class="type">DocumentExporter</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> content;
+
+    <span class="keyword">public</span> DocumentExporter(<span class="type">String</span> content) {
+        <span class="keyword">this</span>.content = content;
+    }
+
+    <span class="comment">// Template method pattern - defines the skeleton</span>
+    <span class="keyword">public final void</span> export(<span class="type">String</span> filename) {
+        validate();           <span class="comment">// Concrete - same for all</span>
+        <span class="type">String</span> formatted = format();  <span class="comment">// Abstract - differs per type</span>
+        write(filename, formatted);   <span class="comment">// Concrete - same for all</span>
+        log(filename);        <span class="comment">// Concrete - same for all</span>
+    }
+
+    <span class="keyword">private void</span> validate() {
+        <span class="keyword">if</span> (content == <span class="keyword">null</span> || content.isEmpty()) {
+            <span class="keyword">throw new</span> <span class="type">IllegalArgumentException</span>(<span class="string">"Empty content"</span>);
+        }
+    }
+
+    <span class="comment">// Each exporter formats differently</span>
+    <span class="keyword">protected abstract</span> <span class="type">String</span> format();
+
+    <span class="keyword">private void</span> write(<span class="type">String</span> filename, <span class="type">String</span> data) {
+        System.out.println(<span class="string">"Writing to "</span> + filename);
+    }
+
+    <span class="keyword">private void</span> log(<span class="type">String</span> filename) {
+        System.out.println(<span class="string">"Exported: "</span> + filename);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">PDFExporter</span> <span class="keyword">extends</span> <span class="type">DocumentExporter</span> {
+    <span class="keyword">public</span> PDFExporter(<span class="type">String</span> content) { <span class="keyword">super</span>(content); }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="type">String</span> format() {
+        <span class="keyword">return</span> <span class="string">"[PDF Header]"</span> + content + <span class="string">"[PDF Footer]"</span>;
+    }
+}
+
+<span class="keyword">class</span> <span class="type">HTMLExporter</span> <span class="keyword">extends</span> <span class="type">DocumentExporter</span> {
+    <span class="keyword">public</span> HTMLExporter(<span class="type">String</span> content) { <span class="keyword">super</span>(content); }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="type">String</span> format() {
+        <span class="keyword">return</span> <span class="string">"&lt;html&gt;&lt;body&gt;"</span> + content + <span class="string">"&lt;/body&gt;&lt;/html&gt;"</span>;
+    }
+}</code></pre>
+
+            <div class="key-point">
+                <strong>Template Method Pattern:</strong> Abstract class defines the algorithm skeleton, child classes fill in the specific steps.
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">When to Use Abstract Class vs Regular Class?</button>
+                <div class="hideable-content">
+                    <table>
+                        <tr><th>Use Abstract Class When...</th><th>Use Regular Class When...</th></tr>
+                        <tr><td>Object doesn't make sense without specialization</td><td>Object is complete and usable as-is</td></tr>
+                        <tr><td>You need to force child to implement something</td><td>Child can use all inherited methods directly</td></tr>
+                        <tr><td>Common code + mandatory customization</td><td>Just common code, optional customization</td></tr>
+                        <tr><td>Example: Payment, Shape, Vehicle</td><td>Example: User, Product, Order</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Abstract Class Gotchas -->
+        <div class="section" id="s6">
+            <h2>Abstract Class: Interview Gotchas</h2>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #1: Can abstract class have no abstract methods?</div>
+                <pre><code><span class="keyword">abstract class</span> <span class="type">Helper</span> {
+    <span class="keyword">void</span> doSomething() {
+        System.out.println(<span class="string">"Doing something"</span>);
+    }
+    <span class="comment">// No abstract methods!</span>
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Yes! This is valid.</strong>
+                    <ul>
+                        <li>Abstract class doesn't REQUIRE abstract methods</li>
+                        <li>But if you have an abstract method, the class MUST be abstract</li>
+                        <li>Use case: Prevent instantiation even though all methods are implemented</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #2: Can abstract method be private?</div>
+                <pre><code><span class="keyword">abstract class</span> <span class="type">Payment</span> {
+    <span class="keyword">private abstract void</span> process();  <span class="comment">// ???</span>
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>No! Compilation error.</strong>
+                    <ul>
+                        <li>Abstract methods MUST be overridden by child class</li>
+                        <li>Private methods are NOT visible to child class</li>
+                        <li>Therefore, abstract + private is contradictory</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #3: Can abstract method be static?</div>
+                <pre><code><span class="keyword">abstract class</span> <span class="type">Payment</span> {
+    <span class="keyword">static abstract void</span> process();  <span class="comment">// ???</span>
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>No! Compilation error.</strong>
+                    <ul>
+                        <li>Static methods belong to the class, not instances</li>
+                        <li>Abstract methods need to be overridden (runtime polymorphism)</li>
+                        <li>Static methods are resolved at compile time - no overriding!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #4: Can abstract method be final?</div>
+                <pre><code><span class="keyword">abstract class</span> <span class="type">Payment</span> {
+    <span class="keyword">final abstract void</span> process();  <span class="comment">// ???</span>
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>No! Compilation error.</strong>
+                    <ul>
+                        <li>Abstract = MUST be overridden</li>
+                        <li>Final = CANNOT be overridden</li>
+                        <li>Direct contradiction!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="topic-divider"></div>
+
+        <!-- ==================== INTERFACES ==================== -->
+
+        <!-- Section 7: Why Interfaces? -->
+        <div class="section" id="s7">
+            <h2>Part 2: Interfaces</h2>
+            <h3>The Problem: Multiple Inheritance</h3>
+            <div class="discuss">Remember the Diamond Problem from OOP-3?</div>
+
+            <pre><code><span class="comment">// NOT ALLOWED in Java!</span>
+<span class="keyword">class</span> <span class="type">SmartPhone</span> <span class="keyword">extends</span> <span class="type">Phone</span>, <span class="type">Camera</span> { }  <span class="comment">// ERROR!</span></code></pre>
+
+            <div class="discuss">But what if we genuinely need a class to have capabilities from multiple sources?</div>
+
+            <pre><code><span class="comment">// Real scenario: A class that can be...</span>
+<span class="comment">// - Serializable (can be converted to bytes)</span>
+<span class="comment">// - Comparable (can be sorted)</span>
+<span class="comment">// - Cloneable (can be copied)</span>
+
+<span class="keyword">class</span> <span class="type">Employee</span> <span class="keyword">extends</span> <span class="type">Serializable</span>, <span class="type">Comparable</span>, <span class="type">Cloneable</span> { }  <span class="comment">// ???</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">How does Java solve the need for multiple inheritance of behavior?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q4" value="a" onclick="checkQuiz(this, false)"> Java allows multiple class inheritance in special cases</label>
+                    <label><input type="radio" name="q4" value="b" onclick="checkQuiz(this, true)"> Java uses Interfaces - you can implement multiple interfaces</label>
+                    <label><input type="radio" name="q4" value="c" onclick="checkQuiz(this, false)"> You can't - Java doesn't support this</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+        </div>
+
+        <!-- Section 8: Interface Basics -->
+        <div class="section" id="s8">
+            <h2>Interface: The Contract</h2>
+
+            <div class="discuss">An interface defines WHAT a class can do, not HOW it does it...</div>
+
+            <pre><code><span class="comment">// Interface = Pure contract</span>
+<span class="keyword">interface</span> <span class="type">Payable</span> {
+    <span class="keyword">void</span> pay(<span class="keyword">double</span> amount);      <span class="comment">// No body - just signature</span>
+    <span class="keyword">double</span> getBalance();           <span class="comment">// All methods are implicitly public abstract</span>
+}
+
+<span class="comment">// Class "implements" the interface</span>
+<span class="keyword">class</span> <span class="type">Wallet</span> <span class="keyword">implements</span> <span class="type">Payable</span> {
+    <span class="keyword">private double</span> balance = 1000;
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> pay(<span class="keyword">double</span> amount) {
+        balance -= amount;
+        System.out.println(<span class="string">"Paid $"</span> + amount + <span class="string">" from wallet"</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public double</span> getBalance() {
+        <span class="keyword">return</span> balance;
+    }
+}
+
+<span class="keyword">class</span> <span class="type">BankAccount</span> <span class="keyword">implements</span> <span class="type">Payable</span> {
+    <span class="keyword">private double</span> balance = 50000;
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> pay(<span class="keyword">double</span> amount) {
+        balance -= amount;
+        System.out.println(<span class="string">"Debited $"</span> + amount + <span class="string">" from bank account"</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public double</span> getBalance() {
+        <span class="keyword">return</span> balance;
+    }
+}</code></pre>
+
+            <div class="key-point">
+                <strong>Interface = </strong> A contract that defines what methods a class MUST have. Think of it as a "capability badge".
+            </div>
+
+            <h3>Using Interface as Type (Polymorphism!)</h3>
+            <pre><code><span class="keyword">public void</span> processPayment(<span class="type">Payable</span> source, <span class="keyword">double</span> amount) {
+    <span class="keyword">if</span> (source.getBalance() >= amount) {
+        source.pay(amount);  <span class="comment">// Works with ANY Payable!</span>
+    }
+}
+
+<span class="comment">// Usage</span>
+processPayment(<span class="keyword">new</span> <span class="type">Wallet</span>(), 100);       <span class="comment">// Works!</span>
+processPayment(<span class="keyword">new</span> <span class="type">BankAccount</span>(), 100);  <span class="comment">// Works!</span></code></pre>
+        </div>
+
+        <!-- Section 9: Multiple Interface Implementation -->
+        <div class="section" id="s9">
+            <h2>Multiple Interface Implementation</h2>
+
+            <div class="discuss">Unlike classes, a class can implement MULTIPLE interfaces!</div>
+
+            <pre><code><span class="keyword">interface</span> <span class="type">Printable</span> {
+    <span class="keyword">void</span> print();
+}
+
+<span class="keyword">interface</span> <span class="type">Scannable</span> {
+    <span class="keyword">void</span> scan();
+}
+
+<span class="keyword">interface</span> <span class="type">Faxable</span> {
+    <span class="keyword">void</span> fax();
+}
+
+<span class="comment">// One class, multiple capabilities!</span>
+<span class="keyword">class</span> <span class="type">AllInOnePrinter</span> <span class="keyword">implements</span> <span class="type">Printable</span>, <span class="type">Scannable</span>, <span class="type">Faxable</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> print() { System.out.println(<span class="string">"Printing..."</span>); }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> scan() { System.out.println(<span class="string">"Scanning..."</span>); }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> fax() { System.out.println(<span class="string">"Faxing..."</span>); }
+}
+
+<span class="comment">// Basic printer - only implements Printable</span>
+<span class="keyword">class</span> <span class="type">BasicPrinter</span> <span class="keyword">implements</span> <span class="type">Printable</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> print() { System.out.println(<span class="string">"Printing..."</span>); }
+}</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">Why doesn't multiple interface implementation cause the Diamond Problem?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5" value="a" onclick="checkQuiz(this, false)"> Java has special handling for interfaces</label>
+                    <label><input type="radio" name="q5" value="b" onclick="checkQuiz(this, true)"> Interfaces only define signatures, the implementing class provides the single implementation</label>
+                    <label><input type="radio" name="q5" value="c" onclick="checkQuiz(this, false)"> Interface methods are resolved at compile time</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why No Diamond Problem?</button>
+                <div class="hideable-content">
+                    <pre><code><span class="comment">// Diamond Problem with Classes:</span>
+<span class="keyword">class</span> <span class="type">A</span> { <span class="keyword">void</span> foo() { <span class="comment">/* impl 1 */</span> } }
+<span class="keyword">class</span> <span class="type">B</span> { <span class="keyword">void</span> foo() { <span class="comment">/* impl 2 */</span> } }
+<span class="keyword">class</span> <span class="type">C</span> <span class="keyword">extends</span> <span class="type">A</span>, <span class="type">B</span> { }  <span class="comment">// Which foo()??? AMBIGUOUS!</span>
+
+<span class="comment">// No Problem with Interfaces:</span>
+<span class="keyword">interface</span> <span class="type">A</span> { <span class="keyword">void</span> foo(); }  <span class="comment">// No implementation</span>
+<span class="keyword">interface</span> <span class="type">B</span> { <span class="keyword">void</span> foo(); }  <span class="comment">// No implementation</span>
+<span class="keyword">class</span> <span class="type">C</span> <span class="keyword">implements</span> <span class="type">A</span>, <span class="type">B</span> {
+    <span class="keyword">void</span> foo() { <span class="comment">/* C provides THE SINGLE implementation */</span> }
+}</code></pre>
+                    <ul>
+                        <li>Interfaces define WHAT, not HOW</li>
+                        <li>The implementing class is the single source of truth</li>
+                        <li>Even if two interfaces have same method signature, there's only ONE implementation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 10: Interface Rules -->
+        <div class="section" id="s10">
+            <h2>Interface Rules & Modern Features</h2>
+
+            <h3>Traditional Interface Rules (Pre-Java 8)</h3>
+            <table>
+                <tr><th>Feature</th><th>Allowed?</th><th>Notes</th></tr>
+                <tr><td>Abstract methods</td><td style="color: #50fa7b;">Yes</td><td>All methods implicitly <code>public abstract</code></td></tr>
+                <tr><td>Constants</td><td style="color: #50fa7b;">Yes</td><td>All fields implicitly <code>public static final</code></td></tr>
+                <tr><td>Constructors</td><td style="color: #ff6b6b;">No</td><td>Interfaces cannot be instantiated</td></tr>
+                <tr><td>Instance fields</td><td style="color: #ff6b6b;">No</td><td>Only constants allowed</td></tr>
+                <tr><td>Method bodies</td><td style="color: #ff6b6b;">No</td><td>Changed in Java 8!</td></tr>
+            </table>
+
+            <h3>Java 8+: Default Methods</h3>
+            <div class="discuss">What if you want to add a new method to an interface without breaking existing implementations?</div>
+
+            <pre><code><span class="keyword">interface</span> <span class="type">Payable</span> {
+    <span class="keyword">void</span> pay(<span class="keyword">double</span> amount);
+
+    <span class="comment">// Default method - has implementation!</span>
+    <span class="keyword">default void</span> payWithFee(<span class="keyword">double</span> amount, <span class="keyword">double</span> feePercent) {
+        <span class="keyword">double</span> fee = amount * feePercent / 100;
+        pay(amount + fee);
+        System.out.println(<span class="string">"Fee charged: $"</span> + fee);
+    }
+}
+
+<span class="comment">// Existing implementations DON'T need to change!</span>
+<span class="keyword">class</span> <span class="type">Wallet</span> <span class="keyword">implements</span> <span class="type">Payable</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> pay(<span class="keyword">double</span> amount) { <span class="comment">/* ... */</span> }
+    <span class="comment">// Inherits payWithFee() automatically!</span>
+}</code></pre>
+
+            <h3>Java 8+: Static Methods in Interfaces</h3>
+            <pre><code><span class="keyword">interface</span> <span class="type">MathUtils</span> {
+    <span class="comment">// Static method - utility functions in interface</span>
+    <span class="keyword">static int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+}
+
+<span class="comment">// Called on interface, not instance</span>
+<span class="keyword">int</span> result = <span class="type">MathUtils</span>.add(5, 3);</code></pre>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA: Default Method Collision</div>
+                <pre><code><span class="keyword">interface</span> <span class="type">A</span> {
+    <span class="keyword">default void</span> greet() { System.out.println(<span class="string">"A"</span>); }
+}
+<span class="keyword">interface</span> <span class="type">B</span> {
+    <span class="keyword">default void</span> greet() { System.out.println(<span class="string">"B"</span>); }
+}
+<span class="keyword">class</span> <span class="type">C</span> <span class="keyword">implements</span> <span class="type">A</span>, <span class="type">B</span> { }  <span class="comment">// ???</span></code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Compilation Error!</strong> Class C must override greet() to resolve ambiguity:
+                    <pre style="margin: 10px 0;"><code><span class="keyword">class</span> <span class="type">C</span> <span class="keyword">implements</span> <span class="type">A</span>, <span class="type">B</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> greet() {
+        <span class="type">A</span>.<span class="keyword">super</span>.greet();  <span class="comment">// Choose A's version</span>
+        <span class="comment">// OR</span>
+        <span class="type">B</span>.<span class="keyword">super</span>.greet();  <span class="comment">// Choose B's version</span>
+        <span class="comment">// OR provide your own implementation</span>
+    }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 11: Abstract Class vs Interface -->
+        <div class="section" id="s11">
+            <h2>Abstract Class vs Interface: The Comparison</h2>
+
+            <table id="comparison-table">
+                <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Methods</td>
+                    <td class="hidden-cell" data-value="Abstract + Concrete"></td>
+                    <td class="hidden-cell" data-value="Abstract (+ default in Java 8+)"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Fields</td>
+                    <td class="hidden-cell" data-value="Any type (instance, static)"></td>
+                    <td class="hidden-cell" data-value="Only public static final"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Constructors</td>
+                    <td class="hidden-cell" data-value="Yes"></td>
+                    <td class="hidden-cell" data-value="No"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Multiple inheritance</td>
+                    <td class="hidden-cell" data-value="No (single extends)"></td>
+                    <td class="hidden-cell" data-value="Yes (multiple implements)"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Access modifiers</td>
+                    <td class="hidden-cell" data-value="Any"></td>
+                    <td class="hidden-cell" data-value="public only (for methods)"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Keyword</td>
+                    <td class="hidden-cell" data-value="extends"></td>
+                    <td class="hidden-cell" data-value="implements"></td>
+                </tr>
+            </table>
+            <button class="table-reset-btn" onclick="resetTable('comparison-table')">Reset Table</button>
+
+            <div class="key-point" style="margin-top: 20px;">
+                <strong>When to use what?</strong><br>
+                <strong>Abstract Class:</strong> IS-A relationship + shared code + partial implementation<br>
+                <strong>Interface:</strong> CAN-DO capability + contract + multiple inheritance needed
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">A Dog class needs to extend Animal AND be Comparable for sorting. What do you use?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q6" value="a" onclick="checkQuiz(this, false)"> Two abstract classes</label>
+                    <label><input type="radio" name="q6" value="b" onclick="checkQuiz(this, true)"> Abstract class Animal + Interface Comparable</label>
+                    <label><input type="radio" name="q6" value="c" onclick="checkQuiz(this, false)"> Two interfaces</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Show Solution</button>
+                <div class="hideable-content" style="background: var(--bg-code); border-color: #00d4ff; padding: 0;">
+                    <pre style="margin: 0; border: none;"><code><span class="keyword">abstract class</span> <span class="type">Animal</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> name;
+    <span class="keyword">abstract void</span> makeSound();
+}
+
+<span class="keyword">class</span> <span class="type">Dog</span> <span class="keyword">extends</span> <span class="type">Animal</span> <span class="keyword">implements</span> <span class="type">Comparable</span>&lt;<span class="type">Dog</span>&gt; {
+    <span class="keyword">private int</span> age;
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">void</span> makeSound() { System.out.println(<span class="string">"Bark!"</span>); }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public int</span> compareTo(<span class="type">Dog</span> other) {
+        <span class="keyword">return this</span>.age - other.age;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 12: Interface Inheritance -->
+        <div class="section" id="s12">
+            <h2>Interface Inheritance</h2>
+
+            <div class="discuss">Interfaces can extend other interfaces!</div>
+
+            <pre><code><span class="keyword">interface</span> <span class="type">Readable</span> {
+    <span class="keyword">void</span> read();
+}
+
+<span class="keyword">interface</span> <span class="type">Writable</span> {
+    <span class="keyword">void</span> write();
+}
+
+<span class="comment">// Interface extending multiple interfaces!</span>
+<span class="keyword">interface</span> <span class="type">ReadWritable</span> <span class="keyword">extends</span> <span class="type">Readable</span>, <span class="type">Writable</span> {
+    <span class="keyword">void</span> readWrite();  <span class="comment">// Additional method</span>
+}
+
+<span class="comment">// Implementing class must implement ALL methods</span>
+<span class="keyword">class</span> <span class="type">File</span> <span class="keyword">implements</span> <span class="type">ReadWritable</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> read() { System.out.println(<span class="string">"Reading..."</span>); }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> write() { System.out.println(<span class="string">"Writing..."</span>); }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> readWrite() { read(); write(); }
+}</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What keyword does an interface use to inherit from another interface?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q7" value="a" onclick="checkQuiz(this, false)"> implements</label>
+                    <label><input type="radio" name="q7" value="b" onclick="checkQuiz(this, true)"> extends</label>
+                    <label><input type="radio" name="q7" value="c" onclick="checkQuiz(this, false)"> inherits</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="key-point">
+                <strong>Remember:</strong><br>
+                Class <code>extends</code> Class<br>
+                Class <code>implements</code> Interface<br>
+                Interface <code>extends</code> Interface
+            </div>
+        </div>
+
+        <!-- Section 13: Marker & Functional Interfaces -->
+        <div class="section" id="s13">
+            <h2>Special Interface Types</h2>
+
+            <h3>Marker Interfaces</h3>
+            <div class="discuss">An interface with NO methods - just a "marker" or "tag"</div>
+
+            <pre><code><span class="comment">// Built-in marker interfaces in Java</span>
+<span class="keyword">interface</span> <span class="type">Serializable</span> { }  <span class="comment">// Marks class as serializable</span>
+<span class="keyword">interface</span> <span class="type">Cloneable</span> { }     <span class="comment">// Marks class as cloneable</span>
+
+<span class="comment">// Custom marker interface</span>
+<span class="keyword">interface</span> <span class="type">Deletable</span> { }
+
+<span class="keyword">class</span> <span class="type">TempFile</span> <span class="keyword">implements</span> <span class="type">Deletable</span> { }
+
+<span class="comment">// Usage - check if object has the "badge"</span>
+<span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="type">Deletable</span>) {
+    <span class="comment">// Safe to delete</span>
+}</code></pre>
+
+            <h3>Functional Interfaces (Java 8+)</h3>
+            <div class="discuss">An interface with EXACTLY ONE abstract method - enables lambda expressions</div>
+
+            <pre><code><span class="annotation">@FunctionalInterface</span>  <span class="comment">// Optional but recommended</span>
+<span class="keyword">interface</span> <span class="type">Calculator</span> {
+    <span class="keyword">int</span> calculate(<span class="keyword">int</span> a, <span class="keyword">int</span> b);  <span class="comment">// Single abstract method</span>
+}
+
+<span class="comment">// Traditional implementation</span>
+<span class="type">Calculator</span> add = <span class="keyword">new</span> <span class="type">Calculator</span>() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public int</span> calculate(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+};
+
+<span class="comment">// Lambda expression - much cleaner!</span>
+<span class="type">Calculator</span> addLambda = (a, b) -> a + b;
+<span class="type">Calculator</span> multiply = (a, b) -> a * b;
+
+System.out.println(addLambda.calculate(5, 3));  <span class="comment">// 8</span>
+System.out.println(multiply.calculate(5, 3));   <span class="comment">// 15</span></code></pre>
+
+            <div class="key-point">
+                <strong>Common Functional Interfaces in Java:</strong><br>
+                <code>Runnable</code> - no args, no return<br>
+                <code>Consumer&lt;T&gt;</code> - takes T, no return<br>
+                <code>Supplier&lt;T&gt;</code> - no args, returns T<br>
+                <code>Function&lt;T,R&gt;</code> - takes T, returns R<br>
+                <code>Predicate&lt;T&gt;</code> - takes T, returns boolean
+            </div>
+        </div>
+
+        <div class="topic-divider"></div>
+
+        <!-- ==================== STATIC KEYWORD ==================== -->
+
+        <!-- Section 14: Static Introduction -->
+        <div class="section" id="s14">
+            <h2>Part 3: The Static Keyword</h2>
+            <h3>The Problem: Shared Data Across Instances</h3>
+
+            <div class="discuss">You're building a user tracking system...</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="type">String</span> name;
+    <span class="keyword">int</span> userCount = 0;  <span class="comment">// Track total users</span>
+
+    <span class="keyword">public</span> User(<span class="type">String</span> name) {
+        <span class="keyword">this</span>.name = name;
+        userCount++;  <span class="comment">// Increment counter</span>
+    }
+}
+
+<span class="type">User</span> u1 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Alice"</span>);
+<span class="type">User</span> u2 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Bob"</span>);
+<span class="type">User</span> u3 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Charlie"</span>);
+
+System.out.println(u1.userCount);  <span class="comment">// What's the output?</span>
+System.out.println(u2.userCount);
+System.out.println(u3.userCount);</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What does u1.userCount, u2.userCount, u3.userCount print?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q8" value="a" onclick="checkQuiz(this, true)"> 1, 1, 1 - each instance has its own counter</label>
+                    <label><input type="radio" name="q8" value="b" onclick="checkQuiz(this, false)"> 3, 3, 3 - shared counter</label>
+                    <label><input type="radio" name="q8" value="c" onclick="checkQuiz(this, false)"> 1, 2, 3 - cumulative count</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why is this a problem?</button>
+                <div class="hideable-content">
+                    <ul>
+                        <li>Each User object has its OWN copy of userCount</li>
+                        <li>When u1 is created, u1's userCount becomes 1</li>
+                        <li>When u2 is created, u2's userCount becomes 1 (different copy!)</li>
+                        <li>The counters are completely independent</li>
+                        <li><strong>We need a variable that belongs to the CLASS, not individual objects!</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 15: Static Variables -->
+        <div class="section" id="s15">
+            <h2>Static Variables (Class Variables)</h2>
+
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="type">String</span> name;                  <span class="comment">// Instance variable - each object has own copy</span>
+    <span class="keyword">static int</span> userCount = 0;     <span class="comment">// Static variable - ONE copy shared by ALL</span>
+
+    <span class="keyword">public</span> User(<span class="type">String</span> name) {
+        <span class="keyword">this</span>.name = name;
+        userCount++;  <span class="comment">// Same variable for ALL instances</span>
+    }
+}
+
+<span class="type">User</span> u1 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Alice"</span>);    <span class="comment">// userCount = 1</span>
+<span class="type">User</span> u2 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Bob"</span>);      <span class="comment">// userCount = 2</span>
+<span class="type">User</span> u3 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Charlie"</span>); <span class="comment">// userCount = 3</span>
+
+System.out.println(<span class="type">User</span>.userCount);  <span class="comment">// 3 - access via class name!</span>
+System.out.println(u1.userCount);     <span class="comment">// 3 - also works but not recommended</span></code></pre>
+
+            <div class="comparison">
+                <div>
+                    <h3>Instance Variable</h3>
+                    <ul>
+                        <li>One copy per object</li>
+                        <li>Created when object is created</li>
+                        <li>Accessed via object reference</li>
+                        <li>Different values for each object</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Static Variable</h3>
+                    <ul>
+                        <li>One copy per class</li>
+                        <li>Created when class is loaded</li>
+                        <li>Accessed via class name</li>
+                        <li>Same value for all objects</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Memory Visualization:</strong><br>
+                <code>User.userCount</code> → Stored in Method Area (shared)<br>
+                <code>u1.name, u2.name</code> → Stored in Heap (separate for each object)
+            </div>
+        </div>
+
+        <!-- Section 16: Static Methods -->
+        <div class="section" id="s16">
+            <h2>Static Methods</h2>
+
+            <div class="discuss">Methods that belong to the class, not instances...</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">MathUtils</span> {
+    <span class="comment">// Static method - utility function</span>
+    <span class="keyword">public static int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+
+    <span class="keyword">public static int</span> max(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a > b ? a : b;
+    }
+}
+
+<span class="comment">// Call without creating an object!</span>
+<span class="keyword">int</span> sum = <span class="type">MathUtils</span>.add(5, 3);
+<span class="keyword">int</span> maximum = <span class="type">MathUtils</span>.max(10, 7);</code></pre>
+
+            <h3>Static Method Restrictions</h3>
+            <div class="quiz">
+                <div class="quiz-q">Can a static method access instance variables directly?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q9" value="a" onclick="checkQuiz(this, false)"> Yes, always</label>
+                    <label><input type="radio" name="q9" value="b" onclick="checkQuiz(this, true)"> No - static methods can't access instance members directly</label>
+                    <label><input type="radio" name="q9" value="c" onclick="checkQuiz(this, false)"> Only if the variable is public</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why This Restriction?</button>
+                <div class="hideable-content">
+                    <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="type">String</span> name;              <span class="comment">// Instance variable</span>
+    <span class="keyword">static int</span> count;         <span class="comment">// Static variable</span>
+
+    <span class="keyword">static void</span> printInfo() {
+        System.out.println(count);   <span class="comment">// OK - static can access static</span>
+        System.out.println(name);    <span class="comment">// ERROR! Which 'name'? No object reference!</span>
+    }
+}</code></pre>
+                    <ul>
+                        <li>Static methods can be called WITHOUT creating an object</li>
+                        <li><code>User.printInfo()</code> - there's no object here!</li>
+                        <li>Instance variables need an object to exist</li>
+                        <li>If there's no object, which <code>name</code> would it access?</li>
+                    </ul>
+                    <div class="key-point" style="margin-top: 10px;">
+                        <strong>The Rule:</strong><br>
+                        Static → Static: OK<br>
+                        Static → Instance: NOT OK<br>
+                        Instance → Static: OK<br>
+                        Instance → Instance: OK
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 17: Static Block -->
+        <div class="section" id="s17">
+            <h2>Static Blocks</h2>
+
+            <div class="discuss">Code that runs ONCE when the class is first loaded...</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">DatabaseConnection</span> {
+    <span class="keyword">static</span> <span class="type">String</span> connectionString;
+    <span class="keyword">static</span> <span class="type">Connection</span> connection;
+
+    <span class="comment">// Static block - runs when class is loaded</span>
+    <span class="keyword">static</span> {
+        System.out.println(<span class="string">"Loading database driver..."</span>);
+        connectionString = loadFromConfig();  <span class="comment">// Complex initialization</span>
+        connection = createConnection();
+        System.out.println(<span class="string">"Database ready!"</span>);
+    }
+
+    <span class="keyword">private static</span> <span class="type">String</span> loadFromConfig() {
+        <span class="comment">// Read from file, environment, etc.</span>
+        <span class="keyword">return</span> <span class="string">"jdbc:mysql://localhost:3306/mydb"</span>;
+    }
+}
+
+<span class="comment">// First access to class triggers static block</span>
+System.out.println(<span class="type">DatabaseConnection</span>.connectionString);</code></pre>
+
+            <h3>Multiple Static Blocks</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Demo</span> {
+    <span class="keyword">static</span> { System.out.println(<span class="string">"Static block 1"</span>); }
+    <span class="keyword">static</span> { System.out.println(<span class="string">"Static block 2"</span>); }
+
+    <span class="keyword">public</span> Demo() {
+        System.out.println(<span class="string">"Constructor"</span>);
+    }
+}
+
+<span class="type">Demo</span> d1 = <span class="keyword">new</span> <span class="type">Demo</span>();
+<span class="type">Demo</span> d2 = <span class="keyword">new</span> <span class="type">Demo</span>();</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What's the output?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q10" value="a" onclick="checkQuiz(this, false)"> Constructor, Constructor</label>
+                    <label><input type="radio" name="q10" value="b" onclick="checkQuiz(this, false)"> Static block 1, Static block 2, Static block 1, Static block 2, Constructor, Constructor</label>
+                    <label><input type="radio" name="q10" value="c" onclick="checkQuiz(this, true)"> Static block 1, Static block 2, Constructor, Constructor</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="key-point">
+                <strong>Static block execution:</strong><br>
+                - Runs ONCE when class is first loaded<br>
+                - Runs BEFORE any constructor<br>
+                - Multiple static blocks run in order (top to bottom)<br>
+                - Used for complex static initialization
+            </div>
+        </div>
+
+        <!-- Section 18: Static Inner Classes -->
+        <div class="section" id="s18">
+            <h2>Static Nested Classes</h2>
+
+            <div class="discuss">A class inside another class that doesn't need outer class instance...</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">University</span> {
+    <span class="type">String</span> name;
+
+    <span class="comment">// Non-static inner class - needs University instance</span>
+    <span class="keyword">class</span> <span class="type">Student</span> {
+        <span class="keyword">void</span> printUni() {
+            System.out.println(name);  <span class="comment">// Can access outer class's instance variable</span>
+        }
+    }
+
+    <span class="comment">// Static nested class - independent of University instance</span>
+    <span class="keyword">static class</span> <span class="type">Address</span> {
+        <span class="type">String</span> city;
+
+        <span class="keyword">void</span> printAddress() {
+            <span class="comment">// System.out.println(name); // ERROR! Can't access instance variable</span>
+            System.out.println(city);
+        }
+    }
+}
+
+<span class="comment">// Creating non-static inner class - needs outer instance</span>
+<span class="type">University</span> uni = <span class="keyword">new</span> <span class="type">University</span>();
+<span class="type">University</span>.<span class="type">Student</span> student = uni.<span class="keyword">new</span> <span class="type">Student</span>();
+
+<span class="comment">// Creating static nested class - NO outer instance needed</span>
+<span class="type">University</span>.<span class="type">Address</span> address = <span class="keyword">new</span> <span class="type">University</span>.<span class="type">Address</span>();</code></pre>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">When to use Static Nested Class?</button>
+                <div class="hideable-content">
+                    <ul>
+                        <li><strong>Logical grouping:</strong> Address is related to University but doesn't need a University instance</li>
+                        <li><strong>Encapsulation:</strong> Hide helper class that's only used by outer class</li>
+                        <li><strong>Builder pattern:</strong> <code>User.Builder</code> is often a static nested class</li>
+                        <li><strong>Memory efficiency:</strong> No implicit reference to outer class</li>
+                    </ul>
+                    <pre style="margin: 10px 0;"><code><span class="comment">// Common pattern: Builder</span>
+<span class="keyword">class</span> <span class="type">User</span> {
+    <span class="keyword">private</span> <span class="type">String</span> name;
+    <span class="keyword">private int</span> age;
+
+    <span class="keyword">static class</span> <span class="type">Builder</span> {
+        <span class="keyword">private</span> <span class="type">String</span> name;
+        <span class="keyword">private int</span> age;
+
+        <span class="type">Builder</span> name(<span class="type">String</span> name) { <span class="keyword">this</span>.name = name; <span class="keyword">return this</span>; }
+        <span class="type">Builder</span> age(<span class="keyword">int</span> age) { <span class="keyword">this</span>.age = age; <span class="keyword">return this</span>; }
+        <span class="type">User</span> build() { <span class="keyword">return new</span> <span class="type">User</span>(<span class="keyword">this</span>); }
+    }
+}
+
+<span class="type">User</span> user = <span class="keyword">new</span> <span class="type">User</span>.<span class="type">Builder</span>().name(<span class="string">"Alice"</span>).age(25).build();</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 19: Static Import -->
+        <div class="section" id="s19">
+            <h2>Static Import</h2>
+
+            <div class="discuss">Import static members to use them without class name prefix...</div>
+
+            <pre><code><span class="comment">// Without static import</span>
+<span class="keyword">double</span> result = <span class="type">Math</span>.sqrt(<span class="type">Math</span>.pow(3, 2) + <span class="type">Math</span>.pow(4, 2));
+System.out.println(<span class="type">Math</span>.PI);
+
+<span class="comment">// With static import</span>
+<span class="keyword">import static</span> java.lang.Math.*;
+
+<span class="keyword">double</span> result = sqrt(pow(3, 2) + pow(4, 2));  <span class="comment">// Cleaner!</span>
+System.out.println(PI);</code></pre>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA: Static Import Conflicts</div>
+                <pre><code><span class="keyword">import static</span> java.lang.Integer.MAX_VALUE;
+<span class="keyword">import static</span> java.lang.Long.MAX_VALUE;  <span class="comment">// ???</span></code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Compilation Error!</strong> Both imports bring in <code>MAX_VALUE</code> - ambiguous reference.
+                    <p style="margin-top: 10px;"><strong>Best Practice:</strong> Use static imports sparingly for very common utilities like <code>Math.*</code> or test assertions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 20: Static Interview Gotchas -->
+        <div class="section" id="s20">
+            <h2>Static: Interview Gotchas</h2>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #1: Can we override static methods?</div>
+                <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Parent"</span>); }
+}
+
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Child"</span>); }
+}
+
+<span class="type">Parent</span> p = <span class="keyword">new</span> <span class="type">Child</span>();
+p.greet();  <span class="comment">// What prints?</span></code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Prints "Parent"!</strong>
+                    <ul>
+                        <li>Static methods are NOT overridden - they are HIDDEN</li>
+                        <li>Method call resolved at compile time based on reference type</li>
+                        <li>Reference type is Parent, so Parent.greet() is called</li>
+                        <li>This is "method hiding", not polymorphism</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #2: Can 'this' be used in static context?</div>
+                <pre><code><span class="keyword">class</span> <span class="type">Example</span> {
+    <span class="keyword">static void</span> test() {
+        System.out.println(<span class="keyword">this</span>);  <span class="comment">// ???</span>
+    }
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Compilation Error!</strong>
+                    <ul>
+                        <li><code>this</code> refers to "current object"</li>
+                        <li>Static methods can be called without any object</li>
+                        <li>If there's no object, what would <code>this</code> refer to?</li>
+                        <li>Same reason: <code>super</code> cannot be used in static context</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #3: Execution order question</div>
+                <pre><code><span class="keyword">class</span> <span class="type">Test</span> {
+    <span class="keyword">static</span> { System.out.println(<span class="string">"Static block"</span>); }
+    { System.out.println(<span class="string">"Instance block"</span>); }
+    <span class="type">Test</span>() { System.out.println(<span class="string">"Constructor"</span>); }
+
+    <span class="keyword">public static void</span> main(<span class="type">String</span>[] args) {
+        System.out.println(<span class="string">"Main start"</span>);
+        <span class="keyword">new</span> <span class="type">Test</span>();
+        <span class="keyword">new</span> <span class="type">Test</span>();
+    }
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Output:</strong>
+                    <pre style="margin: 10px 0; background: #1a1a2e;"><code>Static block
+Main start
+Instance block
+Constructor
+Instance block
+Constructor</code></pre>
+                    <strong>Order:</strong>
+                    <ol>
+                        <li>Static block (once, when class loads)</li>
+                        <li>Main method starts</li>
+                        <li>For each new object: Instance block → Constructor</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #4: Can static block throw exception?</div>
+                <pre><code><span class="keyword">class</span> <span class="type">Config</span> {
+    <span class="keyword">static</span> <span class="type">String</span> value;
+
+    <span class="keyword">static</span> {
+        <span class="keyword">try</span> {
+            value = readFromFile();  <span class="comment">// Might throw IOException</span>
+        } <span class="keyword">catch</span> (<span class="type">IOException</span> e) {
+            <span class="keyword">throw new</span> <span class="type">ExceptionInInitializerError</span>(e);
+        }
+    }
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <ul>
+                        <li>Static blocks CAN throw unchecked exceptions</li>
+                        <li>For checked exceptions, must handle or wrap in unchecked</li>
+                        <li>If static block throws, class fails to load with <code>ExceptionInInitializerError</code></li>
+                        <li>Subsequent attempts throw <code>NoClassDefFoundError</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 21: Summary -->
+        <div class="section" id="s21">
+            <h2>Summary: Key Takeaways</h2>
+
+            <h3>Abstract Classes</h3>
+            <div class="key-point">
+                <ul>
+                    <li>Cannot be instantiated directly</li>
+                    <li>Can have abstract methods (no body) AND concrete methods</li>
+                    <li>Can have constructors, instance variables, any access modifier</li>
+                    <li>Use for IS-A + shared code + forced implementation</li>
+                </ul>
+            </div>
+
+            <h3>Interfaces</h3>
+            <div class="key-point">
+                <ul>
+                    <li>Pure contract - defines WHAT, not HOW</li>
+                    <li>All methods implicitly public abstract (unless default/static)</li>
+                    <li>All fields implicitly public static final</li>
+                    <li>Multiple implementation allowed - solves diamond problem</li>
+                    <li>Use for CAN-DO capabilities and multiple inheritance</li>
+                </ul>
+            </div>
+
+            <h3>Static Keyword</h3>
+            <div class="key-point">
+                <ul>
+                    <li>Belongs to class, not instance</li>
+                    <li>Static variables: shared across all instances</li>
+                    <li>Static methods: can't access instance members, no this/super</li>
+                    <li>Static blocks: run once when class loads</li>
+                    <li>Static nested class: doesn't need outer class instance</li>
+                </ul>
+            </div>
+
+            <h3>Quick Decision Guide</h3>
+            <table>
+                <tr><th>Scenario</th><th>Use</th></tr>
+                <tr><td>Shared code + some methods must be implemented by child</td><td>Abstract Class</td></tr>
+                <tr><td>Define a capability/contract that many unrelated classes can have</td><td>Interface</td></tr>
+                <tr><td>Need multiple inheritance of behavior</td><td>Interface</td></tr>
+                <tr><td>Utility methods (Math, Collections)</td><td>Static methods</td></tr>
+                <tr><td>Constants shared by all instances</td><td>Static final variables</td></tr>
+                <tr><td>One-time class-level initialization</td><td>Static block</td></tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="nav">
+        <button onclick="showAll()">Show All</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="prev()">← Prev</button>
+        <button onclick="next()">Next →</button>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 21;
+
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function showSection(n) {
+            if (n >= 1 && n <= totalSections) {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+                document.getElementById('s' + n).classList.add('visible');
+                currentSection = n;
+                updateProgress();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function next() { showSection(currentSection + 1); }
+        function prev() { showSection(currentSection - 1); }
+
+        function showAll() {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('visible'));
+            document.getElementById('progress').style.width = '100%';
+        }
+
+        function reset() {
+            document.querySelectorAll('.section').forEach((s, i) => {
+                s.classList.toggle('visible', i === 0);
+            });
+            currentSection = 1;
+            updateProgress();
+            // Reset all quizzes
+            document.querySelectorAll('.quiz-answer').forEach(a => {
+                a.style.display = 'none';
+                a.className = 'quiz-answer';
+            });
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            // Reset all gotchas
+            document.querySelectorAll('.gotcha-answer').forEach(a => a.classList.remove('revealed'));
+            document.querySelectorAll('.gotcha-reveal-btn').forEach(b => b.classList.remove('revealed'));
+            // Reset all hideables
+            document.querySelectorAll('.hideable-content').forEach(c => c.classList.remove('revealed'));
+            document.querySelectorAll('.hideable-btn').forEach(b => b.classList.remove('revealed'));
+            // Reset tables
+            document.querySelectorAll('.hidden-cell').forEach(c => {
+                c.classList.remove('revealed', 'yes', 'no');
+                c.textContent = '';
+            });
+            document.querySelectorAll('.clickable-row').forEach(r => r.classList.remove('revealed'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function checkQuiz(input, isCorrect) {
+            const quiz = input.closest('.quiz');
+            const answer = quiz.querySelector('.quiz-answer');
+            answer.style.display = 'block';
+            if (isCorrect) {
+                answer.className = 'quiz-answer correct';
+                answer.textContent = '✓ Correct!';
+            } else {
+                answer.className = 'quiz-answer incorrect';
+                answer.textContent = '✗ Try again!';
+            }
+        }
+
+        function revealGotcha(btn) {
+            const gotcha = btn.closest('.gotcha');
+            const answer = gotcha.querySelector('.gotcha-answer');
+            answer.classList.add('revealed');
+            btn.classList.add('revealed');
+        }
+
+        function revealHideable(btn) {
+            const hideable = btn.closest('.hideable');
+            const content = hideable.querySelector('.hideable-content');
+            content.classList.add('revealed');
+            btn.classList.add('revealed');
+        }
+
+        function revealRow(row) {
+            if (row.classList.contains('revealed')) return;
+            row.classList.add('revealed');
+            row.querySelectorAll('.hidden-cell').forEach(cell => {
+                const value = cell.dataset.value;
+                cell.classList.add('revealed');
+                cell.textContent = value;
+                if (value === 'Yes') cell.classList.add('yes');
+                else if (value === 'No') cell.classList.add('no');
+            });
+        }
+
+        function resetTable(tableId) {
+            const table = document.getElementById(tableId);
+            table.querySelectorAll('.hidden-cell').forEach(cell => {
+                cell.classList.remove('revealed', 'yes', 'no');
+                cell.textContent = '';
+            });
+            table.querySelectorAll('.clickable-row').forEach(row => {
+                row.classList.remove('revealed');
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                next();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prev();
+            }
+        });
+
+        updateProgress();
+    </script>
+</body>
+</html>
