@@ -550,15 +550,79 @@ MAX_SIZE = 200;  <span class="comment">// ERROR! Cannot reassign</span>
         <!-- Section 7: Why Interfaces? -->
         <div class="section" id="s7">
             <h2>Part 2: Interfaces</h2>
-            <h3>The Problem: Multiple Inheritance</h3>
-            <div class="discuss">Remember the Diamond Problem from OOP-3?</div>
+            <h3>The Diamond Problem</h3>
+            <div class="discuss">Let's revisit why Java doesn't allow multiple class inheritance...</div>
 
-            <pre><code><span class="comment">// NOT ALLOWED in Java!</span>
-<span class="keyword">class</span> <span class="type">SmartPhone</span> <span class="keyword">extends</span> <span class="type">Phone</span>, <span class="type">Camera</span> { }  <span class="comment">// ERROR!</span></code></pre>
+            <pre><code><span class="keyword">class</span> <span class="type">Animal</span> {
+    <span class="keyword">void</span> eat() { System.out.println(<span class="string">"Animal eats"</span>); }
+}
 
+<span class="keyword">class</span> <span class="type">Bird</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+    <span class="keyword">void</span> eat() { System.out.println(<span class="string">"Bird pecks"</span>); }
+}
+
+<span class="keyword">class</span> <span class="type">Horse</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+    <span class="keyword">void</span> eat() { System.out.println(<span class="string">"Horse grazes"</span>); }
+}
+
+<span class="comment">// Pegasus is both Bird and Horse...</span>
+<span class="keyword">class</span> <span class="type">Pegasus</span> <span class="keyword">extends</span> <span class="type">Bird</span>, <span class="type">Horse</span> { }  <span class="comment">// ???</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">Will the above code compile in Java?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qDiamond" value="a" onclick="checkQuiz(this, false)"> Yes, Pegasus inherits from both</label>
+                    <label><input type="radio" name="qDiamond" value="b" onclick="checkQuiz(this, true)"> No, Java doesn't allow multiple class inheritance</label>
+                    <label><input type="radio" name="qDiamond" value="c" onclick="checkQuiz(this, false)"> Yes, but only if Bird and Horse have different methods</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why is this a problem? Show Diamond Diagram</button>
+                <div class="hideable-content" style="background: var(--bg-code); border-color: #ff6b6b;">
+                    <strong style="color: #ff6b6b;">The Diamond Problem:</strong>
+                    <pre style="margin: 10px 0; text-align: center; background: transparent; border: none;"><code style="color: var(--text-primary);">
+        Animal
+        /    \
+       /      \
+    Bird    Horse
+       \      /
+        \    /
+       Pegasus
+</code></pre>
+                    <p style="margin: 10px 0;">If <code>Pegasus</code> extends both <code>Bird</code> and <code>Horse</code>:</p>
+                    <ul>
+                        <li>Both Bird and Horse override <code>eat()</code> from Animal</li>
+                        <li>When we call <code>pegasus.eat()</code> — which version runs?</li>
+                        <li><strong style="color: #ff6b6b;">Ambiguous!</strong> Compiler cannot decide → Java bans this entirely</li>
+                    </ul>
+
+                    <div style="margin-top: 15px; padding: 10px; background: rgba(255,215,0,0.1); border-radius: 5px; border-left: 3px solid #ffd93d;">
+                        <strong style="color: #ffd93d;">Trivia: How Other Languages Handle This</strong>
+                        <table style="margin-top: 8px; font-size: 0.9em;">
+                            <tr><th>Language</th><th>Approach</th></tr>
+                            <tr>
+                                <td><strong>C++</strong></td>
+                                <td>Allows it! Uses <code>virtual</code> inheritance and scope resolution (<code>Bird::eat()</code>) to resolve ambiguity. Developer's responsibility to handle correctly.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Python</strong></td>
+                                <td>Allows it! Uses <strong>MRO</strong> (Method Resolution Order) — a left-to-right, depth-first algorithm called C3 linearization.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Java</strong></td>
+                                <td>Bans it! Uses <strong>Interfaces</strong> instead (coming up next!).</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 25px;">The Need for Multiple Capabilities</h3>
             <div class="discuss">But what if we genuinely need a class to have capabilities from multiple sources?</div>
 
-            <pre><code><span class="comment">// Real scenario: A class that can be...</span>
+            <pre><code><span class="comment">// Real scenario: A class that needs to be...</span>
 <span class="comment">// - Serializable (can be converted to bytes)</span>
 <span class="comment">// - Comparable (can be sorted)</span>
 <span class="comment">// - Cloneable (can be copied)</span>
