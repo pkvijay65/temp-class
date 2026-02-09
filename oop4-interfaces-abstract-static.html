@@ -107,7 +107,8 @@
         .gotcha-answer.revealed { display: block; animation: fadeIn 0.3s; }
         .gotcha-reveal-btn { background: #ff6b6b; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em; }
         .gotcha-reveal-btn:hover { background: #ff5252; }
-        .gotcha-reveal-btn.revealed { display: none; }
+        .gotcha-reveal-btn.revealed { background: #6c757d; }
+        .gotcha-reveal-btn.revealed:hover { background: #5a6268; }
         .key-point { background: var(--key-point-bg); padding: 10px 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #50fa7b; }
         .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
         .comparison > div { background: var(--comparison-bg); padding: 15px; border-radius: 8px; }
@@ -1424,7 +1425,10 @@ Constructor</code></pre>
             document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
             // Reset all gotchas
             document.querySelectorAll('.gotcha-answer').forEach(a => a.classList.remove('revealed'));
-            document.querySelectorAll('.gotcha-reveal-btn').forEach(b => b.classList.remove('revealed'));
+            document.querySelectorAll('.gotcha-reveal-btn').forEach(b => {
+                b.classList.remove('revealed');
+                b.textContent = 'Show Answer';
+            });
             // Reset all hideables
             document.querySelectorAll('.hideable-content').forEach(c => c.classList.remove('revealed'));
             document.querySelectorAll('.hideable-btn').forEach(b => b.classList.remove('revealed'));
@@ -1453,8 +1457,17 @@ Constructor</code></pre>
         function revealGotcha(btn) {
             const gotcha = btn.closest('.gotcha');
             const answer = gotcha.querySelector('.gotcha-answer');
-            answer.classList.add('revealed');
-            btn.classList.add('revealed');
+            const isRevealed = answer.classList.contains('revealed');
+
+            if (isRevealed) {
+                answer.classList.remove('revealed');
+                btn.classList.remove('revealed');
+                btn.textContent = 'Show Answer';
+            } else {
+                answer.classList.add('revealed');
+                btn.classList.add('revealed');
+                btn.textContent = 'Hide Answer';
+            }
         }
 
         function revealHideable(btn) {
