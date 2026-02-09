@@ -164,14 +164,15 @@
         <!-- Section 1: Quick Recap -->
         <div class="section visible" id="s1">
             <h2>Quick Recap: OOP-3</h2>
-            <div class="discuss">What do you remember about Inheritance and Polymorphism?</div>
-            <table>
+            <div class="discuss">What do you remember about Inheritance and Polymorphism? (Click each row to reveal)</div>
+            <table id="recap-table">
                 <tr><th>Concept</th><th>Key Point</th></tr>
-                <tr><td>Inheritance</td><td><code>extends</code> keyword, IS-A relationship, code reuse</td></tr>
-                <tr><td>super()</td><td>Calls parent constructor, MUST be first line</td></tr>
-                <tr><td>Overloading</td><td>Same name, different parameters (compile-time)</td></tr>
-                <tr><td>Overriding</td><td>Same signature in child class (runtime)</td></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>Inheritance</td><td class="hidden-cell" data-value="extends keyword, IS-A relationship, code reuse"></td></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>super()</td><td class="hidden-cell" data-value="Calls parent constructor, MUST be first line"></td></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>Overloading</td><td class="hidden-cell" data-value="Same name, different parameters (compile-time)"></td></tr>
+                <tr class="clickable-row" onclick="revealRow(this)"><td>Overriding</td><td class="hidden-cell" data-value="Same signature in child class (runtime)"></td></tr>
             </table>
+            <button class="table-reset-btn" onclick="resetTable('recap-table')">Reset Table</button>
             <div class="key-point">
                 <strong>Today's Question:</strong> What if we want to define a <span class="highlight">contract</span> without implementation? Or share code but prevent direct instantiation?
             </div>
