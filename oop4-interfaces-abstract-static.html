@@ -1438,18 +1438,47 @@ Constructor</code></pre>
             document.getElementById('progress').style.width = progress + '%';
         }
 
-        function showSection(n) {
+        function showSection(n, updateHash = true) {
             if (n >= 1 && n <= totalSections) {
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
                 document.getElementById('s' + n).classList.add('visible');
                 currentSection = n;
                 updateProgress();
+                // Update URL hash for bookmarking and refresh persistence
+                if (updateHash) {
+                    history.pushState(null, '', '#s' + n);
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
         function next() { showSection(currentSection + 1); }
         function prev() { showSection(currentSection - 1); }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#s')) {
+                const sectionNum = parseInt(hash.substring(2));
+                if (sectionNum >= 1 && sectionNum <= totalSections) {
+                    showSection(sectionNum, false);
+                }
+            }
+        });
+
+        // Load section from URL hash on page load
+        function loadFromHash() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#s')) {
+                const sectionNum = parseInt(hash.substring(2));
+                if (sectionNum >= 1 && sectionNum <= totalSections) {
+                    showSection(sectionNum, false);
+                    return;
+                }
+            }
+            // Default to section 1 if no valid hash
+            showSection(1, false);
+        }
 
         function showAll() {
             document.querySelectorAll('.section').forEach(s => s.classList.add('visible'));
@@ -1462,6 +1491,7 @@ Constructor</code></pre>
             });
             currentSection = 1;
             updateProgress();
+            history.pushState(null, '', '#s1');
             // Reset all quizzes
             document.querySelectorAll('.quiz-answer').forEach(a => {
                 a.style.display = 'none';
@@ -1572,7 +1602,8 @@ Constructor</code></pre>
             }
         });
 
-        updateProgress();
+        // Initialize - load section from URL hash or default to section 1
+        loadFromHash();
     </script>
 </body>
 </html>
