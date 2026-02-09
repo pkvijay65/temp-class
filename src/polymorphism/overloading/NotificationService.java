@@ -1,4 +1,4 @@
-package polymorphism;
+package polymorphism.overloading;
 
 public class NotificationService {
     public void sendNotification() {

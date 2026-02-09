@@ -1,4 +1,4 @@
-package polymorphism;
+package polymorphism.overriding.payment;
 
 public class UPIPayment extends Payment {
     private String upiId;

@@ -1,4 +1,4 @@
-package polymorphism;
+package polymorphism.overloading;
 
 // Method Overloading - Compile-time Polymorphism
 public class Calculator {

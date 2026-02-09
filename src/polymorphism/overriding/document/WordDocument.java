@@ -1,4 +1,4 @@
-package polymorphism;
+package polymorphism.overriding.document;
 
 public class WordDocument extends Document{
     public WordDocument duplicate(){

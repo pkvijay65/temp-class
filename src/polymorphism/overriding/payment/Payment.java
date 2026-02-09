@@ -1,4 +1,4 @@
-package polymorphism;
+package polymorphism.overriding.payment;
 
 // Base class for Payment system
 public class Payment {
@@ -9,11 +9,11 @@ public class Payment {
     }
 
     public void process() {
-        System.out.println("Processing payment of $" + amount);
+
     }
 
     public double calculateFee() {
-        return 0;  // Base: no fee
+        return 0;
     }
 
     public double getTotal() {

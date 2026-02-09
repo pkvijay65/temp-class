@@ -1,4 +1,4 @@
-package polymorphism;
+package polymorphism.overriding.payment;
 
 public class CreditCardPayment extends Payment {
     private String cardNumber;
