@@ -474,10 +474,30 @@
                 <div class="gotcha-answer">
                     <strong>No! Compilation error.</strong>
                     <ul>
-                        <li>Static methods belong to the class, not instances</li>
+                        <li>Static methods belong to the <strong>class</strong>, not instances</li>
                         <li>Abstract methods need to be overridden (runtime polymorphism)</li>
-                        <li>Static methods are resolved at compile time - no overriding!</li>
+                        <li>Static methods are resolved at <strong>compile time</strong> - no overriding!</li>
                     </ul>
+                    <div style="margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px;">
+                        <strong style="color: #ffd93d;">Method Hiding vs Overriding:</strong>
+                        <p style="margin: 8px 0;">Static methods in child class <em>hide</em> (not override) parent's static method:</p>
+                        <pre style="margin: 8px 0; font-size: 0.85em;"><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Parent"</span>); }
+}
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Child"</span>); }
+}
+
+<span class="type">Parent</span> p = <span class="keyword">new</span> <span class="type">Child</span>();
+p.greet();  <span class="comment">// Prints "Parent"! (reference type decides)</span>
+
+<span class="comment">// Compare with instance method (true overriding):</span>
+<span class="comment">// p.instanceMethod() would print Child's version</span></code></pre>
+                        <ul style="margin-top: 8px;">
+                            <li><strong>Overriding (instance methods):</strong> Runtime - actual object type decides</li>
+                            <li><strong>Hiding (static methods):</strong> Compile time - reference type decides</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -490,10 +510,35 @@
                 <div class="gotcha-answer">
                     <strong>No! Compilation error.</strong>
                     <ul>
-                        <li>Abstract = MUST be overridden</li>
-                        <li>Final = CANNOT be overridden</li>
+                        <li><strong>Abstract</strong> = MUST be overridden</li>
+                        <li><strong>Final</strong> = CANNOT be overridden</li>
                         <li>Direct contradiction!</li>
                     </ul>
+                    <div style="margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px;">
+                        <strong style="color: #ffd93d;">The <code>final</code> Keyword - 3 Uses:</strong>
+                        <table style="margin-top: 8px; font-size: 0.9em;">
+                            <tr><th>Applied To</th><th>Effect</th></tr>
+                            <tr><td><code>final</code> variable</td><td>Cannot be reassigned (constant)</td></tr>
+                            <tr><td><code>final</code> method</td><td>Cannot be overridden by subclass</td></tr>
+                            <tr><td><code>final</code> class</td><td>Cannot be extended (no subclasses)</td></tr>
+                        </table>
+                        <pre style="margin: 10px 0; font-size: 0.85em;"><code><span class="comment">// Final variable - constant</span>
+<span class="keyword">final int</span> MAX_SIZE = 100;
+MAX_SIZE = 200;  <span class="comment">// ERROR! Cannot reassign</span>
+
+<span class="comment">// Final method - cannot override</span>
+<span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">final void</span> critical() { <span class="comment">/* ... */</span> }
+}
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">void</span> critical() { }  <span class="comment">// ERROR! Cannot override final</span>
+}
+
+<span class="comment">// Final class - cannot extend</span>
+<span class="keyword">final class</span> <span class="type">String</span> { }  <span class="comment">// Java's String is final!</span>
+<span class="keyword">class</span> <span class="type">MyString</span> <span class="keyword">extends</span> <span class="type">String</span> { }  <span class="comment">// ERROR!</span></code></pre>
+                        <p style="margin-top: 8px;"><strong>Why use final?</strong> Security, immutability, and preventing unintended behavior changes in critical code.</p>
+                    </div>
                 </div>
             </div>
         </div>
