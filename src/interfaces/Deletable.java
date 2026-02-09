@@ -7,4 +7,11 @@ package interfaces;
 public interface Deletable {
     // No methods - this is a marker interface
     // Classes implementing this are marked as "safe to delete"
+
+    void delete();
+
+    default void print(){
+        System.out.println("This is a deletable");
+    }
+
 }

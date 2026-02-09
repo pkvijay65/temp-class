@@ -1,5 +1,6 @@
 import inheritance.*;
 import polymorphism.*;
+import polymorphism.overriding.payment.CreditCardPayment;
 
 // Main entry point - Run all demos
 public class Main {
@@ -17,14 +18,14 @@ public class Main {
 
         Payment payment = new UPIPayment(10, "abc");
 //        Payment payment = new CreditCardPayment(8, "abc");
-        payment.process();
-        payment.upiSpecificMethod();
+//        payment.process();
+//        payment.upiSpecificMethod();
 
 
         //all good
-        UPIPayment upiPayment = new UPIPayment(20, "abc");
-        upiPayment.process();
-        upiPayment.upiSpecificMethod();
+//        UPIPayment upiPayment = new UPIPayment(20, "abc");
+//        upiPayment.process();
+//        upiPayment.upiSpecificMethod();
 
         CreditCardPayment creditCardPayment = new CreditCardPayment(80, "ahfbik");
         creditCardPayment.process();

@@ -1,16 +1,20 @@
 package polymorphism.overriding.payment;
 
 // Base class for Payment system
-public class Payment {
+public abstract class Payment {
     protected double amount;
 
     public Payment(double amount) {
         this.amount = amount;
     }
 
-    public void process() {
+//    public void process() {
+//
+//    }
 
-    }
+    public abstract void process();
+
+
 
     public double calculateFee() {
         return 0;

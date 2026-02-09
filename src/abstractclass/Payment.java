@@ -11,7 +11,6 @@ public abstract class Payment {
     protected double amount;
     protected String transactionId;
 
-    // Constructor - called via super() from child classes
     public Payment(double amount) {
         this.amount = amount;
         this.transactionId = generateTransactionId();

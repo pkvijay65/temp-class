@@ -550,54 +550,55 @@ MAX_SIZE = 200;  <span class="comment">// ERROR! Cannot reassign</span>
         <!-- Section 7: Why Interfaces? -->
         <div class="section" id="s7">
             <h2>Part 2: Interfaces</h2>
-            <h3>The Diamond Problem</h3>
-            <div class="discuss">Let's revisit why Java doesn't allow multiple class inheritance...</div>
+            <h3>A Problem with Multiple Inheritance</h3>
+            <div class="discuss">You're building a notification system...</div>
 
-            <pre><code><span class="keyword">class</span> <span class="type">Animal</span> {
-    <span class="keyword">void</span> eat() { System.out.println(<span class="string">"Animal eats"</span>); }
+            <pre><code><span class="keyword">class</span> <span class="type">Notifier</span> {
+    <span class="keyword">void</span> send(<span class="type">String</span> msg) { System.out.println(<span class="string">"Sending: "</span> + msg); }
 }
 
-<span class="keyword">class</span> <span class="type">Bird</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
-    <span class="keyword">void</span> eat() { System.out.println(<span class="string">"Bird pecks"</span>); }
+<span class="keyword">class</span> <span class="type">EmailNotifier</span> <span class="keyword">extends</span> <span class="type">Notifier</span> {
+    <span class="keyword">void</span> send(<span class="type">String</span> msg) { System.out.println(<span class="string">"Email: "</span> + msg); }
 }
 
-<span class="keyword">class</span> <span class="type">Horse</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
-    <span class="keyword">void</span> eat() { System.out.println(<span class="string">"Horse grazes"</span>); }
+<span class="keyword">class</span> <span class="type">SMSNotifier</span> <span class="keyword">extends</span> <span class="type">Notifier</span> {
+    <span class="keyword">void</span> send(<span class="type">String</span> msg) { System.out.println(<span class="string">"SMS: "</span> + msg); }
 }
 
-<span class="keyword">class</span> <span class="type">Pegasus</span> <span class="keyword">extends</span> <span class="type">Bird</span>, <span class="type">Horse</span> { }
+<span class="keyword">class</span> <span class="type">MultiChannelNotifier</span> <span class="keyword">extends</span> <span class="type">EmailNotifier</span>, <span class="type">SMSNotifier</span> { }
 
-<span class="type">Pegasus</span> p = <span class="keyword">new</span> <span class="type">Pegasus</span>();
-p.eat();  <span class="comment">// Which eat() is called???</span></code></pre>
+<span class="type">MultiChannelNotifier</span> notifier = <span class="keyword">new</span> <span class="type">MultiChannelNotifier</span>();
+notifier.send(<span class="string">"Hello!"</span>);</code></pre>
 
             <div class="quiz">
-                <div class="quiz-q">Will the above code compile in Java?</div>
+                <div class="quiz-q">What happens when <code>notifier.send("Hello!")</code> is called?</div>
                 <div class="quiz-options">
-                    <label><input type="radio" name="qDiamond" value="a" onclick="checkQuiz(this, false)"> Yes, Pegasus inherits from both</label>
-                    <label><input type="radio" name="qDiamond" value="b" onclick="checkQuiz(this, true)"> No, Java doesn't allow multiple class inheritance</label>
-                    <label><input type="radio" name="qDiamond" value="c" onclick="checkQuiz(this, false)"> Yes, but only if Bird and Horse have different methods</label>
+                    <label><input type="radio" name="qDiamond" value="a" onclick="checkQuiz(this, false)"> EmailNotifier's send() is called</label>
+                    <label><input type="radio" name="qDiamond" value="b" onclick="checkQuiz(this, false)"> SMSNotifier's send() is called</label>
+                    <label><input type="radio" name="qDiamond" value="c" onclick="checkQuiz(this, false)"> Both send() methods are called</label>
+                    <label><input type="radio" name="qDiamond" value="d" onclick="checkQuiz(this, true)"> Compilation error - this code won't compile</label>
                 </div>
                 <div class="quiz-answer"></div>
             </div>
 
             <div class="hideable">
-                <button class="hideable-btn" onclick="revealHideable(this)">Why is this a problem? Show Diamond Diagram</button>
+                <button class="hideable-btn" onclick="revealHideable(this)">Why doesn't this compile?</button>
                 <div class="hideable-content" style="background: #1e1e1e; border-color: #ff6b6b; color: #e0e0e0;">
                     <strong style="color: #ff6b6b;">The Diamond Problem:</strong>
                     <pre style="margin: 10px 0; text-align: center; background: transparent; border: none;"><code style="color: #8be9fd;">
-        Animal
-        /    \
-       /      \
-    Bird    Horse
-       \      /
-        \    /
-       Pegasus
+         Notifier
+          /    \
+         /      \
+  EmailNotifier  SMSNotifier
+         \      /
+          \    /
+    MultiChannelNotifier
 </code></pre>
-                    <p style="margin: 10px 0; color: #e0e0e0;">If <code>Pegasus</code> extends both <code>Bird</code> and <code>Horse</code>:</p>
+                    <p style="margin: 10px 0; color: #e0e0e0;">If <code>MultiChannelNotifier</code> could extend both:</p>
                     <ul style="color: #e0e0e0;">
-                        <li>Both Bird and Horse override <code>eat()</code> from Animal</li>
-                        <li>When we call <code>p.eat()</code> — which version runs?</li>
-                        <li><strong style="color: #ff6b6b;">Ambiguous!</strong> Compiler cannot decide → Java bans this entirely</li>
+                        <li>Both EmailNotifier and SMSNotifier override <code>send()</code></li>
+                        <li>When we call <code>notifier.send()</code> — which version runs?</li>
+                        <li><strong style="color: #ff6b6b;">Ambiguous!</strong> Java prevents this by banning multiple class inheritance</li>
                     </ul>
 
                     <div style="margin-top: 15px; padding: 10px; background: #2d2d2d; border-radius: 5px; border-left: 3px solid #ffd93d;">
@@ -606,7 +607,7 @@ p.eat();  <span class="comment">// Which eat() is called???</span></code></pre>
                             <tr><th style="color: #ffd93d;">Language</th><th style="color: #ffd93d;">Approach</th></tr>
                             <tr>
                                 <td><strong style="color: #8be9fd;">C++</strong></td>
-                                <td>Allows it! Uses <code>virtual</code> inheritance and scope resolution (<code>Bird::eat()</code>) to resolve ambiguity. Developer's responsibility.</td>
+                                <td>Allows it! Uses <code>virtual</code> inheritance and scope resolution (<code>EmailNotifier::send()</code>). Developer's responsibility.</td>
                             </tr>
                             <tr>
                                 <td><strong style="color: #8be9fd;">Python</strong></td>
@@ -614,248 +615,280 @@ p.eat();  <span class="comment">// Which eat() is called???</span></code></pre>
                             </tr>
                             <tr>
                                 <td><strong style="color: #8be9fd;">Java</strong></td>
-                                <td>Bans it! Uses <strong>Interfaces</strong> instead (coming up next!).</td>
+                                <td>Bans it! Uses <strong>Interfaces</strong> instead.</td>
                             </tr>
                         </table>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <h3 style="margin-top: 25px;">The Need for Multiple Capabilities</h3>
-            <div class="discuss">But what if we genuinely need a class to have capabilities from multiple sources?</div>
+        <!-- Section 8: Power of Parent References -->
+        <div class="section" id="s8">
+            <h2>The Power of Parent References</h2>
+            <div class="discuss">Before we solve the diamond problem, let's revisit parent references...</div>
 
-            <pre><code><span class="comment">// Real scenario: A class that needs to be...</span>
-<span class="comment">// - Serializable (can be converted to bytes)</span>
-<span class="comment">// - Comparable (can be sorted)</span>
-<span class="comment">// - Cloneable (can be copied)</span>
+            <pre><code><span class="comment">// Remember from Abstract Classes?</span>
+<span class="type">Payment</span> p = <span class="keyword">new</span> <span class="type">CreditCardPayment</span>();
+p.process();
 
-<span class="keyword">class</span> <span class="type">Employee</span> <span class="keyword">extends</span> <span class="type">Serializable</span>, <span class="type">Comparable</span>, <span class="type">Cloneable</span> { }  <span class="comment">// ???</span></code></pre>
+<span class="comment">// Parent reference on LEFT, child object on RIGHT</span>
+<span class="comment">// This lets us swap implementations easily!</span></code></pre>
+
+            <h3>Same Pattern with Collections</h3>
+            <pre><code><span class="comment">// List on LEFT, ArrayList on RIGHT</span>
+<span class="type">List</span> names = <span class="keyword">new</span> <span class="type">ArrayList</span>();
+names.add(<span class="string">"Alice"</span>);
+names.add(<span class="string">"Bob"</span>);
+
+<span class="comment">// Want LinkedList? Just change the RIGHT side!</span>
+<span class="type">List</span> names = <span class="keyword">new</span> <span class="type">LinkedList</span>();
+<span class="comment">// All other code stays the same!</span></code></pre>
+
+            <div class="key-point">
+                <strong>Pattern:</strong> <code>ParentType variable = new ChildType();</code><br>
+                This makes your code flexible and easy to change!
+            </div>
 
             <div class="quiz">
-                <div class="quiz-q">How does Java solve the need for multiple inheritance of behavior?</div>
+                <div class="quiz-q">Is <code>List</code> a parent class of <code>ArrayList</code>?</div>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q4" value="a" onclick="checkQuiz(this, false)"> Java allows multiple class inheritance in special cases</label>
-                    <label><input type="radio" name="q4" value="b" onclick="checkQuiz(this, true)"> Java uses Interfaces - you can implement multiple interfaces</label>
-                    <label><input type="radio" name="q4" value="c" onclick="checkQuiz(this, false)"> You can't - Java doesn't support this</label>
+                    <label><input type="radio" name="qList" value="a" onclick="checkQuiz(this, false)"> Yes, List is an abstract class</label>
+                    <label><input type="radio" name="qList" value="b" onclick="checkQuiz(this, false)"> Yes, List is a regular class</label>
+                    <label><input type="radio" name="qList" value="c" onclick="checkQuiz(this, true)"> No, List is something else...</label>
                 </div>
                 <div class="quiz-answer"></div>
             </div>
+
+            <div class="discuss" style="margin-top: 15px;">
+                <strong>Think about it:</strong> If List were a class, what attributes would it share with ArrayList and LinkedList?<br><br>
+                ArrayList uses an <strong>array</strong> internally.<br>
+                LinkedList uses <strong>nodes with pointers</strong> internally.<br><br>
+                They have NOTHING in common except the <strong>methods</strong> they provide (add, get, remove...)
+            </div>
         </div>
 
-        <!-- Section 8: Interface Basics -->
-        <div class="section" id="s8">
-            <h2>Interface: The Contract</h2>
+        <!-- Section 9: What is an Interface -->
+        <div class="section" id="s9">
+            <h2>Enter: The Interface</h2>
+            <div class="discuss">We need something that defines ONLY methods, no attributes, no implementation...</div>
 
-            <div class="discuss">An interface defines WHAT a class can do, not HOW it does it...</div>
+            <h3>Two Problems, One Solution</h3>
+            <table>
+                <tr><th>Problem</th><th>What we need</th></tr>
+                <tr>
+                    <td>Diamond Problem</td>
+                    <td>A way to have multiple "parent contracts" without inheriting code</td>
+                </tr>
+                <tr>
+                    <td>List/ArrayList/LinkedList</td>
+                    <td>A parent type that only defines methods, no shared attributes</td>
+                </tr>
+            </table>
 
-            <pre><code><span class="comment">// Interface = Pure contract</span>
-<span class="keyword">interface</span> <span class="type">Payable</span> {
-    <span class="keyword">void</span> pay(<span class="keyword">double</span> amount);      <span class="comment">// No body - just signature</span>
-    <span class="keyword">double</span> getBalance();           <span class="comment">// All methods are implicitly public abstract</span>
+            <div class="key-point" style="margin-top: 15px;">
+                <strong>Solution:</strong> An <span class="highlight">Interface</span> — a pure contract with only method signatures, no code!
+            </div>
+
+            <pre><code><span class="comment">// Interface = ONLY method signatures</span>
+<span class="keyword">interface</span> <span class="type">List</span> {
+    <span class="keyword">void</span> add(<span class="type">Object</span> item);
+    <span class="type">Object</span> get(<span class="keyword">int</span> index);
+    <span class="keyword">int</span> size();
+    <span class="comment">// No attributes! No method bodies!</span>
 }
 
-<span class="comment">// Class "implements" the interface</span>
-<span class="keyword">class</span> <span class="type">Wallet</span> <span class="keyword">implements</span> <span class="type">Payable</span> {
-    <span class="keyword">private double</span> balance = 1000;
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> pay(<span class="keyword">double</span> amount) {
-        balance -= amount;
-        System.out.println(<span class="string">"Paid $"</span> + amount + <span class="string">" from wallet"</span>);
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public double</span> getBalance() {
-        <span class="keyword">return</span> balance;
-    }
+<span class="comment">// Classes "implement" (not extend!) the interface</span>
+<span class="keyword">class</span> <span class="type">ArrayList</span> <span class="keyword">implements</span> <span class="type">List</span> {
+    <span class="keyword">private</span> <span class="type">Object</span>[] array;  <span class="comment">// Its OWN attribute</span>
+    <span class="keyword">public void</span> add(<span class="type">Object</span> item) { <span class="comment">/* array logic */</span> }
+    <span class="keyword">public</span> <span class="type">Object</span> get(<span class="keyword">int</span> i) { <span class="keyword">return</span> array[i]; }
+    <span class="keyword">public int</span> size() { <span class="comment">/* ... */</span> }
 }
 
-<span class="keyword">class</span> <span class="type">BankAccount</span> <span class="keyword">implements</span> <span class="type">Payable</span> {
-    <span class="keyword">private double</span> balance = 50000;
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> pay(<span class="keyword">double</span> amount) {
-        balance -= amount;
-        System.out.println(<span class="string">"Debited $"</span> + amount + <span class="string">" from bank account"</span>);
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public double</span> getBalance() {
-        <span class="keyword">return</span> balance;
-    }
+<span class="keyword">class</span> <span class="type">LinkedList</span> <span class="keyword">implements</span> <span class="type">List</span> {
+    <span class="keyword">private</span> <span class="type">Node</span> head;  <span class="comment">// Its OWN attribute</span>
+    <span class="keyword">public void</span> add(<span class="type">Object</span> item) { <span class="comment">/* node logic */</span> }
+    <span class="keyword">public</span> <span class="type">Object</span> get(<span class="keyword">int</span> i) { <span class="comment">/* traverse nodes */</span> }
+    <span class="keyword">public int</span> size() { <span class="comment">/* ... */</span> }
 }</code></pre>
 
             <div class="key-point">
-                <strong>Interface = </strong> A contract that defines what methods a class MUST have. Think of it as a "capability badge".
+                <strong>Interface</strong> = A contract that defines WHAT methods a class must have.<br>
+                <strong>implements</strong> = The keyword used (not <code>extends</code>!)
             </div>
+        </div>
 
-            <h3>Using Interface as Type (Polymorphism!)</h3>
-            <pre><code><span class="keyword">public void</span> processPayment(<span class="type">Payable</span> source, <span class="keyword">double</span> amount) {
-    <span class="keyword">if</span> (source.getBalance() >= amount) {
-        source.pay(amount);  <span class="comment">// Works with ANY Payable!</span>
+        <!-- Section 10: How Interfaces Solve the Diamond Problem -->
+        <div class="section" id="s10">
+            <h2>Interfaces Solve the Diamond Problem!</h2>
+
+            <div class="discuss">Remember the Notifier problem? Let's solve it with interfaces...</div>
+
+            <pre><code><span class="comment">// Instead of CLASS, make Notifier an INTERFACE</span>
+<span class="keyword">interface</span> <span class="type">Notifier</span> {
+    <span class="keyword">void</span> send(<span class="type">String</span> msg);  <span class="comment">// No code here!</span>
+}
+
+<span class="keyword">class</span> <span class="type">EmailNotifier</span> <span class="keyword">implements</span> <span class="type">Notifier</span> {
+    <span class="keyword">public void</span> send(<span class="type">String</span> msg) {
+        System.out.println(<span class="string">"Email: "</span> + msg);
     }
 }
 
-<span class="comment">// Usage</span>
-processPayment(<span class="keyword">new</span> <span class="type">Wallet</span>(), 100);       <span class="comment">// Works!</span>
-processPayment(<span class="keyword">new</span> <span class="type">BankAccount</span>(), 100);  <span class="comment">// Works!</span></code></pre>
+<span class="keyword">class</span> <span class="type">SMSNotifier</span> <span class="keyword">implements</span> <span class="type">Notifier</span> {
+    <span class="keyword">public void</span> send(<span class="type">String</span> msg) {
+        System.out.println(<span class="string">"SMS: "</span> + msg);
+    }
+}</code></pre>
+
+            <h3>Use Interface as Type (Same Pattern!)</h3>
+            <pre><code><span class="comment">// Interface on LEFT, implementation on RIGHT</span>
+<span class="type">Notifier</span> n = <span class="keyword">new</span> <span class="type">EmailNotifier</span>();
+n.send(<span class="string">"Hello"</span>);  <span class="comment">// Email: Hello</span>
+
+<span class="comment">// Switch implementation easily!</span>
+<span class="type">Notifier</span> n = <span class="keyword">new</span> <span class="type">SMSNotifier</span>();
+n.send(<span class="string">"Hello"</span>);  <span class="comment">// SMS: Hello</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">Why doesn't this cause the Diamond Problem?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qWhyInterface" value="a" onclick="checkQuiz(this, false)"> Interfaces have special compiler handling</label>
+                    <label><input type="radio" name="qWhyInterface" value="b" onclick="checkQuiz(this, true)"> Interfaces have no code — there's nothing to inherit!</label>
+                    <label><input type="radio" name="qWhyInterface" value="c" onclick="checkQuiz(this, false)"> Java picks the first interface automatically</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="key-point">
+                <strong>Key:</strong> No conflicting code to inherit = No diamond problem!
+            </div>
         </div>
 
-        <!-- Section 9: Multiple Interface Implementation -->
-        <div class="section" id="s9">
+        <!-- Section 11: Multiple Interface Implementation -->
+        <div class="section" id="s11">
             <h2>Multiple Interface Implementation</h2>
 
             <div class="discuss">Unlike classes, a class can implement MULTIPLE interfaces!</div>
 
-            <pre><code><span class="keyword">interface</span> <span class="type">Printable</span> {
-    <span class="keyword">void</span> print();
+            <pre><code><span class="keyword">interface</span> <span class="type">Readable</span> {
+    <span class="keyword">void</span> read();
 }
 
-<span class="keyword">interface</span> <span class="type">Scannable</span> {
-    <span class="keyword">void</span> scan();
+<span class="keyword">interface</span> <span class="type">Writable</span> {
+    <span class="keyword">void</span> write();
 }
 
-<span class="keyword">interface</span> <span class="type">Faxable</span> {
-    <span class="keyword">void</span> fax();
+<span class="comment">// File can do BOTH!</span>
+<span class="keyword">class</span> <span class="type">File</span> <span class="keyword">implements</span> <span class="type">Readable</span>, <span class="type">Writable</span> {
+    <span class="keyword">public void</span> read() { System.out.println(<span class="string">"Reading file"</span>); }
+    <span class="keyword">public void</span> write() { System.out.println(<span class="string">"Writing file"</span>); }
 }
 
-<span class="comment">// One class, multiple capabilities!</span>
-<span class="keyword">class</span> <span class="type">AllInOnePrinter</span> <span class="keyword">implements</span> <span class="type">Printable</span>, <span class="type">Scannable</span>, <span class="type">Faxable</span> {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> print() { System.out.println(<span class="string">"Printing..."</span>); }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> scan() { System.out.println(<span class="string">"Scanning..."</span>); }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> fax() { System.out.println(<span class="string">"Faxing..."</span>); }
-}
-
-<span class="comment">// Basic printer - only implements Printable</span>
-<span class="keyword">class</span> <span class="type">BasicPrinter</span> <span class="keyword">implements</span> <span class="type">Printable</span> {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> print() { System.out.println(<span class="string">"Printing..."</span>); }
+<span class="comment">// Log can only be written</span>
+<span class="keyword">class</span> <span class="type">Log</span> <span class="keyword">implements</span> <span class="type">Writable</span> {
+    <span class="keyword">public void</span> write() { System.out.println(<span class="string">"Writing log"</span>); }
 }</code></pre>
 
+            <div class="key-point">
+                <strong>Key:</strong> A class can have multiple "capabilities" by implementing multiple interfaces!
+            </div>
+
             <div class="quiz">
-                <div class="quiz-q">Why doesn't multiple interface implementation cause the Diamond Problem?</div>
+                <div class="quiz-q">Why doesn't this cause the Diamond Problem?</div>
                 <div class="quiz-options">
                     <label><input type="radio" name="q5" value="a" onclick="checkQuiz(this, false)"> Java has special handling for interfaces</label>
-                    <label><input type="radio" name="q5" value="b" onclick="checkQuiz(this, true)"> Interfaces only define signatures, the implementing class provides the single implementation</label>
+                    <label><input type="radio" name="q5" value="b" onclick="checkQuiz(this, true)"> Interfaces have no code — File provides the only implementation</label>
                     <label><input type="radio" name="q5" value="c" onclick="checkQuiz(this, false)"> Interface methods are resolved at compile time</label>
                 </div>
                 <div class="quiz-answer"></div>
             </div>
-
-            <div class="hideable">
-                <button class="hideable-btn" onclick="revealHideable(this)">Why No Diamond Problem?</button>
-                <div class="hideable-content">
-                    <pre><code><span class="comment">// Diamond Problem with Classes:</span>
-<span class="keyword">class</span> <span class="type">A</span> { <span class="keyword">void</span> foo() { <span class="comment">/* impl 1 */</span> } }
-<span class="keyword">class</span> <span class="type">B</span> { <span class="keyword">void</span> foo() { <span class="comment">/* impl 2 */</span> } }
-<span class="keyword">class</span> <span class="type">C</span> <span class="keyword">extends</span> <span class="type">A</span>, <span class="type">B</span> { }  <span class="comment">// Which foo()??? AMBIGUOUS!</span>
-
-<span class="comment">// No Problem with Interfaces:</span>
-<span class="keyword">interface</span> <span class="type">A</span> { <span class="keyword">void</span> foo(); }  <span class="comment">// No implementation</span>
-<span class="keyword">interface</span> <span class="type">B</span> { <span class="keyword">void</span> foo(); }  <span class="comment">// No implementation</span>
-<span class="keyword">class</span> <span class="type">C</span> <span class="keyword">implements</span> <span class="type">A</span>, <span class="type">B</span> {
-    <span class="keyword">void</span> foo() { <span class="comment">/* C provides THE SINGLE implementation */</span> }
-}</code></pre>
-                    <ul>
-                        <li>Interfaces define WHAT, not HOW</li>
-                        <li>The implementing class is the single source of truth</li>
-                        <li>Even if two interfaces have same method signature, there's only ONE implementation</li>
-                    </ul>
-                </div>
-            </div>
         </div>
 
-        <!-- Section 10: Interface Rules -->
-        <div class="section" id="s10">
-            <h2>Interface Rules & Modern Features</h2>
+        <!-- Section 13: Java 8+ Changes to Interfaces -->
+        <div class="section" id="s13">
+            <h2>Java 8+: Interfaces Got New Powers!</h2>
+            <div class="discuss">Java 8 changed interfaces significantly. Click each row to see what changed...</div>
 
-            <h3>Traditional Interface Rules (Pre-Java 8)</h3>
-            <table>
-                <tr><th>Feature</th><th>Allowed?</th><th>Notes</th></tr>
-                <tr><td>Abstract methods</td><td style="color: #50fa7b;">Yes</td><td>All methods implicitly <code>public abstract</code></td></tr>
-                <tr><td>Constants</td><td style="color: #50fa7b;">Yes</td><td>All fields implicitly <code>public static final</code></td></tr>
-                <tr><td>Constructors</td><td style="color: #ff6b6b;">No</td><td>Interfaces cannot be instantiated</td></tr>
-                <tr><td>Instance fields</td><td style="color: #ff6b6b;">No</td><td>Only constants allowed</td></tr>
-                <tr><td>Method bodies</td><td style="color: #ff6b6b;">No</td><td>Changed in Java 8!</td></tr>
+            <table id="java8-table">
+                <tr><th>Feature</th><th>Before Java 8</th><th>After Java 8</th></tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Method bodies</td>
+                    <td class="hidden-cell" data-value="❌ Not allowed"></td>
+                    <td class="hidden-cell" data-value="✅ default methods can have code"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Static methods</td>
+                    <td class="hidden-cell" data-value="❌ Not allowed"></td>
+                    <td class="hidden-cell" data-value="✅ Allowed"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Attributes</td>
+                    <td class="hidden-cell" data-value="Only constants"></td>
+                    <td class="hidden-cell" data-value="Still only constants (no change)"></td>
+                </tr>
+                <tr class="clickable-row" onclick="revealRow(this)">
+                    <td>Constructors</td>
+                    <td class="hidden-cell" data-value="❌ Not allowed"></td>
+                    <td class="hidden-cell" data-value="❌ Still not allowed"></td>
+                </tr>
             </table>
+            <button class="table-reset-btn" onclick="resetTable('java8-table')">Reset Table</button>
 
-            <h3>Java 8+: Default Methods</h3>
-            <div class="discuss">What if you want to add a new method to an interface without breaking existing implementations?</div>
+            <h3>Default Methods</h3>
+            <pre><code><span class="keyword">interface</span> <span class="type">Logger</span> {
+    <span class="keyword">void</span> log(<span class="type">String</span> msg);  <span class="comment">// Abstract - must implement</span>
 
-            <pre><code><span class="keyword">interface</span> <span class="type">Payable</span> {
-    <span class="keyword">void</span> pay(<span class="keyword">double</span> amount);
-
-    <span class="comment">// Default method - has implementation!</span>
-    <span class="keyword">default void</span> payWithFee(<span class="keyword">double</span> amount, <span class="keyword">double</span> feePercent) {
-        <span class="keyword">double</span> fee = amount * feePercent / 100;
-        pay(amount + fee);
-        System.out.println(<span class="string">"Fee charged: $"</span> + fee);
+    <span class="comment">// Default method - has code!</span>
+    <span class="keyword">default void</span> logError(<span class="type">String</span> msg) {
+        log(<span class="string">"ERROR: "</span> + msg);
     }
 }
 
-<span class="comment">// Existing implementations DON'T need to change!</span>
-<span class="keyword">class</span> <span class="type">Wallet</span> <span class="keyword">implements</span> <span class="type">Payable</span> {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> pay(<span class="keyword">double</span> amount) { <span class="comment">/* ... */</span> }
-    <span class="comment">// Inherits payWithFee() automatically!</span>
+<span class="keyword">class</span> <span class="type">FileLogger</span> <span class="keyword">implements</span> <span class="type">Logger</span> {
+    <span class="keyword">public void</span> log(<span class="type">String</span> msg) { System.out.println(msg); }
+    <span class="comment">// Gets logError() for free!</span>
 }</code></pre>
 
-            <h3>Java 8+: Static Methods in Interfaces</h3>
-            <pre><code><span class="keyword">interface</span> <span class="type">MathUtils</span> {
-    <span class="comment">// Static method - utility functions in interface</span>
-    <span class="keyword">static int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
-        <span class="keyword">return</span> a + b;
+            <h3>Static Methods</h3>
+            <pre><code><span class="keyword">interface</span> <span class="type">StringUtils</span> {
+    <span class="keyword">static boolean</span> isEmpty(<span class="type">String</span> s) {
+        <span class="keyword">return</span> s == <span class="keyword">null</span> || s.length() == 0;
     }
 }
 
-<span class="comment">// Called on interface, not instance</span>
-<span class="keyword">int</span> result = <span class="type">MathUtils</span>.add(5, 3);</code></pre>
+<span class="comment">// Call on interface name</span>
+<span class="type">StringUtils</span>.isEmpty(<span class="string">""</span>);  <span class="comment">// true</span></code></pre>
 
             <div class="gotcha">
                 <div class="gotcha-title">GOTCHA: Default Method Collision</div>
-                <pre><code><span class="keyword">interface</span> <span class="type">A</span> {
-    <span class="keyword">default void</span> greet() { System.out.println(<span class="string">"A"</span>); }
-}
-<span class="keyword">interface</span> <span class="type">B</span> {
-    <span class="keyword">default void</span> greet() { System.out.println(<span class="string">"B"</span>); }
-}
+                <pre><code><span class="keyword">interface</span> <span class="type">A</span> { <span class="keyword">default void</span> greet() { } }
+<span class="keyword">interface</span> <span class="type">B</span> { <span class="keyword">default void</span> greet() { } }
 <span class="keyword">class</span> <span class="type">C</span> <span class="keyword">implements</span> <span class="type">A</span>, <span class="type">B</span> { }  <span class="comment">// ???</span></code></pre>
                 <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
                 <div class="gotcha-answer">
-                    <strong>Compilation Error!</strong> Class C must override greet() to resolve ambiguity:
-                    <pre style="margin: 10px 0;"><code><span class="keyword">class</span> <span class="type">C</span> <span class="keyword">implements</span> <span class="type">A</span>, <span class="type">B</span> {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> greet() {
-        <span class="type">A</span>.<span class="keyword">super</span>.greet();  <span class="comment">// Choose A's version</span>
-        <span class="comment">// OR</span>
-        <span class="type">B</span>.<span class="keyword">super</span>.greet();  <span class="comment">// Choose B's version</span>
-        <span class="comment">// OR provide your own implementation</span>
-    }
-}</code></pre>
+                    <strong>Compilation Error!</strong> Must override to resolve ambiguity.
                 </div>
             </div>
         </div>
 
-        <!-- Section 11: Abstract Class vs Interface -->
-        <div class="section" id="s11">
-            <h2>Abstract Class vs Interface: The Comparison</h2>
+        <!-- Section 12: Abstract Class vs Interface (Pre-Java 8) -->
+        <div class="section" id="s12">
+            <h2>Abstract Class vs Interface (Pre-Java 8)</h2>
+            <div class="discuss">Click each row to reveal the comparison...</div>
 
             <table id="comparison-table">
                 <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
                 <tr class="clickable-row" onclick="revealRow(this)">
                     <td>Methods</td>
                     <td class="hidden-cell" data-value="Abstract + Concrete"></td>
-                    <td class="hidden-cell" data-value="Abstract (+ default in Java 8+)"></td>
+                    <td class="hidden-cell" data-value="Only Abstract (no body)"></td>
                 </tr>
                 <tr class="clickable-row" onclick="revealRow(this)">
-                    <td>Fields</td>
-                    <td class="hidden-cell" data-value="Any type (instance, static)"></td>
-                    <td class="hidden-cell" data-value="Only public static final"></td>
+                    <td>Attributes</td>
+                    <td class="hidden-cell" data-value="Yes (any type)"></td>
+                    <td class="hidden-cell" data-value="Only constants (public static final)"></td>
                 </tr>
                 <tr class="clickable-row" onclick="revealRow(this)">
                     <td>Constructors</td>
@@ -869,8 +902,8 @@ processPayment(<span class="keyword">new</span> <span class="type">BankAccount</
                 </tr>
                 <tr class="clickable-row" onclick="revealRow(this)">
                     <td>Access modifiers</td>
-                    <td class="hidden-cell" data-value="Any"></td>
-                    <td class="hidden-cell" data-value="public only (for methods)"></td>
+                    <td class="hidden-cell" data-value="Any (public, private, protected)"></td>
+                    <td class="hidden-cell" data-value="public only"></td>
                 </tr>
                 <tr class="clickable-row" onclick="revealRow(this)">
                     <td>Keyword</td>
@@ -882,15 +915,15 @@ processPayment(<span class="keyword">new</span> <span class="type">BankAccount</
 
             <div class="key-point" style="margin-top: 20px;">
                 <strong>When to use what?</strong><br>
-                <strong>Abstract Class:</strong> IS-A relationship + shared code + partial implementation<br>
-                <strong>Interface:</strong> CAN-DO capability + contract + multiple inheritance needed
+                <strong>Abstract Class:</strong> IS-A relationship + shared code + shared attributes<br>
+                <strong>Interface:</strong> CAN-DO capability + pure contract + multiple inheritance
             </div>
 
             <div class="quiz">
-                <div class="quiz-q">A Dog class needs to extend Animal AND be Comparable for sorting. What do you use?</div>
+                <div class="quiz-q">MySQLDatabase needs to extend Database AND be Closeable. What do you use?</div>
                 <div class="quiz-options">
                     <label><input type="radio" name="q6" value="a" onclick="checkQuiz(this, false)"> Two abstract classes</label>
-                    <label><input type="radio" name="q6" value="b" onclick="checkQuiz(this, true)"> Abstract class Animal + Interface Comparable</label>
+                    <label><input type="radio" name="q6" value="b" onclick="checkQuiz(this, true)"> Abstract class Database + Interface Closeable</label>
                     <label><input type="radio" name="q6" value="c" onclick="checkQuiz(this, false)"> Two interfaces</label>
                 </div>
                 <div class="quiz-answer"></div>
@@ -899,28 +932,21 @@ processPayment(<span class="keyword">new</span> <span class="type">BankAccount</
             <div class="hideable">
                 <button class="hideable-btn" onclick="revealHideable(this)">Show Solution</button>
                 <div class="hideable-content" style="background: var(--bg-code); border-color: #00d4ff; padding: 0;">
-                    <pre style="margin: 0; border: none;"><code><span class="keyword">abstract class</span> <span class="type">Animal</span> {
-    <span class="keyword">protected</span> <span class="type">String</span> name;
-    <span class="keyword">abstract void</span> makeSound();
+                    <pre style="margin: 0; border: none;"><code><span class="keyword">abstract class</span> <span class="type">Database</span> {
+    <span class="keyword">abstract void</span> connect();
 }
 
-<span class="keyword">class</span> <span class="type">Dog</span> <span class="keyword">extends</span> <span class="type">Animal</span> <span class="keyword">implements</span> <span class="type">Comparable</span>&lt;<span class="type">Dog</span>&gt; {
-    <span class="keyword">private int</span> age;
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">void</span> makeSound() { System.out.println(<span class="string">"Bark!"</span>); }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public int</span> compareTo(<span class="type">Dog</span> other) {
-        <span class="keyword">return this</span>.age - other.age;
-    }
+<span class="comment">// extends ONE class, implements ONE interface</span>
+<span class="keyword">class</span> <span class="type">MySQLDatabase</span> <span class="keyword">extends</span> <span class="type">Database</span> <span class="keyword">implements</span> <span class="type">Closeable</span> {
+    <span class="keyword">void</span> connect() { System.out.println(<span class="string">"Connected"</span>); }
+    <span class="keyword">public void</span> close() { System.out.println(<span class="string">"Closed"</span>); }
 }</code></pre>
                 </div>
             </div>
         </div>
 
-        <!-- Section 12: Interface Inheritance -->
-        <div class="section" id="s12">
+        <!-- Section 14: Interface Inheritance -->
+        <div class="section" id="s14">
             <h2>Interface Inheritance</h2>
 
             <div class="discuss">Interfaces can extend other interfaces!</div>
@@ -933,21 +959,13 @@ processPayment(<span class="keyword">new</span> <span class="type">BankAccount</
     <span class="keyword">void</span> write();
 }
 
-<span class="comment">// Interface extending multiple interfaces!</span>
-<span class="keyword">interface</span> <span class="type">ReadWritable</span> <span class="keyword">extends</span> <span class="type">Readable</span>, <span class="type">Writable</span> {
-    <span class="keyword">void</span> readWrite();  <span class="comment">// Additional method</span>
-}
+<span class="comment">// Interface extends multiple interfaces!</span>
+<span class="keyword">interface</span> <span class="type">ReadWritable</span> <span class="keyword">extends</span> <span class="type">Readable</span>, <span class="type">Writable</span> { }
 
-<span class="comment">// Implementing class must implement ALL methods</span>
-<span class="keyword">class</span> <span class="type">File</span> <span class="keyword">implements</span> <span class="type">ReadWritable</span> {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> read() { System.out.println(<span class="string">"Reading..."</span>); }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> write() { System.out.println(<span class="string">"Writing..."</span>); }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public void</span> readWrite() { read(); write(); }
+<span class="comment">// Must implement ALL methods</span>
+<span class="keyword">class</span> <span class="type">DataFile</span> <span class="keyword">implements</span> <span class="type">ReadWritable</span> {
+    <span class="keyword">public void</span> read() { System.out.println(<span class="string">"Reading"</span>); }
+    <span class="keyword">public void</span> write() { System.out.println(<span class="string">"Writing"</span>); }
 }</code></pre>
 
             <div class="quiz">
@@ -968,8 +986,8 @@ processPayment(<span class="keyword">new</span> <span class="type">BankAccount</
             </div>
         </div>
 
-        <!-- Section 13: Marker & Functional Interfaces -->
-        <div class="section" id="s13">
+        <!-- Section 15: Marker & Functional Interfaces -->
+        <div class="section" id="s15">
             <h2>Special Interface Types</h2>
 
             <h3>Marker Interfaces</h3>
@@ -990,35 +1008,22 @@ processPayment(<span class="keyword">new</span> <span class="type">BankAccount</
 }</code></pre>
 
             <h3>Functional Interfaces (Java 8+)</h3>
-            <div class="discuss">An interface with EXACTLY ONE abstract method - enables lambda expressions</div>
+            <div class="discuss">An interface with exactly ONE abstract method</div>
 
-            <pre><code><span class="annotation">@FunctionalInterface</span>  <span class="comment">// Optional but recommended</span>
+            <pre><code><span class="annotation">@FunctionalInterface</span>
 <span class="keyword">interface</span> <span class="type">Calculator</span> {
-    <span class="keyword">int</span> calculate(<span class="keyword">int</span> a, <span class="keyword">int</span> b);  <span class="comment">// Single abstract method</span>
+    <span class="keyword">int</span> calculate(<span class="keyword">int</span> a, <span class="keyword">int</span> b);
 }
 
-<span class="comment">// Traditional implementation</span>
-<span class="type">Calculator</span> add = <span class="keyword">new</span> <span class="type">Calculator</span>() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public int</span> calculate(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
-        <span class="keyword">return</span> a + b;
-    }
-};
-
-<span class="comment">// Lambda expression - much cleaner!</span>
-<span class="type">Calculator</span> addLambda = (a, b) -> a + b;
+<span class="comment">// Can use lambda (short syntax)!</span>
+<span class="type">Calculator</span> add = (a, b) -> a + b;
 <span class="type">Calculator</span> multiply = (a, b) -> a * b;
 
-System.out.println(addLambda.calculate(5, 3));  <span class="comment">// 8</span>
-System.out.println(multiply.calculate(5, 3));   <span class="comment">// 15</span></code></pre>
+System.out.println(add.calculate(5, 3));       <span class="comment">// 8</span>
+System.out.println(multiply.calculate(5, 3));  <span class="comment">// 15</span></code></pre>
 
             <div class="key-point">
-                <strong>Common Functional Interfaces in Java:</strong><br>
-                <code>Runnable</code> - no args, no return<br>
-                <code>Consumer&lt;T&gt;</code> - takes T, no return<br>
-                <code>Supplier&lt;T&gt;</code> - no args, returns T<br>
-                <code>Function&lt;T,R&gt;</code> - takes T, returns R<br>
-                <code>Predicate&lt;T&gt;</code> - takes T, returns boolean
+                <strong>Why useful?</strong> Enables concise lambda syntax for passing behavior as a parameter!
             </div>
         </div>
 
@@ -1026,8 +1031,8 @@ System.out.println(multiply.calculate(5, 3));   <span class="comment">// 15</spa
 
         <!-- ==================== STATIC KEYWORD ==================== -->
 
-        <!-- Section 14: Static Introduction -->
-        <div class="section" id="s14">
+        <!-- Section 16: Static Introduction -->
+        <div class="section" id="s16">
             <h2>Part 3: The Static Keyword</h2>
             <h3>The Problem: Shared Data Across Instances</h3>
 
@@ -1075,8 +1080,8 @@ System.out.println(u3.userCount);</code></pre>
             </div>
         </div>
 
-        <!-- Section 15: Static Variables -->
-        <div class="section" id="s15">
+        <!-- Section 17: Static Variables -->
+        <div class="section" id="s17">
             <h2>Static Variables (Class Variables)</h2>
 
             <pre><code><span class="keyword">class</span> <span class="type">User</span> {
@@ -1117,15 +1122,32 @@ System.out.println(u1.userCount);     <span class="comment">// 3 - also works bu
                 </div>
             </div>
 
+            <h3>Memory Layout</h3>
+            <pre style="text-align: center; background: #1e1e1e; color: #e0e0e0;"><code>
+┌─────────────────────────────────────────────────────────┐
+│                    <span style="color: #ff6b6b;">JVM MEMORY</span>                          │
+├─────────────────────┬───────────────────────────────────┤
+│   <span style="color: #ffd93d;">METHOD AREA</span>        │            <span style="color: #50fa7b;">HEAP</span>                    │
+│   (Class Data)      │         (Objects)                 │
+│                     │                                   │
+│  ┌───────────────┐  │  ┌─────────┐  ┌─────────┐        │
+│  │ User class    │  │  │ u1      │  │ u2      │        │
+│  │ ─────────────│  │  │ name:   │  │ name:   │        │
+│  │ <span style="color: #8be9fd;">userCount: 3</span> │  │  │ "Alice" │  │ "Bob"   │        │
+│  └───────────────┘  │  └─────────┘  └─────────┘        │
+│                     │                                   │
+│  <span style="color: #8be9fd;">ONE copy shared</span>     │  <span style="color: #50fa7b;">Each object has own copy</span>         │
+└─────────────────────┴───────────────────────────────────┘
+</code></pre>
+
             <div class="key-point">
-                <strong>Memory Visualization:</strong><br>
-                <code>User.userCount</code> → Stored in Method Area (shared)<br>
-                <code>u1.name, u2.name</code> → Stored in Heap (separate for each object)
+                <strong>Static</strong> = Method Area (one copy, shared by all)<br>
+                <strong>Instance</strong> = Heap (separate copy per object)
             </div>
         </div>
 
-        <!-- Section 16: Static Methods -->
-        <div class="section" id="s16">
+        <!-- Section 18: Static Methods -->
+        <div class="section" id="s18">
             <h2>Static Methods</h2>
 
             <div class="discuss">Methods that belong to the class, not instances...</div>
@@ -1185,8 +1207,8 @@ System.out.println(u1.userCount);     <span class="comment">// 3 - also works bu
             </div>
         </div>
 
-        <!-- Section 17: Static Block -->
-        <div class="section" id="s17">
+        <!-- Section 19: Static Block -->
+        <div class="section" id="s19">
             <h2>Static Blocks</h2>
 
             <div class="discuss">Code that runs ONCE when the class is first loaded...</div>
@@ -1244,8 +1266,8 @@ System.out.println(<span class="type">DatabaseConnection</span>.connectionString
             </div>
         </div>
 
-        <!-- Section 18: Static Inner Classes -->
-        <div class="section" id="s18">
+        <!-- Section 20: Static Nested Classes -->
+        <div class="section" id="s20">
             <h2>Static Nested Classes</h2>
 
             <div class="discuss">A class inside another class that doesn't need outer class instance...</div>
@@ -1307,8 +1329,8 @@ System.out.println(<span class="type">DatabaseConnection</span>.connectionString
             </div>
         </div>
 
-        <!-- Section 19: Static Import -->
-        <div class="section" id="s19">
+        <!-- Section 21: Static Import -->
+        <div class="section" id="s21">
             <h2>Static Import</h2>
 
             <div class="discuss">Import static members to use them without class name prefix...</div>
@@ -1335,8 +1357,8 @@ System.out.println(PI);</code></pre>
             </div>
         </div>
 
-        <!-- Section 20: Static Interview Gotchas -->
-        <div class="section" id="s20">
+        <!-- Section 22: Static Interview Gotchas -->
+        <div class="section" id="s22">
             <h2>Static: Interview Gotchas</h2>
 
             <div class="gotcha">
@@ -1438,8 +1460,8 @@ Constructor</code></pre>
             </div>
         </div>
 
-        <!-- Section 21: Summary -->
-        <div class="section" id="s21">
+        <!-- Section 23: Summary -->
+        <div class="section" id="s23">
             <h2>Summary: Key Takeaways</h2>
 
             <h3>Abstract Classes</h3>
@@ -1497,7 +1519,7 @@ Constructor</code></pre>
 
     <script>
         let currentSection = 1;
-        const totalSections = 21;
+        const totalSections = 23;
 
         function updateProgress() {
             const progress = (currentSection / totalSections) * 100;

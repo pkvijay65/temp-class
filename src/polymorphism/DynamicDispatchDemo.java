@@ -3,41 +3,48 @@ package polymorphism;
 import inheritance.*;
 import polymorphism.overriding.payment.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 // Demonstrates Runtime Polymorphism - Dynamic Method Dispatch
 public class DynamicDispatchDemo {
 
     public static void main(String[] args) {
-        System.out.println("=== Dynamic Method Dispatch Demo ===\n");
+        UPIPayment upiPayment = new UPIPayment(80, "sa");
 
-        // Parent reference, different child objects
-        User[] users = {
-            new Customer("Alice", "alice@email.com", "123 Main St"),
-            new Seller("Bob", "bob@email.com", "Bob's Store"),
-            new Admin("Charlie", "charlie@email.com")
-        };
+        CreditCardPayment creditCardPayment = new CreditCardPayment(80, "sa");
 
-        // Same method call, different behaviors!
-        System.out.println("Calling getPermissions() on each user:");
-        System.out.println("---");
-        for (User u : users) {
-            System.out.print(u.getClass().getSimpleName() + ": ");
-            u.getPermissions();  // Resolved at RUNTIME based on actual object
-        }
+//        Payment payment = new Payment(80);
+//        payment.process();
 
-        System.out.println("\n=== Payment System Demo ===\n");
 
-        Payment[] payments = {
-            new Payment(100),
-            new CreditCardPayment(100, "1234567890123456"),
-            new UPIPayment(100, "user@paytm")
-        };
+//        Payment payment = new Payment(80);
+//        payment.process();
 
-        for (Payment p : payments) {
-            System.out.println("--- " + p.getClass().getSimpleName() + " ---");
-            p.process();
-            System.out.println("Fee: $" + p.calculateFee());
-            System.out.println("Total: $" + p.getTotal());
-            System.out.println();
-        }
+        Payment payment = new UPIPayment(80, "sa");
+        payment.process();
+
+        Payment upiPayment2 = new UPIPayment(80, "sa");
+        ArrayList<Integer> list1 = new ArrayList<>();
+        list1.size();
+
+        //Collections Framework
+        List<Integer> list2 = new LinkedList<>();
+        list2.addLast(80);
+        list2.add(90);
+        list2.remove(0);
+
+
+        Set<Integer> set1 = new HashSet<>();
+        set1.add(80);
+
+
+
+
+
     }
 }

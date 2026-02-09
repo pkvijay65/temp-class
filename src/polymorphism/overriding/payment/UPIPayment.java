@@ -9,7 +9,9 @@ public class UPIPayment extends Payment {
     }
 
     public void process() {
+
         System.out.println("UPI transfer to: " + upiId);
+        System.out.println("Amount to pay: " + amount);
     }
 
     public void upiSpecificMethod(){
