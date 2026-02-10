@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OOP-4: Interfaces, Abstract Classes & Static Keyword</title>
+    <title>9th Feb: Abstract Classes & Interfaces</title>
     <style>
         :root {
             --bg-primary: #1a1a2e;
@@ -159,8 +159,8 @@
     <div class="progress" id="progress"></div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">🌓</button>
     <div class="container">
-        <h1>OOP-4: Interfaces, Abstract Classes & Static</h1>
-        <p class="subtitle">Backend LLD | Building on Inheritance & Polymorphism</p>
+        <h1>9th Feb: Abstract Classes & Interfaces</h1>
+        <p class="subtitle">Backend LLD | OOP Concepts</p>
 
         <!-- Section 1: Quick Recap -->
         <div class="section visible" id="s1">
@@ -1027,441 +1027,8 @@ System.out.println(multiply.calculate(5, 3));  <span class="comment">// 15</span
             </div>
         </div>
 
-        <div class="topic-divider"></div>
-
-        <!-- ==================== STATIC KEYWORD ==================== -->
-
-        <!-- Section 16: Static Introduction -->
+        <!-- Section 16: Summary -->
         <div class="section" id="s16">
-            <h2>Part 3: The Static Keyword</h2>
-            <h3>The Problem: Shared Data Across Instances</h3>
-
-            <div class="discuss">You're building a user tracking system...</div>
-
-            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
-    <span class="type">String</span> name;
-    <span class="keyword">int</span> userCount = 0;  <span class="comment">// Track total users</span>
-
-    <span class="keyword">public</span> User(<span class="type">String</span> name) {
-        <span class="keyword">this</span>.name = name;
-        userCount++;  <span class="comment">// Increment counter</span>
-    }
-}
-
-<span class="type">User</span> u1 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Alice"</span>);
-<span class="type">User</span> u2 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Bob"</span>);
-<span class="type">User</span> u3 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Charlie"</span>);
-
-System.out.println(u1.userCount);  <span class="comment">// What's the output?</span>
-System.out.println(u2.userCount);
-System.out.println(u3.userCount);</code></pre>
-
-            <div class="quiz">
-                <div class="quiz-q">What does u1.userCount, u2.userCount, u3.userCount print?</div>
-                <div class="quiz-options">
-                    <label><input type="radio" name="q8" value="a" onclick="checkQuiz(this, true)"> 1, 1, 1 - each instance has its own counter</label>
-                    <label><input type="radio" name="q8" value="b" onclick="checkQuiz(this, false)"> 3, 3, 3 - shared counter</label>
-                    <label><input type="radio" name="q8" value="c" onclick="checkQuiz(this, false)"> 1, 2, 3 - cumulative count</label>
-                </div>
-                <div class="quiz-answer"></div>
-            </div>
-
-            <div class="hideable">
-                <button class="hideable-btn" onclick="revealHideable(this)">Why is this a problem?</button>
-                <div class="hideable-content">
-                    <ul>
-                        <li>Each User object has its OWN copy of userCount</li>
-                        <li>When u1 is created, u1's userCount becomes 1</li>
-                        <li>When u2 is created, u2's userCount becomes 1 (different copy!)</li>
-                        <li>The counters are completely independent</li>
-                        <li><strong>We need a variable that belongs to the CLASS, not individual objects!</strong></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 17: Static Variables -->
-        <div class="section" id="s17">
-            <h2>Static Variables (Class Variables)</h2>
-
-            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
-    <span class="type">String</span> name;                  <span class="comment">// Instance variable - each object has own copy</span>
-    <span class="keyword">static int</span> userCount = 0;     <span class="comment">// Static variable - ONE copy shared by ALL</span>
-
-    <span class="keyword">public</span> User(<span class="type">String</span> name) {
-        <span class="keyword">this</span>.name = name;
-        userCount++;  <span class="comment">// Same variable for ALL instances</span>
-    }
-}
-
-<span class="type">User</span> u1 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Alice"</span>);    <span class="comment">// userCount = 1</span>
-<span class="type">User</span> u2 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Bob"</span>);      <span class="comment">// userCount = 2</span>
-<span class="type">User</span> u3 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Charlie"</span>); <span class="comment">// userCount = 3</span>
-
-System.out.println(<span class="type">User</span>.userCount);  <span class="comment">// 3 - access via class name!</span>
-System.out.println(u1.userCount);     <span class="comment">// 3 - also works but not recommended</span></code></pre>
-
-            <div class="comparison">
-                <div>
-                    <h3>Instance Variable</h3>
-                    <ul>
-                        <li>One copy per object</li>
-                        <li>Created when object is created</li>
-                        <li>Accessed via object reference</li>
-                        <li>Different values for each object</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3>Static Variable</h3>
-                    <ul>
-                        <li>One copy per class</li>
-                        <li>Created when class is loaded</li>
-                        <li>Accessed via class name</li>
-                        <li>Same value for all objects</li>
-                    </ul>
-                </div>
-            </div>
-
-            <h3>Memory Layout</h3>
-            <pre style="text-align: center; background: #1e1e1e; color: #e0e0e0;"><code>
-┌─────────────────────────────────────────────────────────┐
-│                    <span style="color: #ff6b6b;">JVM MEMORY</span>                          │
-├─────────────────────┬───────────────────────────────────┤
-│   <span style="color: #ffd93d;">METHOD AREA</span>        │            <span style="color: #50fa7b;">HEAP</span>                    │
-│   (Class Data)      │         (Objects)                 │
-│                     │                                   │
-│  ┌───────────────┐  │  ┌─────────┐  ┌─────────┐        │
-│  │ User class    │  │  │ u1      │  │ u2      │        │
-│  │ ─────────────│  │  │ name:   │  │ name:   │        │
-│  │ <span style="color: #8be9fd;">userCount: 3</span> │  │  │ "Alice" │  │ "Bob"   │        │
-│  └───────────────┘  │  └─────────┘  └─────────┘        │
-│                     │                                   │
-│  <span style="color: #8be9fd;">ONE copy shared</span>     │  <span style="color: #50fa7b;">Each object has own copy</span>         │
-└─────────────────────┴───────────────────────────────────┘
-</code></pre>
-
-            <div class="key-point">
-                <strong>Static</strong> = Method Area (one copy, shared by all)<br>
-                <strong>Instance</strong> = Heap (separate copy per object)
-            </div>
-        </div>
-
-        <!-- Section 18: Static Methods -->
-        <div class="section" id="s18">
-            <h2>Static Methods</h2>
-
-            <div class="discuss">Methods that belong to the class, not instances...</div>
-
-            <pre><code><span class="keyword">class</span> <span class="type">MathUtils</span> {
-    <span class="comment">// Static method - utility function</span>
-    <span class="keyword">public static int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
-        <span class="keyword">return</span> a + b;
-    }
-
-    <span class="keyword">public static int</span> max(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
-        <span class="keyword">return</span> a > b ? a : b;
-    }
-}
-
-<span class="comment">// Call without creating an object!</span>
-<span class="keyword">int</span> sum = <span class="type">MathUtils</span>.add(5, 3);
-<span class="keyword">int</span> maximum = <span class="type">MathUtils</span>.max(10, 7);</code></pre>
-
-            <h3>Static Method Restrictions</h3>
-            <div class="quiz">
-                <div class="quiz-q">Can a static method access instance variables directly?</div>
-                <div class="quiz-options">
-                    <label><input type="radio" name="q9" value="a" onclick="checkQuiz(this, false)"> Yes, always</label>
-                    <label><input type="radio" name="q9" value="b" onclick="checkQuiz(this, true)"> No - static methods can't access instance members directly</label>
-                    <label><input type="radio" name="q9" value="c" onclick="checkQuiz(this, false)"> Only if the variable is public</label>
-                </div>
-                <div class="quiz-answer"></div>
-            </div>
-
-            <div class="hideable">
-                <button class="hideable-btn" onclick="revealHideable(this)">Why This Restriction?</button>
-                <div class="hideable-content">
-                    <pre><code><span class="keyword">class</span> <span class="type">User</span> {
-    <span class="type">String</span> name;              <span class="comment">// Instance variable</span>
-    <span class="keyword">static int</span> count;         <span class="comment">// Static variable</span>
-
-    <span class="keyword">static void</span> printInfo() {
-        System.out.println(count);   <span class="comment">// OK - static can access static</span>
-        System.out.println(name);    <span class="comment">// ERROR! Which 'name'? No object reference!</span>
-    }
-}</code></pre>
-                    <ul>
-                        <li>Static methods can be called WITHOUT creating an object</li>
-                        <li><code>User.printInfo()</code> - there's no object here!</li>
-                        <li>Instance variables need an object to exist</li>
-                        <li>If there's no object, which <code>name</code> would it access?</li>
-                    </ul>
-                    <div class="key-point" style="margin-top: 10px;">
-                        <strong>The Rule:</strong><br>
-                        Static → Static: OK<br>
-                        Static → Instance: NOT OK<br>
-                        Instance → Static: OK<br>
-                        Instance → Instance: OK
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 19: Static Block -->
-        <div class="section" id="s19">
-            <h2>Static Blocks</h2>
-
-            <div class="discuss">Code that runs ONCE when the class is first loaded...</div>
-
-            <pre><code><span class="keyword">class</span> <span class="type">DatabaseConnection</span> {
-    <span class="keyword">static</span> <span class="type">String</span> connectionString;
-    <span class="keyword">static</span> <span class="type">Connection</span> connection;
-
-    <span class="comment">// Static block - runs when class is loaded</span>
-    <span class="keyword">static</span> {
-        System.out.println(<span class="string">"Loading database driver..."</span>);
-        connectionString = loadFromConfig();  <span class="comment">// Complex initialization</span>
-        connection = createConnection();
-        System.out.println(<span class="string">"Database ready!"</span>);
-    }
-
-    <span class="keyword">private static</span> <span class="type">String</span> loadFromConfig() {
-        <span class="comment">// Read from file, environment, etc.</span>
-        <span class="keyword">return</span> <span class="string">"jdbc:mysql://localhost:3306/mydb"</span>;
-    }
-}
-
-<span class="comment">// First access to class triggers static block</span>
-System.out.println(<span class="type">DatabaseConnection</span>.connectionString);</code></pre>
-
-            <h3>Multiple Static Blocks</h3>
-            <pre><code><span class="keyword">class</span> <span class="type">Demo</span> {
-    <span class="keyword">static</span> { System.out.println(<span class="string">"Static block 1"</span>); }
-    <span class="keyword">static</span> { System.out.println(<span class="string">"Static block 2"</span>); }
-
-    <span class="keyword">public</span> Demo() {
-        System.out.println(<span class="string">"Constructor"</span>);
-    }
-}
-
-<span class="type">Demo</span> d1 = <span class="keyword">new</span> <span class="type">Demo</span>();
-<span class="type">Demo</span> d2 = <span class="keyword">new</span> <span class="type">Demo</span>();</code></pre>
-
-            <div class="quiz">
-                <div class="quiz-q">What's the output?</div>
-                <div class="quiz-options">
-                    <label><input type="radio" name="q10" value="a" onclick="checkQuiz(this, false)"> Constructor, Constructor</label>
-                    <label><input type="radio" name="q10" value="b" onclick="checkQuiz(this, false)"> Static block 1, Static block 2, Static block 1, Static block 2, Constructor, Constructor</label>
-                    <label><input type="radio" name="q10" value="c" onclick="checkQuiz(this, true)"> Static block 1, Static block 2, Constructor, Constructor</label>
-                </div>
-                <div class="quiz-answer"></div>
-            </div>
-
-            <div class="key-point">
-                <strong>Static block execution:</strong><br>
-                - Runs ONCE when class is first loaded<br>
-                - Runs BEFORE any constructor<br>
-                - Multiple static blocks run in order (top to bottom)<br>
-                - Used for complex static initialization
-            </div>
-        </div>
-
-        <!-- Section 20: Static Nested Classes -->
-        <div class="section" id="s20">
-            <h2>Static Nested Classes</h2>
-
-            <div class="discuss">A class inside another class that doesn't need outer class instance...</div>
-
-            <pre><code><span class="keyword">class</span> <span class="type">University</span> {
-    <span class="type">String</span> name;
-
-    <span class="comment">// Non-static inner class - needs University instance</span>
-    <span class="keyword">class</span> <span class="type">Student</span> {
-        <span class="keyword">void</span> printUni() {
-            System.out.println(name);  <span class="comment">// Can access outer class's instance variable</span>
-        }
-    }
-
-    <span class="comment">// Static nested class - independent of University instance</span>
-    <span class="keyword">static class</span> <span class="type">Address</span> {
-        <span class="type">String</span> city;
-
-        <span class="keyword">void</span> printAddress() {
-            <span class="comment">// System.out.println(name); // ERROR! Can't access instance variable</span>
-            System.out.println(city);
-        }
-    }
-}
-
-<span class="comment">// Creating non-static inner class - needs outer instance</span>
-<span class="type">University</span> uni = <span class="keyword">new</span> <span class="type">University</span>();
-<span class="type">University</span>.<span class="type">Student</span> student = uni.<span class="keyword">new</span> <span class="type">Student</span>();
-
-<span class="comment">// Creating static nested class - NO outer instance needed</span>
-<span class="type">University</span>.<span class="type">Address</span> address = <span class="keyword">new</span> <span class="type">University</span>.<span class="type">Address</span>();</code></pre>
-
-            <div class="hideable">
-                <button class="hideable-btn" onclick="revealHideable(this)">When to use Static Nested Class?</button>
-                <div class="hideable-content">
-                    <ul>
-                        <li><strong>Logical grouping:</strong> Address is related to University but doesn't need a University instance</li>
-                        <li><strong>Encapsulation:</strong> Hide helper class that's only used by outer class</li>
-                        <li><strong>Builder pattern:</strong> <code>User.Builder</code> is often a static nested class</li>
-                        <li><strong>Memory efficiency:</strong> No implicit reference to outer class</li>
-                    </ul>
-                    <pre style="margin: 10px 0;"><code><span class="comment">// Common pattern: Builder</span>
-<span class="keyword">class</span> <span class="type">User</span> {
-    <span class="keyword">private</span> <span class="type">String</span> name;
-    <span class="keyword">private int</span> age;
-
-    <span class="keyword">static class</span> <span class="type">Builder</span> {
-        <span class="keyword">private</span> <span class="type">String</span> name;
-        <span class="keyword">private int</span> age;
-
-        <span class="type">Builder</span> name(<span class="type">String</span> name) { <span class="keyword">this</span>.name = name; <span class="keyword">return this</span>; }
-        <span class="type">Builder</span> age(<span class="keyword">int</span> age) { <span class="keyword">this</span>.age = age; <span class="keyword">return this</span>; }
-        <span class="type">User</span> build() { <span class="keyword">return new</span> <span class="type">User</span>(<span class="keyword">this</span>); }
-    }
-}
-
-<span class="type">User</span> user = <span class="keyword">new</span> <span class="type">User</span>.<span class="type">Builder</span>().name(<span class="string">"Alice"</span>).age(25).build();</code></pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 21: Static Import -->
-        <div class="section" id="s21">
-            <h2>Static Import</h2>
-
-            <div class="discuss">Import static members to use them without class name prefix...</div>
-
-            <pre><code><span class="comment">// Without static import</span>
-<span class="keyword">double</span> result = <span class="type">Math</span>.sqrt(<span class="type">Math</span>.pow(3, 2) + <span class="type">Math</span>.pow(4, 2));
-System.out.println(<span class="type">Math</span>.PI);
-
-<span class="comment">// With static import</span>
-<span class="keyword">import static</span> java.lang.Math.*;
-
-<span class="keyword">double</span> result = sqrt(pow(3, 2) + pow(4, 2));  <span class="comment">// Cleaner!</span>
-System.out.println(PI);</code></pre>
-
-            <div class="gotcha">
-                <div class="gotcha-title">GOTCHA: Static Import Conflicts</div>
-                <pre><code><span class="keyword">import static</span> java.lang.Integer.MAX_VALUE;
-<span class="keyword">import static</span> java.lang.Long.MAX_VALUE;  <span class="comment">// ???</span></code></pre>
-                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
-                <div class="gotcha-answer">
-                    <strong>Compilation Error!</strong> Both imports bring in <code>MAX_VALUE</code> - ambiguous reference.
-                    <p style="margin-top: 10px;"><strong>Best Practice:</strong> Use static imports sparingly for very common utilities like <code>Math.*</code> or test assertions.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 22: Static Interview Gotchas -->
-        <div class="section" id="s22">
-            <h2>Static: Interview Gotchas</h2>
-
-            <div class="gotcha">
-                <div class="gotcha-title">GOTCHA #1: Can we override static methods?</div>
-                <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
-    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Parent"</span>); }
-}
-
-<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
-    <span class="keyword">static void</span> greet() { System.out.println(<span class="string">"Child"</span>); }
-}
-
-<span class="type">Parent</span> p = <span class="keyword">new</span> <span class="type">Child</span>();
-p.greet();  <span class="comment">// What prints?</span></code></pre>
-                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
-                <div class="gotcha-answer">
-                    <strong>Prints "Parent"!</strong>
-                    <ul>
-                        <li>Static methods are NOT overridden - they are HIDDEN</li>
-                        <li>Method call resolved at compile time based on reference type</li>
-                        <li>Reference type is Parent, so Parent.greet() is called</li>
-                        <li>This is "method hiding", not polymorphism</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="gotcha">
-                <div class="gotcha-title">GOTCHA #2: Can 'this' be used in static context?</div>
-                <pre><code><span class="keyword">class</span> <span class="type">Example</span> {
-    <span class="keyword">static void</span> test() {
-        System.out.println(<span class="keyword">this</span>);  <span class="comment">// ???</span>
-    }
-}</code></pre>
-                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
-                <div class="gotcha-answer">
-                    <strong>Compilation Error!</strong>
-                    <ul>
-                        <li><code>this</code> refers to "current object"</li>
-                        <li>Static methods can be called without any object</li>
-                        <li>If there's no object, what would <code>this</code> refer to?</li>
-                        <li>Same reason: <code>super</code> cannot be used in static context</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="gotcha">
-                <div class="gotcha-title">GOTCHA #3: Execution order question</div>
-                <pre><code><span class="keyword">class</span> <span class="type">Test</span> {
-    <span class="keyword">static</span> { System.out.println(<span class="string">"Static block"</span>); }
-    { System.out.println(<span class="string">"Instance block"</span>); }
-    <span class="type">Test</span>() { System.out.println(<span class="string">"Constructor"</span>); }
-
-    <span class="keyword">public static void</span> main(<span class="type">String</span>[] args) {
-        System.out.println(<span class="string">"Main start"</span>);
-        <span class="keyword">new</span> <span class="type">Test</span>();
-        <span class="keyword">new</span> <span class="type">Test</span>();
-    }
-}</code></pre>
-                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
-                <div class="gotcha-answer">
-                    <strong>Output:</strong>
-                    <pre style="margin: 10px 0; background: #1a1a2e;"><code>Static block
-Main start
-Instance block
-Constructor
-Instance block
-Constructor</code></pre>
-                    <strong>Order:</strong>
-                    <ol>
-                        <li>Static block (once, when class loads)</li>
-                        <li>Main method starts</li>
-                        <li>For each new object: Instance block → Constructor</li>
-                    </ol>
-                </div>
-            </div>
-
-            <div class="gotcha">
-                <div class="gotcha-title">GOTCHA #4: Can static block throw exception?</div>
-                <pre><code><span class="keyword">class</span> <span class="type">Config</span> {
-    <span class="keyword">static</span> <span class="type">String</span> value;
-
-    <span class="keyword">static</span> {
-        <span class="keyword">try</span> {
-            value = readFromFile();  <span class="comment">// Might throw IOException</span>
-        } <span class="keyword">catch</span> (<span class="type">IOException</span> e) {
-            <span class="keyword">throw new</span> <span class="type">ExceptionInInitializerError</span>(e);
-        }
-    }
-}</code></pre>
-                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
-                <div class="gotcha-answer">
-                    <ul>
-                        <li>Static blocks CAN throw unchecked exceptions</li>
-                        <li>For checked exceptions, must handle or wrap in unchecked</li>
-                        <li>If static block throws, class fails to load with <code>ExceptionInInitializerError</code></li>
-                        <li>Subsequent attempts throw <code>NoClassDefFoundError</code></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 23: Summary -->
-        <div class="section" id="s23">
             <h2>Summary: Key Takeaways</h2>
 
             <h3>Abstract Classes</h3>
@@ -1478,21 +1045,10 @@ Constructor</code></pre>
             <div class="key-point">
                 <ul>
                     <li>Pure contract - defines WHAT, not HOW</li>
-                    <li>All methods implicitly public abstract (unless default/static)</li>
-                    <li>All fields implicitly public static final</li>
+                    <li>All methods implicitly public abstract (pre-Java 8)</li>
+                    <li>All fields implicitly public static final (constants)</li>
                     <li>Multiple implementation allowed - solves diamond problem</li>
                     <li>Use for CAN-DO capabilities and multiple inheritance</li>
-                </ul>
-            </div>
-
-            <h3>Static Keyword</h3>
-            <div class="key-point">
-                <ul>
-                    <li>Belongs to class, not instance</li>
-                    <li>Static variables: shared across all instances</li>
-                    <li>Static methods: can't access instance members, no this/super</li>
-                    <li>Static blocks: run once when class loads</li>
-                    <li>Static nested class: doesn't need outer class instance</li>
                 </ul>
             </div>
 
@@ -1500,11 +1056,9 @@ Constructor</code></pre>
             <table>
                 <tr><th>Scenario</th><th>Use</th></tr>
                 <tr><td>Shared code + some methods must be implemented by child</td><td>Abstract Class</td></tr>
-                <tr><td>Define a capability/contract that many unrelated classes can have</td><td>Interface</td></tr>
+                <tr><td>Define a capability/contract for unrelated classes</td><td>Interface</td></tr>
                 <tr><td>Need multiple inheritance of behavior</td><td>Interface</td></tr>
-                <tr><td>Utility methods (Math, Collections)</td><td>Static methods</td></tr>
-                <tr><td>Constants shared by all instances</td><td>Static final variables</td></tr>
-                <tr><td>One-time class-level initialization</td><td>Static block</td></tr>
+                <tr><td>Has shared attributes</td><td>Abstract Class</td></tr>
             </table>
         </div>
 
@@ -1519,8 +1073,7 @@ Constructor</code></pre>
 
     <script>
         let currentSection = 1;
-        const totalSections = 23;
-
+        const totalSections = 16;
         function updateProgress() {
             const progress = (currentSection / totalSections) * 100;
             document.getElementById('progress').style.width = progress + '%';
