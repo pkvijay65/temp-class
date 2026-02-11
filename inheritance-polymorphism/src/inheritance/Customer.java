@@ -1,5 +1,11 @@
 package inheritance;
 
+/**
+ * LEARNING OUTCOME: Inheritance & Method Overriding
+ *
+ * Customer IS-A User, inherits all User's members,
+ * and can override methods for custom behavior.
+ */
 public class Customer extends User {
     private String shippingAddress;
 
@@ -12,17 +18,16 @@ public class Customer extends User {
         super(name, email);
     }
 
-    public void placeOrder(int items) {
-        while (items > 0) {
-//            System.out.println(name + " placed an order to: " + shippingAddress);
-            placeOrder();
-            items--;
-        }
-    }
-
-
+    // Customer-specific method
     public void placeOrder() {
         System.out.println(name + " placed an order to: " + shippingAddress);
+    }
+
+    // Overloaded method
+    public void placeOrder(int items) {
+        for (int i = 0; i < items; i++) {
+            placeOrder();
+        }
     }
 
     @Override
@@ -35,6 +40,4 @@ public class Customer extends User {
     public void getPermissions() {
         System.out.println("Customer access: browse, cart, orders");
     }
-
-
 }

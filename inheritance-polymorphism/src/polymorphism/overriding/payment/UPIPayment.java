@@ -1,5 +1,11 @@
 package polymorphism.overriding.payment;
 
+/**
+ * LEARNING OUTCOME: Method Overriding
+ *
+ * UPIPayment overrides process() from Payment
+ * to provide UPI-specific implementation.
+ */
 public class UPIPayment extends Payment {
     private String upiId;
 
@@ -8,15 +14,13 @@ public class UPIPayment extends Payment {
         this.upiId = upiId;
     }
 
+    @Override
     public void process() {
-
-        System.out.println("UPI transfer to: " + upiId);
-        System.out.println("Amount to pay: " + amount);
+        System.out.println("Processing UPI payment of $" + amount);
+        System.out.println("UPI ID: " + upiId);
+        System.out.println("Sending payment request...");
+        System.out.println("Payment successful!");
     }
 
-    public void upiSpecificMethod(){
-        System.out.println("UPI transfer to: " + upiId);
-    }
-
-    // No override of calculateFee() - inherits 0 fee from parent!
+    // No override of calculateFee() - inherits 0 fee from parent
 }

@@ -1,9 +1,5 @@
 package interfaces;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * LEARNING OUTCOME: Default Method Conflict Resolution
  *
@@ -47,12 +43,7 @@ class AuditedLogger implements Logger, Auditor {
 // Demo
 class DefaultMethodConflictDemo {
     public static void main(String[] args) {
-//        AuditedLogger logger = new AuditedLogger();
-//        logger.log("User logged in");  // Uses Logger's implementation
-
-
-        List<Integer > list = new ArrayList<>();
-        List<Integer> list2 = new LinkedList<>();
-
+        AuditedLogger logger = new AuditedLogger();
+        logger.log("User logged in");  // Uses Logger's implementation
     }
 }
