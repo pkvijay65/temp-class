@@ -5,6 +5,10 @@ package interfaces;
  */
 public class InterfaceDemo {
     public static void main(String[] args) {
+
+        System.out.println(Calculator.pi);
+
+
         System.out.println("=== Interface Demo ===\n");
 
         // 1. Basic Interface Implementation

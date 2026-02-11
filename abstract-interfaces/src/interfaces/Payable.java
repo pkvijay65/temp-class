@@ -1,9 +1,13 @@
 package interfaces;
 
 /**
- * Interface demonstrating basic interface concepts.
- * All methods are implicitly public abstract.
- * All fields are implicitly public static final.
+ * LEARNING OUTCOME: Interface Basics
+ *
+ * Key points:
+ * - All methods are implicitly public abstract (unless default/static)
+ * - All fields are implicitly public static final (constants)
+ * - Java 8+ allows default methods (with implementation)
+ * - Java 8+ allows static methods (utility methods)
  */
 public interface Payable {
     // Constant (implicitly public static final)

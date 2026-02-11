@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static & Final Keywords</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-code: #0f0f23;
+            --bg-table-header: #2d2d44;
+            --text-primary: #eee;
+            --text-secondary: #888;
+            --border-color: #444;
+            --hidden-cell-bg: #3d3d5c;
+            --hidden-cell-hover: #4d4d6c;
+            --quiz-bg: #2d132c;
+            --quiz-option-bg: #1a1a2e;
+            --quiz-option-hover: #3d3d5c;
+            --discuss-bg: #1e3a5f;
+            --gotcha-bg: #3d1a1a;
+            --key-point-bg: #1a3d1a;
+            --comparison-bg: #0f0f23;
+            --nav-bg: #333;
+            --nav-hover: #555;
+        }
+
+        body.light-theme {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-code: #2d2d2d;
+            --bg-table-header: #e8e8e8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --border-color: #d0d0d0;
+            --hidden-cell-bg: #d8d8d8;
+            --hidden-cell-hover: #c8c8c8;
+            --quiz-bg: #fce4ec;
+            --quiz-option-bg: #fff;
+            --quiz-option-hover: #f5f5f5;
+            --discuss-bg: #e3f2fd;
+            --gotcha-bg: #ffebee;
+            --key-point-bg: #e8f5e9;
+            --comparison-bg: #f5f5f5;
+            --nav-bg: #e0e0e0;
+            --nav-hover: #d0d0d0;
+            --code-text: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-primary); color: var(--text-primary); padding: 30px 40px; line-height: 1.8; transition: background 0.3s, color 0.3s; font-size: 1.4rem; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { color: #00d4ff; text-align: center; margin-bottom: 15px; font-size: 2.8em; }
+        h2 { color: #ff6b6b; margin: 25px 0 15px; border-bottom: 3px solid #ff6b6b; padding-bottom: 8px; font-size: 2em; }
+        h3 { color: #ffd93d; margin: 20px 0 12px; font-size: 1.5em; }
+        .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; font-size: 1.2em; }
+        .section { background: var(--bg-secondary); border-radius: 12px; padding: 30px 35px; margin: 20px 0; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section.visible { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        pre { background: var(--bg-code); padding: 20px; border-radius: 10px; overflow-x: auto; font-size: 1.25rem; border-left: 5px solid #00d4ff; line-height: 1.6; }
+        code { font-family: 'Fira Code', 'Consolas', monospace; }
+        :not(pre) > code { background: #2d2d44; color: #f8f8f2; padding: 3px 8px; border-radius: 4px; font-size: 1.1em; }
+        .keyword { color: #ff79c6; }
+        .type { color: #8be9fd; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .annotation { color: #50fa7b; }
+        body.light-theme pre { background: #1e1e1e; color: #d4d4d4; }
+        body.light-theme .keyword { color: #c586c0; }
+        body.light-theme .type { color: #4ec9b0; }
+        body.light-theme .string { color: #ce9178; }
+        body.light-theme .comment { color: #6a9955; }
+        body.light-theme .annotation { color: #dcdcaa; }
+        body.light-theme code { color: #d4d4d4; }
+        body.light-theme h1 { color: #0077b6; }
+        body.light-theme h2 { color: #c9184a; border-color: #c9184a; }
+        body.light-theme h3 { color: #b45309; }
+        body.light-theme th { color: #0077b6; }
+        body.light-theme .quiz-q { color: #c9184a; }
+        body.light-theme .gotcha-title { color: #c9184a; }
+        body.light-theme .gotcha { border-color: #c9184a; }
+        body.light-theme .quiz { border-color: #c9184a; }
+        body.light-theme .key-point { border-color: #2e7d32; }
+        body.light-theme .discuss { border-color: #b45309; background: #fff3e0; }
+        body.light-theme .hidden-cell.revealed.yes { color: #2e7d32; font-weight: bold; }
+        body.light-theme .hidden-cell.revealed.no { color: #c9184a; font-weight: bold; }
+        body.light-theme .correct { background: #c8e6c9; color: #1b5e20; }
+        body.light-theme .incorrect { background: #ffcdd2; color: #b71c1c; }
+        body.light-theme .gotcha-answer { background: rgba(0,0,0,0.05); }
+        body.light-theme .highlight { background: #fff59d; }
+        body.light-theme :not(pre) > code { background: #1e1e1e; color: #f8f8f2; }
+        .quiz { background: var(--quiz-bg); border: 3px solid #ff6b6b; padding: 25px; border-radius: 10px; margin: 20px 0; }
+        .quiz-q { font-weight: bold; color: #ff6b6b; margin-bottom: 15px; font-size: 1.2em; }
+        .quiz-options { margin: 15px 0; }
+        .quiz-options label { display: block; padding: 12px 20px; margin: 8px 0; background: var(--quiz-option-bg); border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 1.1em; }
+        .quiz-options label:hover { background: var(--quiz-option-hover); }
+        .quiz-answer { display: none; padding: 15px; margin-top: 15px; border-radius: 6px; font-size: 1.1em; }
+        .correct { background: #1b4332; color: #95d5b2; }
+        .incorrect { background: #5c1a1a; color: #f8d7da; }
+        .discuss { background: var(--discuss-bg); border-left: 5px solid #ffd93d; padding: 18px; margin: 15px 0; border-radius: 0 10px 10px 0; font-style: italic; font-size: 1.15em; }
+        .gotcha { background: var(--gotcha-bg); border: 3px dashed #ff6b6b; padding: 25px; border-radius: 10px; margin: 20px 0; }
+        .gotcha-title { color: #ff6b6b; font-weight: bold; margin-bottom: 12px; font-size: 1.2em; }
+        .gotcha-answer { display: none; margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 1.1em; }
+        .gotcha-answer.revealed { display: block; animation: fadeIn 0.3s; }
+        .gotcha-reveal-btn { background: #ff6b6b; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 12px; font-size: 1.1em; }
+        .gotcha-reveal-btn:hover { background: #ff5252; }
+        .gotcha-reveal-btn.revealed { background: #6c757d; }
+        .gotcha-reveal-btn.revealed:hover { background: #5a6268; }
+        .key-point { background: var(--key-point-bg); padding: 18px 22px; border-radius: 10px; margin: 15px 0; border-left: 5px solid #50fa7b; font-size: 1.1em; }
+        .key-point ul { padding-left: 25px; }
+        .key-point li { margin: 8px 0; }
+        .progress { position: fixed; top: 0; left: 0; height: 6px; background: #00d4ff; transition: width 0.3s; z-index: 1000; }
+        .nav { position: fixed; bottom: 25px; right: 25px; display: flex; gap: 12px; }
+        .nav button { background: var(--nav-bg); color: var(--text-primary); border: none; padding: 14px 22px; border-radius: 6px; cursor: pointer; font-size: 1.1em; }
+        .nav button:hover { background: var(--nav-hover); }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1.1em; }
+        th, td { border: 1px solid var(--border-color); padding: 14px 16px; text-align: left; }
+        th { background: var(--bg-table-header); color: #00d4ff; font-size: 1.05em; }
+        .highlight { background: #ffd93d; color: #000; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+        .theme-toggle { position: fixed; top: 20px; right: 25px; background: var(--nav-bg); border: none; padding: 10px 14px; border-radius: 20px; cursor: pointer; font-size: 1.4em; z-index: 1001; }
+        .theme-toggle:hover { background: var(--nav-hover); }
+        .hidden-cell {
+            background: var(--hidden-cell-bg);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            user-select: none;
+            font-size: 1.1em;
+        }
+        .hidden-cell::before { content: "?"; color: var(--text-secondary); font-weight: bold; font-size: 1.2em; }
+        .hidden-cell.revealed { background: transparent; cursor: default; }
+        .hidden-cell.revealed::before { content: none; }
+        .hidden-cell.revealed.yes { color: #50fa7b; font-weight: bold; }
+        .hidden-cell.revealed.no { color: #ff6b6b; font-weight: bold; }
+        .clickable-row { cursor: pointer; transition: background 0.2s; }
+        .clickable-row:hover { background: var(--hidden-cell-hover); }
+        .clickable-row.revealed { cursor: default; }
+        .clickable-row.revealed:hover { background: transparent; }
+        .table-reset-btn { background: var(--nav-bg); color: var(--text-primary); border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 1em; margin-top: 12px; }
+        .table-reset-btn:hover { background: var(--nav-hover); }
+        .hideable { margin: 20px 0; }
+        .hideable-content { display: none; margin-top: 15px; padding: 18px; background: var(--key-point-bg); border-radius: 10px; border-left: 5px solid #50fa7b; font-size: 1.1em; }
+        .hideable-content.revealed { display: block; animation: fadeIn 0.3s; }
+        .hideable-content ul { margin: 0; padding-left: 25px; }
+        .hideable-content li { margin: 8px 0; }
+        .hideable-btn { background: #50fa7b; color: #000; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: 500; }
+        .hideable-btn:hover { background: #3dd668; }
+        .hideable-btn.revealed { display: none; }
+        body.light-theme .hideable-btn { background: #2e7d32; color: white; }
+        body.light-theme .hideable-btn:hover { background: #1b5e20; }
+        body.light-theme .hideable-content { border-color: #2e7d32; }
+        .topic-divider { background: linear-gradient(90deg, #ff6b6b, #ffd93d, #50fa7b); height: 6px; margin: 50px 0; border-radius: 3px; }
+        .memory-diagram { background: #0f0f23; border: 3px solid #00d4ff; border-radius: 10px; padding: 20px; margin: 20px 0; font-family: 'Fira Code', monospace; font-size: 1.15rem; }
+        body.light-theme .memory-diagram { background: #1e1e1e; color: #e0e0e0; }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="progress" id="progress"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">&#127763;</button>
+    <div class="container">
+        <h1>Static & Final Keywords</h1>
+        <p class="subtitle">Backend LLD | Deep Dive into Class-Level Behavior</p>
+
+        <!-- Section 1: Recap Quiz Part 1 -->
+        <div class="section visible" id="s1">
+            <h2>Recap Quiz: Abstract Classes & Interfaces</h2>
+            <div class="discuss">Let's test your understanding from last class with some tricky questions!</div>
+
+            <div class="quiz">
+                <div class="quiz-q">Q1: Can an abstract class have a constructor?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="a" onclick="checkQuiz(this, false)"> No - you can't instantiate it, so why would it need one?</label>
+                    <label><input type="radio" name="q1" value="b" onclick="checkQuiz(this, true)"> Yes - child classes call it via super()</label>
+                    <label><input type="radio" name="q1" value="c" onclick="checkQuiz(this, false)"> Only if it has no abstract methods</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Q2: What's the output?</div>
+                <pre><code><span class="keyword">interface</span> <span class="type">Printable</span> {
+    <span class="keyword">void</span> print();
+}
+<span class="keyword">class</span> <span class="type">Document</span> <span class="keyword">implements</span> <span class="type">Printable</span> {
+    <span class="keyword">public void</span> print() { System.out.println(<span class="string">"Document"</span>); }
+    <span class="keyword">public void</span> save() { System.out.println(<span class="string">"Saved"</span>); }
+}
+
+<span class="type">Printable</span> p = <span class="keyword">new</span> <span class="type">Document</span>();
+p.print();
+p.save();</code></pre>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="a" onclick="checkQuiz(this, false)"> Prints "Document" then "Saved"</label>
+                    <label><input type="radio" name="q2" value="b" onclick="checkQuiz(this, true)"> Compilation error - save() not in Printable</label>
+                    <label><input type="radio" name="q2" value="c" onclick="checkQuiz(this, false)"> Runtime error</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Q3: Which is valid?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3" value="a" onclick="checkQuiz(this, false)"> class A extends B, C { }</label>
+                    <label><input type="radio" name="q3" value="b" onclick="checkQuiz(this, true)"> class A extends B implements C, D { }</label>
+                    <label><input type="radio" name="q3" value="c" onclick="checkQuiz(this, false)"> class A implements B extends C { }</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+        </div>
+
+        <!-- Section 2: Recap Quiz Part 2 -->
+        <div class="section" id="s2">
+            <h2>Recap Quiz (Continued)</h2>
+
+            <div class="quiz">
+                <div class="quiz-q">Q4: Two interfaces both have default void log(). Class C implements both. What happens?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q4" value="a" onclick="checkQuiz(this, false)"> First interface's method is used</label>
+                    <label><input type="radio" name="q4" value="b" onclick="checkQuiz(this, false)"> Runtime error - ambiguous</label>
+                    <label><input type="radio" name="q4" value="c" onclick="checkQuiz(this, true)"> Compilation error - must override to resolve</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Q5: Can an abstract class have all concrete methods (no abstract methods)?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5" value="a" onclick="checkQuiz(this, true)"> Yes - prevents instantiation while providing full implementation</label>
+                    <label><input type="radio" name="q5" value="b" onclick="checkQuiz(this, false)"> No - must have at least one abstract method</label>
+                    <label><input type="radio" name="q5" value="c" onclick="checkQuiz(this, false)"> Only if marked with @NoAbstract annotation</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Q6: Interface A extends Interface B. Class C implements A. Which must C implement?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q6" value="a" onclick="checkQuiz(this, false)"> Only A's methods</label>
+                    <label><input type="radio" name="q6" value="b" onclick="checkQuiz(this, false)"> Only B's methods</label>
+                    <label><input type="radio" name="q6" value="c" onclick="checkQuiz(this, true)"> All abstract methods from both A and B</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Q7: What's the difference between these two uses of "default"?</div>
+                <pre><code><span class="comment">// Use 1: In interface</span>
+<span class="keyword">interface</span> <span class="type">Logger</span> {
+    <span class="keyword">default void</span> log(<span class="type">String</span> msg) { System.out.println(msg); }
+}
+
+<span class="comment">// Use 2: In class</span>
+<span class="keyword">class</span> <span class="type">Helper</span> {
+    <span class="keyword">void</span> help() { }  <span class="comment">// no access modifier</span>
+}</code></pre>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q7" value="a" onclick="checkQuiz(this, false)"> Both mean the same - package-private access</label>
+                    <label><input type="radio" name="q7" value="b" onclick="checkQuiz(this, true)"> Interface: method with body (public). Class: package-private access</label>
+                    <label><input type="radio" name="q7" value="c" onclick="checkQuiz(this, false)"> Interface: package-private. Class: method with body</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="key-point">
+                <strong>Quick Review:</strong><br>
+                - Abstract class: IS-A + shared code + can have constructors<br>
+                - Interface: CAN-DO contract + multiple inheritance + fields are public static final
+            </div>
+        </div>
+
+        <div class="topic-divider"></div>
+
+        <!-- ==================== JAVA MEMORY PRIMER ==================== -->
+
+        <!-- Section 3: JVM & Memory Primer (Collapsible) -->
+        <div class="section" id="s3">
+            <h2 style="cursor: pointer;" onclick="togglePrimer()">
+                Primer: Java Ecosystem & Memory
+                <span id="primer-toggle" style="font-size: 0.7em; color: #888;">[Click to expand]</span>
+            </h2>
+
+            <div id="primer-content" style="display: none;">
+            <div class="discuss">Before we understand where static variables live, let's see how Java works under the hood...</div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">What are JDK, JRE, and JVM?</button>
+                <div class="hideable-content">
+                    <pre style="background: #0a0a1a; border: 2px solid #00d4ff; padding: 15px; text-align: center; color: #00d4ff; font-size: 1.1em; border-radius: 8px;">
++-------------------------------------------------------+
+|                        <span style="color: #ff6b6b; font-weight: bold;">JDK</span>                            |
+|  (Java Development Kit - for developers)              |
+|                                                       |
+|   +-----------------------------------------------+   |
+|   |                    <span style="color: #ffd93d; font-weight: bold;">JRE</span>                        |   |
+|   |  (Java Runtime Environment - to run Java)    |   |
+|   |                                               |   |
+|   |   +---------------------------------------+   |   |
+|   |   |                <span style="color: #50fa7b; font-weight: bold;">JVM</span>                    |   |   |
+|   |   |  (Java Virtual Machine - executes     |   |   |
+|   |   |   bytecode, manages memory)           |   |   |
+|   |   +---------------------------------------+   |   |
+|   |   + Libraries (rt.jar, etc.)                  |   |
+|   +-----------------------------------------------+   |
+|   + Development Tools (javac, javadoc, jar, etc.)     |
++-------------------------------------------------------+
+                    </pre>
+                    <ul style="margin-top: 15px;">
+                        <li><strong>JDK</strong> = JRE + Development Tools (compiler, debugger)</li>
+                        <li><strong>JRE</strong> = JVM + Libraries (what end-users need)</li>
+                        <li><strong>JVM</strong> = The engine that runs your code and manages memory</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="cursor: pointer;" onclick="toggleExecutionFlow()">
+                What Happens When You Click ▶ Play?
+                <span id="execution-toggle" style="font-size: 0.7em; color: #888;">[Click to expand]</span>
+            </h3>
+
+            <div id="execution-content" style="display: none;">
+<pre style="background: #0a0a1a; border: 2px solid #ffd93d; padding: 15px; color: #ffd93d; border-radius: 8px; font-size: 0.95em;">
+<span style="color: #ff6b6b;">┌─────────────────────────────────────────────────────────────────┐</span>
+<span style="color: #ff6b6b;">│</span>  <span style="color: #00d4ff; font-weight: bold;">STEP 1: COMPILE</span> (javac)                                        <span style="color: #ff6b6b;">│</span>
+<span style="color: #ff6b6b;">│</span>  Main.java  ──────►  Main.class (bytecode)                      <span style="color: #ff6b6b;">│</span>
+<span style="color: #ff6b6b;">└─────────────────────────────────────────────────────────────────┘</span>
+                              │
+                              ▼
+<span style="color: #ffd93d;">┌─────────────────────────────────────────────────────────────────┐</span>
+<span style="color: #ffd93d;">│</span>  <span style="color: #00d4ff; font-weight: bold;">STEP 2: CLASS LOADING</span> (ClassLoader)                            <span style="color: #ffd93d;">│</span>
+<span style="color: #ffd93d;">│</span>  1. <span style="color: #50fa7b;">Load</span>    → Read .class file into memory                     <span style="color: #ffd93d;">│</span>
+<span style="color: #ffd93d;">│</span>  2. <span style="color: #50fa7b;">Link</span>    → Verify bytecode, allocate static vars            <span style="color: #ffd93d;">│</span>
+<span style="color: #ffd93d;">│</span>  3. <span style="color: #50fa7b;">Initialize</span> → Run static blocks, init static vars           <span style="color: #ffd93d;">│</span>
+<span style="color: #ffd93d;">└─────────────────────────────────────────────────────────────────┘</span>
+                              │
+                              ▼
+<span style="color: #50fa7b;">┌─────────────────────────────────────────────────────────────────┐</span>
+<span style="color: #50fa7b;">│</span>  <span style="color: #00d4ff; font-weight: bold;">STEP 3: EXECUTE main()</span>                                         <span style="color: #50fa7b;">│</span>
+<span style="color: #50fa7b;">│</span>  JVM finds: public static void main(String[] args)              <span style="color: #50fa7b;">│</span>
+<span style="color: #50fa7b;">│</span>  Creates stack frame, starts execution                          <span style="color: #50fa7b;">│</span>
+<span style="color: #50fa7b;">└─────────────────────────────────────────────────────────────────┘</span>
+                              │
+                              ▼
+<span style="color: #ff79c6;">┌─────────────────────────────────────────────────────────────────┐</span>
+<span style="color: #ff79c6;">│</span>  <span style="color: #00d4ff; font-weight: bold;">STEP 4: OBJECT CREATION</span> (when you call <span style="color: #f1fa8c;">new</span>)                    <span style="color: #ff79c6;">│</span>
+<span style="color: #ff79c6;">│</span>  1. Allocate memory on <span style="color: #ffd93d;">HEAP</span>                                     <span style="color: #ff79c6;">│</span>
+<span style="color: #ff79c6;">│</span>  2. Initialize instance variables to defaults (0, null, false)  <span style="color: #ff79c6;">│</span>
+<span style="color: #ff79c6;">│</span>  3. Run instance initializer blocks                             <span style="color: #ff79c6;">│</span>
+<span style="color: #ff79c6;">│</span>  4. Run constructor                                             <span style="color: #ff79c6;">│</span>
+<span style="color: #ff79c6;">│</span>  5. Return reference to the object                              <span style="color: #ff79c6;">│</span>
+<span style="color: #ff79c6;">└─────────────────────────────────────────────────────────────────┘</span>
+</pre>
+
+                <div class="key-point" style="margin-top: 15px;">
+                    <strong>Key Takeaway:</strong><br>
+                    <span style="color: #ff79c6;">Class loading</span> happens <strong>ONCE</strong> (static stuff) →
+                    <span style="color: #ffd93d;">Object creation</span> happens <strong>EACH TIME</strong> you call <code>new</code>
+                </div>
+
+                <div class="hideable" style="margin-top: 15px;">
+                    <button class="hideable-btn" onclick="revealHideable(this)">How to see this in IntelliJ?</button>
+                    <div class="hideable-content">
+                        <strong style="color: #00d4ff;">1. See Class Loading:</strong>
+                        <ul>
+                            <li>Run → Edit Configurations → Add VM option: <code style="color: #f1fa8c;">-verbose:class</code></li>
+                            <li>Console will show every class being loaded!</li>
+                        </ul>
+
+                        <strong style="color: #00d4ff; margin-top: 10px; display: block;">2. Debug Step-by-Step:</strong>
+                        <ul>
+                            <li>Set breakpoint on <code>static { }</code> block → See class initialization</li>
+                            <li>Set breakpoint on constructor → See object creation</li>
+                            <li>Use <strong>Step Into (F7)</strong> to follow the flow</li>
+                        </ul>
+
+                        <strong style="color: #00d4ff; margin-top: 10px; display: block;">3. Watch Memory:</strong>
+                        <ul>
+                            <li>While debugging: <strong>View → Tool Windows → Memory</strong></li>
+                            <li>See objects being created in real-time</li>
+                        </ul>
+
+                        <strong style="color: #00d4ff; margin-top: 10px; display: block;">4. Quick Demo Code:</strong>
+                        <pre style="margin-top: 10px;"><code><span class="keyword">class</span> <span class="type">Demo</span> {
+    <span class="keyword">static</span> { System.out.println(<span class="string">"1. Class loaded!"</span>); }
+    { System.out.println(<span class="string">"2. Instance block"</span>); }
+    <span class="type">Demo</span>() { System.out.println(<span class="string">"3. Constructor"</span>); }
+
+    <span class="keyword">public static void</span> main(<span class="type">String</span>[] args) {
+        System.out.println(<span class="string">"--- main() started ---"</span>);
+        <span class="keyword">new</span> <span class="type">Demo</span>();  <span class="comment">// Watch the order!</span>
+        <span class="keyword">new</span> <span class="type">Demo</span>();  <span class="comment">// Static block won't run again</span>
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="cursor: pointer;" onclick="toggleMemoryAreas()">
+                JVM Memory Areas
+                <span id="memory-toggle" style="font-size: 0.7em; color: #888;">[Click to expand]</span>
+            </h3>
+
+            <div id="memory-content" style="display: none;">
+            <div class="memory-diagram">
+<pre style="background: #0a0a1a; border: 2px solid #00d4ff; padding: 15px; color: #00d4ff; margin: 0; border-radius: 8px;">
++------------------------------------------------------------------+
+|                          <span style="color: #ff6b6b; font-weight: bold;">JVM MEMORY</span>                              |
++------------------+-------------------+---------------------------+
+|      <span style="color: #50fa7b;">STACK</span>       |       <span style="color: #ffd93d;">HEAP</span>        |       <span style="color: #ff79c6;">METHOD AREA</span>         |
+|  (per thread)    |    (shared)       |        (shared)           |
++------------------+-------------------+---------------------------+
+| - Method calls   | - Objects (new)   | - Class metadata          |
+| - Local variables| - Instance vars   | - Static variables        |
+| - Parameters     | - Arrays          | - Method bytecode         |
+| - Return address |                   | - Constant pool           |
++------------------+-------------------+---------------------------+
+|   LIFO order     |  GC managed       |  Loaded once per class    |
+|   Fast access    |  Dynamic size     |  Persists until unload    |
++------------------+-------------------+---------------------------+
+</pre>
+            </div>
+
+            <div class="hideable" style="margin-top: 15px;">
+                <button class="hideable-btn" onclick="revealHideable(this)">What goes where? (with example)</button>
+                <div class="hideable-content">
+                    <pre><code><span class="keyword">class</span> <span class="type">Student</span> {
+    <span class="keyword">static</span> <span class="type">String</span> school = <span class="string">"ABC School"</span>;  <span class="comment">// METHOD AREA (static)</span>
+    <span class="type">String</span> name;                          <span class="comment">// HEAP (instance var)</span>
+    <span class="keyword">int</span> age;                              <span class="comment">// HEAP (instance var)</span>
+
+    <span class="keyword">void</span> study() {
+        <span class="keyword">int</span> hours = 5;                    <span class="comment">// STACK (local var)</span>
+        <span class="type">Book</span> book = <span class="keyword">new</span> <span class="type">Book</span>();          <span class="comment">// book ref -> STACK</span>
+                                          <span class="comment">// Book object -> HEAP</span>
+    }
+}
+
+<span class="type">Student</span> s = <span class="keyword">new</span> <span class="type">Student</span>();              <span class="comment">// s ref -> STACK</span>
+                                          <span class="comment">// Student object -> HEAP</span></code></pre>
+                    <table style="margin-top: 15px;">
+                        <tr><th>What</th><th>Where</th><th>Lifetime</th></tr>
+                        <tr><td>Static variables</td><td>Method Area</td><td>Until class unloaded</td></tr>
+                        <tr><td>Objects (<code>new</code>)</td><td>Heap</td><td>Until GC collects</td></tr>
+                        <tr><td>Instance variables</td><td>Heap (inside object)</td><td>With the object</td></tr>
+                        <tr><td>Local variables</td><td>Stack</td><td>Until method returns</td></tr>
+                        <tr><td>Method parameters</td><td>Stack</td><td>Until method returns</td></tr>
+                        <tr><td>Reference variables</td><td>Stack (ref) + Heap (object)</td><td>Ref: method scope</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Key Insight:</strong> Static variables live in <span class="highlight">Method Area</span> (one copy for the class), while instance variables live in <span class="highlight">Heap</span> (one copy per object). This is why static is "shared"!
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Visualize it online</button>
+                <div class="hideable-content">
+                    <strong>Recommended Tools:</strong>
+                    <ul>
+                        <li><a href="https://pythontutor.com/java.html" target="_blank" style="color: #00d4ff;">Java Tutor</a> - Step-by-step visualization of stack, heap, and objects</li>
+                        <li><a href="https://cscircles.cemc.uwaterloo.ca/java_visualize/" target="_blank" style="color: #00d4ff;">Java Visualizer (UWaterloo)</a> - Similar visualization tool</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>In IntelliJ:</strong> Install the <em>Java Visualizer</em> plugin from Settings → Plugins → Marketplace. It shows heap/stack during debugging.</p>
+                </div>
+            </div>
+            </div> <!-- End of memory-content -->
+            </div> <!-- End of primer-content -->
+        </div>
+
+        <!-- ==================== STATIC KEYWORD ==================== -->
+
+        <!-- Section 4: Static Introduction -->
+        <div class="section" id="s4">
+            <h2>Part 1: The Static Keyword</h2>
+
+            <div class="key-point" style="background: #0d2818; border-color: #50fa7b; margin-bottom: 20px;">
+                <strong style="color: #50fa7b; font-size: 1.1em;">Framework for Answering Questions:</strong><br><br>
+                When asked about <span class="highlight">static</span> or <span class="highlight">final</span> keywords, always think in terms of:
+                <table style="margin-top: 15px; width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="text-align: center; padding: 15px; border: 2px solid #50fa7b; background: #1a1a2e;"><strong style="color: #00d4ff;">Variable</strong><br><code style="color: #f1fa8c;">static int x</code></td>
+                        <td style="text-align: center; padding: 15px; border: 2px solid #50fa7b; background: #1a1a2e;"><strong style="color: #00d4ff;">Method</strong><br><code style="color: #f1fa8c;">static void foo()</code></td>
+                        <td style="text-align: center; padding: 15px; border: 2px solid #50fa7b; background: #1a1a2e;"><strong style="color: #00d4ff;">Block</strong><br><code style="color: #f1fa8c;">static { }</code></td>
+                        <td style="text-align: center; padding: 15px; border: 2px solid #50fa7b; background: #1a1a2e;"><strong style="color: #00d4ff;">Class</strong><br><code style="color: #f1fa8c;">static class Inner</code></td>
+                    </tr>
+                </table>
+                <p style="margin-top: 15px; color: #ffd93d; font-weight: bold;">This is how we'll study it today, and this is how you should answer in interviews!</p>
+            </div>
+
+            <h3>The Problem: Shared Data Across Instances</h3>
+
+            <div class="discuss">You're building a user tracking system...</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="type">String</span> name;
+    <span class="keyword">int</span> userCount = 0;  <span class="comment">// Track total users</span>
+
+    <span class="keyword">public</span> User(<span class="type">String</span> name) {
+        <span class="keyword">this</span>.name = name;
+        userCount++;  <span class="comment">// Increment counter</span>
+    }
+}
+
+<span class="type">User</span> u1 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Alice"</span>);
+<span class="type">User</span> u2 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Bob"</span>);
+<span class="type">User</span> u3 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Charlie"</span>);
+
+System.out.println(u1.userCount);  <span class="comment">// What's the output?</span>
+System.out.println(u2.userCount);
+System.out.println(u3.userCount);</code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What does u1.userCount, u2.userCount, u3.userCount print?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qStatic1" value="a" onclick="checkQuiz(this, true)"> 1, 1, 1 - each instance has its own counter</label>
+                    <label><input type="radio" name="qStatic1" value="b" onclick="checkQuiz(this, false)"> 3, 3, 3 - shared counter</label>
+                    <label><input type="radio" name="qStatic1" value="c" onclick="checkQuiz(this, false)"> 1, 2, 3 - cumulative count</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why 1, 1, 1?</button>
+                <div class="hideable-content">
+                    <strong>Problem:</strong> Each User object gets its OWN copy of userCount!
+                    <ul>
+                        <li>u1 has userCount = 1</li>
+                        <li>u2 has userCount = 1</li>
+                        <li>u3 has userCount = 1</li>
+                    </ul>
+                    They don't share the counter - that's not what we want!
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Static Variables -->
+        <div class="section" id="s5">
+            <h2>Static Variables: Shared Across All Instances</h2>
+
+            <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="type">String</span> name;                    <span class="comment">// Instance variable - each object has copy</span>
+    <span class="keyword">static int</span> userCount = 0;       <span class="comment">// Static variable - ONE shared copy</span>
+
+    <span class="keyword">public</span> User(<span class="type">String</span> name) {
+        <span class="keyword">this</span>.name = name;
+        userCount++;  <span class="comment">// Increments the SHARED counter</span>
+    }
+}
+
+<span class="type">User</span> u1 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Alice"</span>);   <span class="comment">// userCount = 1</span>
+<span class="type">User</span> u2 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Bob"</span>);     <span class="comment">// userCount = 2</span>
+<span class="type">User</span> u3 = <span class="keyword">new</span> <span class="type">User</span>(<span class="string">"Charlie"</span>); <span class="comment">// userCount = 3</span>
+
+System.out.println(<span class="type">User</span>.userCount);  <span class="comment">// 3 - access via class name!</span>
+System.out.println(u1.userCount);      <span class="comment">// 3 - also works but not recommended</span></code></pre>
+
+            <div class="memory-diagram">
+<pre style="color: #8be9fd; margin: 0;">
++----------------------------------------------------------+
+|                       JVM MEMORY                         |
++---------------------------+------------------------------+
+|       METHOD AREA         |            HEAP              |
+|      (Class Data)         |          (Objects)           |
+|                           |                              |
+|   User.userCount: 3       |   u1 -> { name: "Alice" }    |
+|   (ONE shared copy)       |   u2 -> { name: "Bob" }      |
+|                           |   u3 -> { name: "Charlie" }  |
++---------------------------+------------------------------+
+</pre>
+            </div>
+
+            <div class="key-point">
+                <strong>Static Variable:</strong> Belongs to the CLASS, not to instances. Stored in Method Area, not Heap.
+            </div>
+        </div>
+
+        <!-- Section 6: Static Methods -->
+        <div class="section" id="s6">
+            <h2>Static Methods</h2>
+
+            <div class="discuss">What if you need a utility function that doesn't need object state?</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">MathUtils</span> {
+    <span class="keyword">public static int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+
+    <span class="keyword">public static int</span> max(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a > b ? a : b;
+    }
+}
+
+<span class="comment">// Call without creating an object!</span>
+<span class="keyword">int</span> sum = <span class="type">MathUtils</span>.add(5, 3);      <span class="comment">// 8</span>
+<span class="keyword">int</span> maximum = <span class="type">MathUtils</span>.max(10, 7); <span class="comment">// 10</span></code></pre>
+
+            <h3>Static Method Restrictions</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Counter</span> {
+    <span class="keyword">int</span> count = 0;           <span class="comment">// Instance variable</span>
+    <span class="keyword">static int</span> total = 0;    <span class="comment">// Static variable</span>
+
+    <span class="keyword">public static void</span> printTotal() {
+        System.out.println(total);  <span class="comment">// OK - static accessing static</span>
+        System.out.println(count);  <span class="comment">// ERROR! Can't access instance var</span>
+        System.out.println(<span class="keyword">this</span>);   <span class="comment">// ERROR! No 'this' in static context</span>
+    }
+}</code></pre>
+
+            <div class="key-point">
+                <strong>Static Method Rules:</strong>
+                <ul>
+                    <li>Cannot access instance variables (no object context!)</li>
+                    <li>Cannot use <code>this</code> or <code>super</code></li>
+                    <li>Can only directly access other static members</li>
+                </ul>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Why can't static methods use 'this'?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qThis" value="a" onclick="checkQuiz(this, false)"> It's a Java limitation that could be fixed</label>
+                    <label><input type="radio" name="qThis" value="b" onclick="checkQuiz(this, true)"> 'this' refers to current object, but static methods can be called without any object</label>
+                    <label><input type="radio" name="qThis" value="c" onclick="checkQuiz(this, false)"> 'this' is only for constructors</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+        </div>
+
+        <!-- Section 7: Static & Polymorphism -->
+        <div class="section" id="s7">
+            <h2>Static & Polymorphism: Method Hiding</h2>
+
+            <div class="discuss">What happens when a child class has same static method as parent?</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() {
+        System.out.println(<span class="string">"Hello from Parent"</span>);
+    }
+
+    <span class="keyword">void</span> sayHi() {
+        System.out.println(<span class="string">"Hi from Parent"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">static void</span> greet() {  <span class="comment">// Hiding, not overriding!</span>
+        System.out.println(<span class="string">"Hello from Child"</span>);
+    }
+
+    <span class="keyword">void</span> sayHi() {  <span class="comment">// True overriding</span>
+        System.out.println(<span class="string">"Hi from Child"</span>);
+    }
+}
+
+<span class="type">Parent</span> p = <span class="keyword">new</span> <span class="type">Child</span>();
+p.greet();   <span class="comment">// What prints?</span>
+p.sayHi();   <span class="comment">// What prints?</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What does p.greet() and p.sayHi() print?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qHide" value="a" onclick="checkQuiz(this, false)"> "Hello from Child", "Hi from Child"</label>
+                    <label><input type="radio" name="qHide" value="b" onclick="checkQuiz(this, true)"> "Hello from Parent", "Hi from Child"</label>
+                    <label><input type="radio" name="qHide" value="c" onclick="checkQuiz(this, false)"> "Hello from Parent", "Hi from Parent"</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Explain the difference</button>
+                <div class="hideable-content">
+                    <table>
+                        <tr><th>Aspect</th><th>Instance Methods (Overriding)</th><th>Static Methods (Hiding)</th></tr>
+                        <tr><td>Resolution</td><td>Runtime (actual object type)</td><td>Compile time (reference type)</td></tr>
+                        <tr><td>Polymorphism</td><td>Yes - true polymorphism</td><td>No - just hiding</td></tr>
+                        <tr><td>@Override</td><td>Can use</td><td>Cannot use (won't compile)</td></tr>
+                    </table>
+                    <p style="margin-top: 10px;"><strong>p.greet()</strong>: p's type is Parent, so Parent.greet() is called</p>
+                    <p><strong>p.sayHi()</strong>: Runtime sees actual object is Child, so Child.sayHi() is called</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: Static in Abstract Class -->
+        <div class="section" id="s8">
+            <h2>Static in Abstract Class</h2>
+
+            <div class="discuss">Can abstract classes have static members?</div>
+
+            <pre><code><span class="keyword">abstract class</span> <span class="type">Database</span> {
+    <span class="keyword">static</span> <span class="type">String</span> driver = <span class="string">"JDBC"</span>;  <span class="comment">// Static variable - OK!</span>
+
+    <span class="keyword">static void</span> loadDriver() {        <span class="comment">// Static method - OK!</span>
+        System.out.println(<span class="string">"Loading "</span> + driver);
+    }
+
+    <span class="keyword">abstract void</span> connect();          <span class="comment">// Abstract method</span>
+
+    <span class="comment">// static abstract void init();   // ERROR! Can't be both</span>
+}
+
+<span class="comment">// Can access static members without instantiation!</span>
+System.out.println(<span class="type">Database</span>.driver);   <span class="comment">// "JDBC"</span>
+<span class="type">Database</span>.loadDriver();               <span class="comment">// "Loading JDBC"</span></code></pre>
+
+            <div class="key-point">
+                <strong>Abstract Class + Static:</strong>
+                <ul>
+                    <li>Static variables: Allowed</li>
+                    <li>Static methods: Allowed</li>
+                    <li>Static abstract methods: NOT allowed (contradiction!)</li>
+                </ul>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">Why can't a method be both static and abstract?</div>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <ul>
+                        <li><strong>Abstract</strong> = must be overridden by child (runtime polymorphism)</li>
+                        <li><strong>Static</strong> = resolved at compile time, no overriding</li>
+                        <li>These are fundamentally incompatible concepts!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 9: Static in Interface -->
+        <div class="section" id="s9">
+            <h2>Static in Interface</h2>
+
+            <h3>Interface Variables (Always Static Final!)</h3>
+            <pre><code><span class="keyword">interface</span> <span class="type">AppConfig</span> {
+    <span class="keyword">int</span> MAX_CONNECTIONS = 100;  <span class="comment">// Implicitly public static final</span>
+    <span class="type">String</span> VERSION = <span class="string">"1.0"</span>;     <span class="comment">// Implicitly public static final</span>
+}
+
+<span class="comment">// Access via interface name</span>
+System.out.println(<span class="type">AppConfig</span>.MAX_CONNECTIONS);  <span class="comment">// 100</span>
+
+<span class="comment">// Cannot modify!</span>
+<span class="type">AppConfig</span>.MAX_CONNECTIONS = 200;  <span class="comment">// ERROR! It's final</span></code></pre>
+
+            <h3>Interface Static Methods (Java 8+)</h3>
+            <pre><code><span class="keyword">interface</span> <span class="type">StringUtils</span> {
+    <span class="keyword">static boolean</span> isEmpty(<span class="type">String</span> s) {
+        <span class="keyword">return</span> s == <span class="keyword">null</span> || s.length() == 0;
+    }
+
+    <span class="keyword">static</span> <span class="type">String</span> reverse(<span class="type">String</span> s) {
+        <span class="keyword">return new</span> <span class="type">StringBuilder</span>(s).reverse().toString();
+    }
+}
+
+<span class="comment">// Call on interface name</span>
+<span class="type">StringUtils</span>.isEmpty(<span class="string">""</span>);       <span class="comment">// true</span>
+<span class="type">StringUtils</span>.reverse(<span class="string">"abc"</span>);   <span class="comment">// "cba"</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">Are interface static methods inherited by implementing classes?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qIntStatic" value="a" onclick="checkQuiz(this, false)"> Yes, like any other method</label>
+                    <label><input type="radio" name="qIntStatic" value="b" onclick="checkQuiz(this, true)"> No, must call via interface name</label>
+                    <label><input type="radio" name="qIntStatic" value="c" onclick="checkQuiz(this, false)"> Only if marked with @Inherit</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="key-point">
+                <strong>Interface Static Methods:</strong> NOT inherited! Must always call via InterfaceName.method()
+            </div>
+        </div>
+
+        <!-- Section 10: Static Blocks -->
+        <div class="section" id="s10">
+            <h2>Static Blocks: One-Time Initialization</h2>
+
+            <div class="discuss">What if you need complex initialization that runs once when class loads?</div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">DatabaseConfig</span> {
+    <span class="keyword">static</span> <span class="type">String</span> url;
+    <span class="keyword">static</span> <span class="type">String</span> username;
+    <span class="keyword">static</span> <span class="type">Properties</span> props;
+
+    <span class="comment">// Static block - runs ONCE when class is loaded</span>
+    <span class="keyword">static</span> {
+        System.out.println(<span class="string">"Loading configuration..."</span>);
+        props = <span class="keyword">new</span> <span class="type">Properties</span>();
+        <span class="keyword">try</span> {
+            props.load(<span class="keyword">new</span> <span class="type">FileReader</span>(<span class="string">"config.properties"</span>));
+            url = props.getProperty(<span class="string">"db.url"</span>);
+            username = props.getProperty(<span class="string">"db.user"</span>);
+        } <span class="keyword">catch</span> (<span class="type">Exception</span> e) {
+            url = <span class="string">"localhost"</span>;
+            username = <span class="string">"admin"</span>;
+        }
+        System.out.println(<span class="string">"Configuration loaded!"</span>);
+    }
+}
+
+<span class="comment">// Just accessing the class triggers the static block!</span>
+System.out.println(<span class="type">DatabaseConfig</span>.url);</code></pre>
+
+            <h3>Execution Order</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">Demo</span> {
+    <span class="keyword">static int</span> x = 10;              <span class="comment">// 1. Static variable init</span>
+
+    <span class="keyword">static</span> {                        <span class="comment">// 2. Static block</span>
+        System.out.println(<span class="string">"Static block"</span>);
+    }
+
+    <span class="keyword">int</span> y = 20;                     <span class="comment">// 3. Instance variable init</span>
+
+    {                               <span class="comment">// 4. Instance block</span>
+        System.out.println(<span class="string">"Instance block"</span>);
+    }
+
+    Demo() {                        <span class="comment">// 5. Constructor</span>
+        System.out.println(<span class="string">"Constructor"</span>);
+    }
+}
+
+<span class="keyword">new</span> <span class="type">Demo</span>();
+<span class="comment">// Output:</span>
+<span class="comment">// Static block       (once, when class loads)</span>
+<span class="comment">// Instance block     (each time object created)</span>
+<span class="comment">// Constructor        (each time object created)</span></code></pre>
+
+            <div class="key-point">
+                <strong>Order:</strong> Static vars/blocks (once) -> Instance vars/blocks (per object) -> Constructor
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Why do instance vars/blocks run before constructor?</button>
+                <div class="hideable-content">
+                    <p><strong>The compiler merges them!</strong> When you call <code>new Demo()</code>, Java rewrites your constructor like this:</p>
+                    <pre><code>Demo() {
+    <span class="comment">// --- Java inserts these BEFORE your constructor code ---</span>
+    y = 20;                                    <span class="comment">// Instance variable init</span>
+    System.out.println(<span class="string">"Instance block"</span>);      <span class="comment">// Instance block</span>
+
+    <span class="comment">// --- Then your actual constructor code ---</span>
+    System.out.println(<span class="string">"Constructor"</span>);
+}</code></pre>
+                    <p style="margin-top: 15px;"><strong>Why?</strong> Your constructor body might depend on instance variables already being set:</p>
+                    <pre><code><span class="keyword">class</span> <span class="type">User</span> {
+    <span class="type">String</span> role = <span class="string">"guest"</span>;           <span class="comment">// 1. Initialized first</span>
+
+    {                                <span class="comment">// 2. Instance block runs</span>
+        System.out.println(<span class="string">"Role is: "</span> + role);  <span class="comment">// Can use 'role' safely</span>
+    }
+
+    User() {                         <span class="comment">// 3. Constructor runs last</span>
+        <span class="keyword">if</span> (role.equals(<span class="string">"guest"</span>)) {  <span class="comment">// Can rely on 'role' being set</span>
+            System.out.println(<span class="string">"Welcome guest!"</span>);
+        }
+    }
+}</code></pre>
+                    <p style="margin-top: 15px;">The Java compiler takes all instance variable initializers and instance blocks and inserts them at the beginning of <strong>every</strong> constructor. This guarantees fields are ready before your constructor logic runs.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 11: Static Nested Classes -->
+        <div class="section" id="s11">
+            <h2>Static Nested Classes</h2>
+
+            <pre><code><span class="keyword">class</span> <span class="type">University</span> {
+    <span class="keyword">private</span> <span class="type">String</span> name = <span class="string">"MIT"</span>;
+    <span class="keyword">private static</span> <span class="type">String</span> country = <span class="string">"USA"</span>;
+
+    <span class="comment">// Static nested class</span>
+    <span class="keyword">static class</span> <span class="type">Department</span> {
+        <span class="type">String</span> deptName;
+
+        <span class="keyword">void</span> display() {
+            <span class="comment">// System.out.println(name);    // ERROR! Can't access instance var</span>
+            System.out.println(country);     <span class="comment">// OK - can access static</span>
+            System.out.println(deptName);
+        }
+    }
+
+    <span class="comment">// Non-static (inner) class</span>
+    <span class="keyword">class</span> <span class="type">Student</span> {
+        <span class="keyword">void</span> display() {
+            System.out.println(name);     <span class="comment">// OK - can access instance var</span>
+            System.out.println(country);  <span class="comment">// OK - can access static</span>
+        }
+    }
+}
+
+<span class="comment">// Creating static nested class - NO outer instance needed</span>
+<span class="type">University</span>.<span class="type">Department</span> dept = <span class="keyword">new</span> <span class="type">University</span>.<span class="type">Department</span>();
+
+<span class="comment">// Creating inner class - NEEDS outer instance</span>
+<span class="type">University</span> uni = <span class="keyword">new</span> <span class="type">University</span>();
+<span class="type">University</span>.<span class="type">Student</span> student = uni.<span class="keyword">new</span> <span class="type">Student</span>();</code></pre>
+
+            <div class="key-point">
+                <strong>Static Nested vs Inner Class:</strong>
+                <ul>
+                    <li>Static nested: No outer instance needed, can't access outer's instance members</li>
+                    <li>Inner class: Needs outer instance, can access everything</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="topic-divider"></div>
+
+        <!-- ==================== FINAL KEYWORD ==================== -->
+
+        <!-- Section 12: Final Variables -->
+        <div class="section" id="s12">
+            <h2>Part 2: The Final Keyword</h2>
+
+            <div class="key-point" style="background: #2d1a1a; border-color: #ff6b6b; margin-bottom: 20px;">
+                <strong style="color: #ff6b6b; font-size: 1.1em;">Remember the Framework:</strong><br><br>
+                When asked about <span class="highlight">final</span> keyword, think in terms of:
+                <table style="margin-top: 15px; width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="text-align: center; padding: 15px; border: 2px solid #ff6b6b; background: #1a1a2e;"><strong style="color: #00d4ff;">Variable</strong><br><code style="color: #f1fa8c;">final int x</code><br><em style="color: #ff79c6;">Can't reassign</em></td>
+                        <td style="text-align: center; padding: 15px; border: 2px solid #ff6b6b; background: #1a1a2e;"><strong style="color: #00d4ff;">Method</strong><br><code style="color: #f1fa8c;">final void foo()</code><br><em style="color: #ff79c6;">Can't override</em></td>
+                        <td style="text-align: center; padding: 15px; border: 2px solid #ff6b6b; background: #1a1a2e;"><strong style="color: #00d4ff;">Class</strong><br><code style="color: #f1fa8c;">final class Foo</code><br><em style="color: #ff79c6;">Can't extend</em></td>
+                    </tr>
+                </table>
+                <p style="margin-top: 15px; color: #ffd93d; font-weight: bold;">Note: There's no "final block" - final doesn't apply to blocks!</p>
+            </div>
+
+            <h3>Final Variables: Constants</h3>
+
+            <div class="discuss" style="margin-bottom: 15px;">
+                <strong style="color: #ff6b6b;">final variable</strong> = <strong>assign once, never change</strong>. Once initialized, the value cannot be reassigned.
+            </div>
+
+            <pre><code><span class="keyword">class</span> <span class="type">Config</span> {
+    <span class="keyword">final int</span> MAX_SIZE = 100;        <span class="comment">// Must initialize here...</span>
+    <span class="keyword">final</span> <span class="type">String</span> name;               <span class="comment">// ...or in constructor</span>
+
+    <span class="keyword">public</span> Config(<span class="type">String</span> name) {
+        <span class="keyword">this</span>.name = name;             <span class="comment">// OK - first assignment</span>
+    }
+
+    <span class="keyword">void</span> test() {
+        MAX_SIZE = 200;  <span class="comment">// ERROR! Cannot reassign final</span>
+        name = <span class="string">"new"</span>;    <span class="comment">// ERROR! Cannot reassign final</span>
+    }
+}</code></pre>
+
+            <h3>Final with Reference Types</h3>
+            <div class="discuss">What do you think happens here?</div>
+            <pre><code><span class="keyword">final</span> <span class="type">List</span> names = <span class="keyword">new</span> <span class="type">ArrayList</span>();
+
+names.add(<span class="string">"Alice"</span>);          <span class="comment">// Line 1: Will this work?</span>
+names.add(<span class="string">"Bob"</span>);            <span class="comment">// Line 2: Will this work?</span>
+
+names = <span class="keyword">new</span> <span class="type">ArrayList</span>();     <span class="comment">// Line 3: Will this work?</span></code></pre>
+
+            <div class="quiz">
+                <div class="quiz-q">What does 'final' prevent for reference types?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qFinalRef" value="a" onclick="checkQuiz(this, false)"> Modifying the object's contents (Lines 1 & 2 fail)</label>
+                    <label><input type="radio" name="qFinalRef" value="b" onclick="checkQuiz(this, true)"> Reassigning the reference (Line 3 fails)</label>
+                    <label><input type="radio" name="qFinalRef" value="c" onclick="checkQuiz(this, false)"> Both - all three lines fail</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Reveal Answer</button>
+                <div class="hideable-content">
+                    <pre><code><span class="keyword">final</span> <span class="type">List</span> names = <span class="keyword">new</span> <span class="type">ArrayList</span>();
+
+names.add(<span class="string">"Alice"</span>);          <span class="comment">// ✓ OK - modifying content</span>
+names.add(<span class="string">"Bob"</span>);            <span class="comment">// ✓ OK - modifying content</span>
+
+names = <span class="keyword">new</span> <span class="type">ArrayList</span>();     <span class="comment">// ✗ ERROR! Cannot reassign reference</span></code></pre>
+                    <div class="key-point" style="margin-top: 15px;">
+                        <strong>Final Reference:</strong> The reference can't point to a <em>different object</em>, but the object itself CAN be modified!<br><br>
+                        Think of it like: <strong>final = "this variable will always point to THIS object"</strong> (but the object's contents can change)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 13: Final Methods -->
+        <div class="section" id="s13">
+            <h2>Final Methods: Prevent Overriding</h2>
+
+            <pre><code><span class="keyword">class</span> <span class="type">BankAccount</span> {
+    <span class="keyword">protected double</span> balance;
+
+    <span class="comment">// Critical security method - children CANNOT override!</span>
+    <span class="keyword">public final double</span> getBalance() {
+        <span class="keyword">return</span> balance;
+    }
+
+    <span class="comment">// This can be overridden</span>
+    <span class="keyword">public void</span> deposit(<span class="keyword">double</span> amount) {
+        balance += amount;
+    }
+}
+
+<span class="keyword">class</span> <span class="type">SavingsAccount</span> <span class="keyword">extends</span> <span class="type">BankAccount</span> {
+    <span class="comment">// ERROR! Cannot override final method</span>
+    <span class="keyword">public double</span> getBalance() {
+        <span class="keyword">return</span> balance * 2;  <span class="comment">// Fraudulent attempt!</span>
+    }
+
+    <span class="comment">// OK - deposit is not final</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> deposit(<span class="keyword">double</span> amount) {
+        balance += amount * 1.01;  <span class="comment">// 1% bonus</span>
+    }
+}</code></pre>
+
+            <div class="key-point">
+                <strong>When to use final methods:</strong>
+                <ul>
+                    <li>Security-critical methods that shouldn't be changed</li>
+                    <li>Methods where correct behavior is essential</li>
+                    <li>Template method pattern - the skeleton shouldn't change</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 14: Final Classes -->
+        <div class="section" id="s14">
+            <h2>Final Classes: Prevent Extension</h2>
+
+            <pre><code><span class="keyword">final class</span> <span class="type">ImmutableConfig</span> {
+    <span class="keyword">private final</span> <span class="type">String</span> setting;
+
+    <span class="keyword">public</span> ImmutableConfig(<span class="type">String</span> setting) {
+        <span class="keyword">this</span>.setting = setting;
+    }
+
+    <span class="keyword">public</span> <span class="type">String</span> getSetting() {
+        <span class="keyword">return</span> setting;
+    }
+}
+
+<span class="comment">// ERROR! Cannot extend final class</span>
+<span class="keyword">class</span> <span class="type">ExtendedConfig</span> <span class="keyword">extends</span> <span class="type">ImmutableConfig</span> { }</code></pre>
+
+            <div class="discuss">Which Java classes are final? Think of immutable classes...</div>
+
+            <div class="hideable">
+                <button class="hideable-btn" onclick="revealHideable(this)">Show Examples</button>
+                <div class="hideable-content">
+                    <strong>Final classes in Java:</strong>
+                    <ul>
+                        <li><code>String</code> - immutability guarantee</li>
+                        <li><code>Integer</code>, <code>Double</code>, etc. - wrapper classes</li>
+                        <li><code>Math</code> - utility class</li>
+                        <li><code>System</code> - security critical</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 15: Final + Static = Constants -->
+        <div class="section" id="s15">
+            <h2>Static Final: True Constants</h2>
+
+            <pre><code><span class="keyword">class</span> <span class="type">AppConstants</span> {
+    <span class="comment">// By convention: UPPER_SNAKE_CASE for constants</span>
+    <span class="keyword">public static final int</span> MAX_USERS = 1000;
+    <span class="keyword">public static final</span> <span class="type">String</span> APP_NAME = <span class="string">"MyApp"</span>;
+    <span class="keyword">public static final double</span> PI = 3.14159;
+}
+
+<span class="comment">// Access anywhere without instantiation</span>
+System.out.println(<span class="type">AppConstants</span>.MAX_USERS);  <span class="comment">// 1000</span>
+System.out.println(<span class="type">AppConstants</span>.APP_NAME);   <span class="comment">// "MyApp"</span>
+
+<span class="comment">// Same as interface constants!</span>
+<span class="keyword">interface</span> <span class="type">Config</span> {
+    <span class="keyword">int</span> MAX = 100;  <span class="comment">// Implicitly public static final</span>
+}</code></pre>
+
+            <div class="key-point">
+                <strong>static final = Constant</strong>
+                <ul>
+                    <li><code>static</code>: One copy, belongs to class</li>
+                    <li><code>final</code>: Cannot be changed</li>
+                    <li>Together: A true constant accessible anywhere</li>
+                </ul>
+            </div>
+
+            <div class="quiz">
+                <div class="quiz-q">Why use static final instead of just final?</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="qStaticFinal" value="a" onclick="checkQuiz(this, false)"> No difference</label>
+                    <label><input type="radio" name="qStaticFinal" value="b" onclick="checkQuiz(this, true)"> static final is shared, final alone creates copy per instance</label>
+                    <label><input type="radio" name="qStaticFinal" value="c" onclick="checkQuiz(this, false)"> final alone is more memory efficient</label>
+                </div>
+                <div class="quiz-answer"></div>
+            </div>
+        </div>
+
+        <!-- Section 16: Interview Gotchas -->
+        <div class="section" id="s16">
+            <h2>Interview Gotchas: Static & Final</h2>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #1: Can you have a static constructor?</div>
+                <pre><code><span class="keyword">class</span> <span class="type">Demo</span> {
+    <span class="keyword">static</span> Demo() { }  <span class="comment">// ???</span>
+}</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>No!</strong> Constructors create instances. Static means "no instance needed." Use static blocks for class-level initialization.
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #2: What's the output?</div>
+                <pre><code><span class="keyword">class</span> <span class="type">Parent</span> {
+    <span class="keyword">static</span> { System.out.println(<span class="string">"Parent static"</span>); }
+}
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">static</span> { System.out.println(<span class="string">"Child static"</span>); }
+}
+<span class="keyword">new</span> <span class="type">Child</span>();</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    Output: "Parent static" then "Child static"<br>
+                    Parent class loads first, then child class, before any object is created.
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #3: Is this valid?</div>
+                <pre><code><span class="keyword">final</span> <span class="type">StringBuilder</span> sb = <span class="keyword">new</span> <span class="type">StringBuilder</span>(<span class="string">"Hello"</span>);
+sb.append(<span class="string">" World"</span>);
+System.out.println(sb);</code></pre>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>Valid!</strong> Prints "Hello World"<br>
+                    Final prevents reassignment of sb, but the object itself can be modified.
+                </div>
+            </div>
+
+            <div class="gotcha">
+                <div class="gotcha-title">GOTCHA #4: Can abstract class be final?</div>
+                <button class="gotcha-reveal-btn" onclick="revealGotcha(this)">Show Answer</button>
+                <div class="gotcha-answer">
+                    <strong>No!</strong>
+                    <ul>
+                        <li>Abstract = must be extended to be useful</li>
+                        <li>Final = cannot be extended</li>
+                        <li>Direct contradiction!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 17: Summary -->
+        <div class="section" id="s17">
+            <h2>Summary: Key Takeaways</h2>
+
+            <h3>Static Keyword</h3>
+            <div class="key-point">
+                <ul>
+                    <li>Belongs to class, not instance - stored in Method Area</li>
+                    <li>Static variables: shared across all instances</li>
+                    <li>Static methods: can't access instance members, no this/super</li>
+                    <li>Static blocks: run once when class loads</li>
+                    <li>Static in interface: variables are constants, methods aren't inherited</li>
+                    <li>Static methods are hidden, not overridden (compile-time resolution)</li>
+                </ul>
+            </div>
+
+            <h3>Final Keyword</h3>
+            <div class="key-point">
+                <ul>
+                    <li>Final variable: can't reassign (but object contents can change)</li>
+                    <li>Final method: can't override</li>
+                    <li>Final class: can't extend</li>
+                    <li>static final = true constant (one shared, unchangeable value)</li>
+                </ul>
+            </div>
+
+            <h3>Quick Reference</h3>
+            <table>
+                <tr><th>Combination</th><th>Valid?</th><th>Why?</th></tr>
+                <tr><td>static + abstract method</td><td>No</td><td>Static = compile time, abstract = needs overriding</td></tr>
+                <tr><td>final + abstract method</td><td>No</td><td>Final = can't override, abstract = must override</td></tr>
+                <tr><td>final + abstract class</td><td>No</td><td>Final = can't extend, abstract = must extend</td></tr>
+                <tr><td>static + final variable</td><td>Yes</td><td>Perfect for constants</td></tr>
+                <tr><td>static in abstract class</td><td>Yes</td><td>Static members are class-level, not instance</td></tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="nav">
+        <button onclick="showAll()">Show All</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="prev()">Prev</button>
+        <button onclick="next()">Next</button>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 17;
+
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function showSection(n, updateUrl = true) {
+            if (n >= 1 && n <= totalSections) {
+                currentSection = n;
+                const sections = document.querySelectorAll('.section');
+                sections.forEach((s, i) => {
+                    if (i < n) s.classList.add('visible');
+                    else s.classList.remove('visible');
+                });
+                updateProgress();
+                if (updateUrl) {
+                    history.pushState(null, '', '#s' + n);
+                }
+            }
+        }
+
+        function next() { showSection(currentSection + 1); }
+        function prev() { showSection(currentSection - 1); }
+
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#s')) {
+                const sectionNum = parseInt(hash.substring(2));
+                if (sectionNum >= 1 && sectionNum <= totalSections) {
+                    showSection(sectionNum, false);
+                }
+            }
+        });
+
+        function loadFromHash() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#s')) {
+                const sectionNum = parseInt(hash.substring(2));
+                if (sectionNum >= 1 && sectionNum <= totalSections) {
+                    showSection(sectionNum, false);
+                    return;
+                }
+            }
+            showSection(1, false);
+        }
+
+        function showAll() {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('visible'));
+            document.getElementById('progress').style.width = '100%';
+        }
+
+        function reset() {
+            document.querySelectorAll('.section').forEach((s, i) => {
+                s.classList.toggle('visible', i === 0);
+            });
+            currentSection = 1;
+            updateProgress();
+            history.pushState(null, '', '#s1');
+            document.querySelectorAll('.quiz-answer').forEach(a => {
+                a.style.display = 'none';
+                a.className = 'quiz-answer';
+            });
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            document.querySelectorAll('.gotcha-answer').forEach(a => a.classList.remove('revealed'));
+            document.querySelectorAll('.gotcha-reveal-btn').forEach(b => {
+                b.classList.remove('revealed');
+                b.textContent = 'Show Answer';
+            });
+            document.querySelectorAll('.hideable-content').forEach(c => c.classList.remove('revealed'));
+            document.querySelectorAll('.hideable-btn').forEach(b => b.classList.remove('revealed'));
+            document.querySelectorAll('.hidden-cell').forEach(c => {
+                c.classList.remove('revealed', 'yes', 'no');
+                c.textContent = '';
+            });
+            document.querySelectorAll('.clickable-row').forEach(r => r.classList.remove('revealed'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function checkQuiz(input, isCorrect) {
+            const quiz = input.closest('.quiz');
+            const answer = quiz.querySelector('.quiz-answer');
+            answer.style.display = 'block';
+            if (isCorrect) {
+                answer.className = 'quiz-answer correct';
+                answer.textContent = 'Correct!';
+            } else {
+                answer.className = 'quiz-answer incorrect';
+                answer.textContent = 'Try again!';
+            }
+        }
+
+        function revealGotcha(btn) {
+            const gotcha = btn.closest('.gotcha');
+            const answer = gotcha.querySelector('.gotcha-answer');
+            const isRevealed = answer.classList.contains('revealed');
+            if (isRevealed) {
+                answer.classList.remove('revealed');
+                btn.classList.remove('revealed');
+                btn.textContent = 'Show Answer';
+            } else {
+                answer.classList.add('revealed');
+                btn.classList.add('revealed');
+                btn.textContent = 'Hide Answer';
+            }
+        }
+
+        function revealHideable(btn) {
+            const hideable = btn.closest('.hideable');
+            const content = hideable.querySelector('.hideable-content');
+            content.classList.add('revealed');
+            btn.classList.add('revealed');
+        }
+
+        function togglePrimer() {
+            const content = document.getElementById('primer-content');
+            const toggle = document.getElementById('primer-toggle');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggle.textContent = '[Click to collapse]';
+            } else {
+                content.style.display = 'none';
+                toggle.textContent = '[Click to expand]';
+            }
+        }
+
+        function toggleMemoryAreas() {
+            const content = document.getElementById('memory-content');
+            const toggle = document.getElementById('memory-toggle');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggle.textContent = '[Click to collapse]';
+            } else {
+                content.style.display = 'none';
+                toggle.textContent = '[Click to expand]';
+            }
+        }
+
+        function toggleExecutionFlow() {
+            const content = document.getElementById('execution-content');
+            const toggle = document.getElementById('execution-toggle');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggle.textContent = '[Click to collapse]';
+            } else {
+                content.style.display = 'none';
+                toggle.textContent = '[Click to expand]';
+            }
+        }
+
+        function revealRow(row) {
+            if (row.classList.contains('revealed')) return;
+            row.classList.add('revealed');
+            row.querySelectorAll('.hidden-cell').forEach(cell => {
+                const value = cell.dataset.value;
+                cell.classList.add('revealed');
+                cell.textContent = value;
+                if (value === 'Yes') cell.classList.add('yes');
+                else if (value === 'No') cell.classList.add('no');
+            });
+        }
+
+        function resetTable(tableId) {
+            const table = document.getElementById(tableId);
+            table.querySelectorAll('.hidden-cell').forEach(cell => {
+                cell.classList.remove('revealed', 'yes', 'no');
+                cell.textContent = '';
+            });
+            table.querySelectorAll('.clickable-row').forEach(row => {
+                row.classList.remove('revealed');
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        }
+
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.remove('light-theme');
+            } else {
+                document.body.classList.add('light-theme');
+            }
+        })();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                next();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prev();
+            }
+        });
+
+        loadFromHash();
+    </script>
+</body>
+</html>

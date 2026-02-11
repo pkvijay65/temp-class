@@ -10,7 +10,7 @@ public class CreditCardPayment extends Payment {
 
     @Override
     public void process() {
-        super.process();
+        System.out.println("Processing credit card payment of $" + amount);
         // Show only last 4 digits for security
         System.out.println("Charging card: ****" + cardNumber.substring(cardNumber.length() - 4));
     }

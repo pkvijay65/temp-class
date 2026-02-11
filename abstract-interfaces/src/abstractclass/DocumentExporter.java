@@ -1,9 +1,13 @@
 package abstractclass;
 
 /**
- * Demonstrates Template Method Pattern using abstract class.
- * The export() method defines the algorithm skeleton,
- * while format() is customized by subclasses.
+ * LEARNING OUTCOME: Template Method Pattern
+ *
+ * Key points:
+ * - Abstract class defines the algorithm skeleton (export method)
+ * - Some steps are concrete (same for all subclasses)
+ * - Some steps are abstract (customized by each subclass)
+ * - Template method is often 'final' to prevent algorithm changes
  */
 public abstract class DocumentExporter {
     protected String content;

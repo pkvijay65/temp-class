@@ -1,11 +1,12 @@
 package interfaces;
 
 /**
- * Wallet class implementing multiple interfaces.
- * Demonstrates:
- * - Multiple interface implementation
- * - @Override annotation
- * - Using interface default methods
+ * LEARNING OUTCOME: Multiple Interface Implementation
+ *
+ * Key points:
+ * - A class can implement multiple interfaces (solves diamond problem)
+ * - Must implement ALL abstract methods from ALL interfaces
+ * - Gets default methods from all interfaces for free
  */
 public class Wallet implements Payable, Refundable {
     private double balance;

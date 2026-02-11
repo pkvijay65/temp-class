@@ -1,11 +1,13 @@
 package abstractclass;
 
 /**
- * Abstract class demonstrating:
- * - Abstract methods (no implementation)
- * - Concrete methods (with implementation)
- * - Constructor in abstract class
- * - Protected fields for child access
+ * LEARNING OUTCOME: Abstract Class Basics
+ *
+ * Key points:
+ * - Cannot be instantiated directly (new Payment() = ERROR)
+ * - Can have abstract methods (no body) AND concrete methods (with body)
+ * - Can have constructors (called via super() from child)
+ * - Use protected fields for child class access
  */
 public abstract class Payment {
     protected double amount;
@@ -19,8 +21,12 @@ public abstract class Payment {
     // Abstract method - MUST be implemented by concrete subclasses
     public abstract void process();
 
+
     // Abstract method - child decides refund logic
-    public abstract boolean refund();
+    public boolean refund() {
+        return true;
+    }
+
 
     // Concrete method - shared implementation
     public void printReceipt() {
